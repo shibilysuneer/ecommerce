@@ -1,0 +1,108 @@
+<%- include('../layouts/user/header.ejs') %>
+
+
+<!-- Start Banner Area -->
+<section class="banner-area organic-breadcrumb">
+    <div class="container">
+        <div class="breadcrumb-banner d-flex flex-wrap align-items-center justify-content-end">
+            <div class="col-first">
+                <h1>My Profile</h1>
+                <nav class="d-flex align-items-center">
+                    <a href="index.html">Home<span class="lnr lnr-arrow-right"></span></a>
+                    <a href="category.html">My Profile</a>
+                </nav>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- End Banner Area -->
+
+<!--================Login Box Area =================-->
+<section class="login_box_area section_gap">
+
+<!-- <header> -->
+
+<div class="container">
+    <div class="row">
+
+        <div class="col-lg-3">
+
+<nav id="sidebarMenu" class="collapse d-lg-block sidebar collapse bg-white">
+    <div class="position-sticky">
+      <div class="list-group list-group-flush mx-3 mt-4">
+        <a
+          href="/profile"
+          class="list-group-item list-group-item-action py-2 ripple"
+          aria-current="true"
+        >
+          <i class="fas fa-tachometer-alt fa-fw me-3"></i><span>MY Profile</span>
+        </a>
+        <a href="/address" class="list-group-item list-group-item-action py-2 ripple ">
+            <i class="fas fa-chart-area fa-fw me-3"></i><span>Address</span>
+          </a>
+        <!-- <a href="#" class="list-group-item list-group-item-action py-2 ripple"
+          ><i class="fas fa-lock fa-fw me-3"></i><span>Add Address</span></a
+        > -->
+        <!-- <a href="#" class="list-group-item list-group-item-action py-2 ripple"
+          ><i class="fas fa-chart-line fa-fw me-3"></i><span>Analytics</span></a
+        > -->
+        <a href="/addaddress" class="list-group-item list-group-item-action py-2 ripple">
+          <i class="fas fa-chart-pie fa-fw me-3"></i><span>Add Address</span>
+        </a>
+        <a href="#" class="list-group-item list-group-item-action py-2 ripple"
+          ><i class="fas fa-chart-bar fa-fw me-3"></i><span>Orders</span></a
+        >
+        <!-- <a href="#" class="list-group-item list-group-item-action py-2 ripple"
+          ><i class="fas fa-globe fa-fw me-3"></i><span>International</span></a
+        > -->
+      </div>
+    </div>
+  </nav>
+</div>
+<div class="col-lg-9">
+    <h3>Edit Address</h3>
+    <form class="row contact_form" action="/editAddress/<%= address._id %>" method="post" >
+        <div class="col-md-6 form-group p_star">
+            <input type="text" class="form-control" id="fname" name="fname" value="<%= address.fname %>" placeholder="First name">
+        </div>
+        <div class="col-md-6 form-group p_star">
+            <input type="text" class="form-control" id="lname" name="lname" value="<%= address.lname %>" placeholder="Last name">
+        </div>
+        <div class="col-md-12 form-group p_star">
+            <input type="text" class="form-control" id="house" name="house" value="<%= address.house %>" placeholder="House">
+        </div>
+        <div class="col-md-12 form-group p_star">
+            <input type="text" class="form-control" id="street" name="street" value="<%= address.street %>" placeholder="Street">
+        </div>
+        <div class="col-md-12 form-group p_star">
+            <input type="text" class="form-control" id="city" name="city" value="<%= address.city %>" placeholder="Town/City">
+        </div>
+        
+        <div class="col-md-6 form-group p_star">
+            <input type="text" class="form-control" id="district" name="district" value="<%= address.district %>" placeholder="district">
+        </div>
+        <div class="col-md-6 form-group p_star">
+            <input type="text" class="form-control" id="state" name="state" value="<%= address.state %>" placeholder="state">
+        </div>
+        <div class="col-md-12 form-group p_star">
+            <input type="text" class="form-control" id="number" name="number" value="<%= address.number %>"  placeholder="Phone number">
+        </div>
+        <div class="col-md-12 form-group">
+            <input type="text" class="form-control" id="zip" name="zip" value="<%= address.zip %>" placeholder="Postcode/ZIP">
+        </div>
+        <div class="col-md-12 form-group">
+            <div class="creat_account">
+                <h3>Shipping Details</h3>
+                <input type="checkbox" id="f-option3" name="different_address">
+                <label for="f-option3">Ship to a different address?</label>
+            </div>
+            <textarea class="form-control" name="message" id="message" rows="1" placeholder="Order Notes"></textarea>
+        </div>
+        <div class="card_area d-flex align-items-center">
+            <button type="submit" value="submit" class="primary-btn">Save</button>
+        </div>
+    </form>
+</div>
+
+
+<%- include('../layouts/user/footer.ejs') %>

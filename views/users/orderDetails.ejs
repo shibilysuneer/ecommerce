@@ -1,0 +1,90 @@
+<%- include('../layouts/user/header.ejs') %>
+
+<section class="order_details section_gap">
+    <div class="container">
+        <h3 class="title_confirmation">Order Details</h3>
+        <div class="row order_d_inner">
+            <div class="col-lg-6">
+                <div class="details_item">
+                    <h4>Order Info</h4>
+                    <ul class="list">
+                        <li><span>Order number</span> : <%= order. orderId%></li>
+                        <li><span>Date</span> : <%= order.createdAt.toDateString() %></li>
+                        <!-- <li><span>Status</span> : <%= order.status %></li> -->
+                        <li><span>Total</span> : <%= order.total.toFixed(2) %></li>
+                        <li><span>Payment method</span> : <%= order.paymentMethod %></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="details_item">
+                    <h4>Shipping Address</h4>
+                    <ul class="list">
+                        <li><span>Street</span> : <%= order.address.street %></li>
+                        <li><span>City</span> : <%= order.address.city %></li>
+                        <li><span>State</span> : <%= order.address.state %></li>
+                        <li><span>Zip Code</span> : <%= order.address.zip %></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="order_details_table">
+            <h2>Order Items</h2>
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>ProductImage</th>
+                            <th>Product</th>
+                            <th>Quantity</th>
+                            <th>Total</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% order.cartItems.forEach(item => { %>
+                            <tr>
+                                <td>
+                                  
+                                    <img src="/admin/images/<%= item.productId.images[0] %>" alt="<%= item.productId.productName %>" style="width: 50px; height: auto;">
+                                </td>
+                                <td><%= item.productId.productName %></td>
+                                <td>x <%= item.qty %></td>
+                                <td><%= (item.price * item.qty).toFixed(2) %></td>
+                                <!-- <td><%= item.status %></td> -->
+                                <td>
+                                    <% if (item.status === 'canceled') { %>
+                                        <span class="text-muted">Canceled</span>
+                                    <% } else if (item.status === 'confirmed') { %>
+                                        <span class="text-success">Confirmed</span>
+                                    <% } else if (item.status === 'shipped') { %>
+                                        <span class="text-success">Shipped</span>
+                                    <% } else if (item.status === 'delivered') { %>
+                                        <span class="text-success">Delivered</span>
+                                    <% } else { %>
+                                        <span class="text-warning">Pending</span>
+                                        <% } %>
+                                </td>
+                                <td>
+                                    <% if (item.status !== 'canceled') { %>
+                                        <form action="/cancel/<%= order._id %>/<%= item._id %>" method="post">
+                                            <button type="submit" class="btn btn-danger">Cancel</button>
+                                        </form>
+                                    <% } else {  %>
+                                        <span class="text-muted">Canceled</span>
+                                        <% } %>
+                                </td>
+                            </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="text-right mt-4">
+            <a href="/orderHistory" class="genric-btn primary radius">Back</a>
+        </div>
+    </div>
+</section>
+
+<%- include('../layouts/user/footer.ejs') %>

@@ -1,0 +1,487 @@
+<!-- contact_process.php('action')
+
+
+ <form action="/signup" method="post">
+
+    <input type="text"name="fname"placeholder="Enter Firstname"required>
+    <br><br>
+    <input type="text"name="lname"placeholder="Enter lastname"required>
+    <br><br>
+    <input type="email"name="email"placeholder="Enter email"required>
+    <br><br>      
+    <input type="text" name="mno" id="mno" placeholder="enter mobile number"required>      /IMPLORTANT
+    <br><br>
+    <input type="password"name="password"placeholder="Enter password"required>
+    <br><br>
+    <input type="submit"value="Signup">
+</form>
+
+<% 
+if(typeof message !=='undefined'){
+%>
+<p style="color:green;"><%= message %></p>
+<%
+}
+%> -->
+
+
+
+<!-- Compiled and minified CSS -->
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/css/materialize.min.css">
+
+<!-- Compiled and minified JavaScript -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/js/materialize.min.js"></script>
+
+
+client Id =65400054511-as871amkl3ldmrqvimo14p0gmm1p68je.apps.googleusercontent.com
+
+<meta name='google_signin_client_id'content=65400054511-as871amkl3ldmrqvimo14p0gmm1p68je.apps.googleusercontent.com>
+
+<script src='http://apis.google.com/js/platform.js'async defer></script>
+client secret=
+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
+
+
+
+admin     #2275fc;
+
+<form class="row login_form" action="/login" method="post" id="contactForm" novalidate="novalidate">
+    <div class="col-md-12 form-group">
+        <input type="email" class="form-control" id="emai" name="email" placeholder="Email" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Email'"required>
+    </div>
+    <div class="col-md-12 form-group">
+        <input type="password" class="form-control" id="password" name="password" placeholder="Password" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Password'"required>
+    </div>
+    <div class="col-md-12 form-group">
+        <div class="creat_account">
+            <input type="checkbox" id="f-option2" name="selector">
+            <label for="f-option2">Keep me logged in</label>
+        </div>
+    </div>
+    <div class="col-md-12 form-group">
+        <button type="submit" value="submit" class="primary-btn">Log In</button>
+        <a href="#">Forgot Password?</a>
+    </div>
+</form>
+
+
+const loadProductsLists = async(req,res)=>{
+    try {
+       
+
+                res.render('productlists')
+        
+    } catch (error) {
+        console.log(error.message);
+    }
+}
+
+const loadProductsList = async(req,res)=>{
+    try {
+        const products = await Product.find({})
+        res.render('productslist',{products})
+        
+    } catch (error) {
+        console.log(error.message);
+    }
+}
+
+
+
+
+
+//  otp
+
+
+//   const sendVerifyMail =  async(email,otp)=>{
+    //     try {
+            
+    //         const transporter = nodemailer.createTransport({
+    //             host: "smtp.gmail.com",
+    //             port: 587,
+    //             secure:false,
+    //             requireTLS:true,        //correction
+    //             auth:{
+    //                 user:process.env.EMAIL_USER,
+    //                 pass:process.env.EMAIL_PASSWORD
+    //             }
+    //         });
+    //         const mailOptions = {
+    //             from:process.env.EMAIL_USER,
+    //             to:email,
+    //             subject:   "OTP for account regiter" ,          //`${subject}`,
+    //             text:`Otp ${otp}`
+    //         }
+    
+    // transporter.sendMail(mailOptions,(error,info)=>{
+    //     if(error){
+    //         console.log(error.message);
+    //         return false
+    
+    //     }else{
+    //         console.log("Email has been send", info.response);
+    //         return true
+    //     }
+    
+    // });
+    
+    //     } catch (error) {
+    //         console.log(error.message);
+    //     }
+    
+    // }
+    
+    
+    // function generateOTP() {
+    //     const otp = Math.floor(100000 + Math.random() * 900000);
+    //     return otp;
+    // }
+    
+    //     const securePassword = async(password)=>{
+    //         try {
+    //             const passwordHash = await bcrypt.hash(password,10);
+    //             return passwordHash;
+                
+    //         } catch (error) {
+    //             console.log(error.message);
+                
+    //         }
+        
+    //     }
+        
+    
+    
+    // const verifySignUp =  async(req,res,next)=>{
+    //     try {
+    //         if(generatedOtp==req.body.otp){
+    //             const spassword = await securePassword(userdetails.password)
+    
+    //             const user = new User({
+    //                 name:userdetails.userName,
+    //                 mobile:userdetails.mobile,
+    //                 email:userdetails.email,
+    //                 password:spassword,
+    //                 is_blocked:false,
+    //             });  
+    
+    //             const userData = await user.save();
+    
+    //             if(userData){
+    //                 req.session.user_id=userData;
+    //                 res.redirect('/home')
+    //             }else{
+    //                 res.render('register',{message:"regisistarion failed"})
+    //             }
+    
+            
+    //         }else{
+    //             res.render('verifyOtp',{message:"Please enter a valid otp" })
+    
+         
+    
+    //         }
+    //     } catch (error) {
+    //         console.log(error);
+    //     }
+    // }
+    
+    
+    
+    
+    // const insertUser = async(req,res)=>{
+    //     try {
+    //         userdetails.fname = req.body.fname
+    //         userdetails.lname = req.body.lname
+    //         userdetails.email = req.body.email
+    //         userdetails.mobile = req.body.mobile
+    //         userdetails.password= req.body.password
+    //         // is_admin:0
+    //         const isUserExists = await User.findOne({email:userdetails.email})
+    
+            
+    //         if(isUserExists==null){
+    //            generatedOtp = generateOTP()
+    
+    //             // const subject = "Otp Veryfication"
+    
+    //           try{
+    //             await sendVerifyMail(email,generatedOtp)
+    //             userdetails={username:`${fname} ${lname}`},email,mobile,password
+    //             res.redirect('/verifyOtp')
+    //           }catch(error){
+    //             res.render("signup",{message:"regisistarion fialed"})
+    //           }       
+        
+    //             }else{
+    //                 res.render('signup',{message:"regisistarion fialed"})
+        
+    //             }
+    //         }catch(error){
+    //             console.log(error.message); 
+    
+    //         }
+            
+    //     } 
+    //     const verifyOtp = async(req,res,next)=>{
+    //       try {
+    //           console.log();
+    //           res.render('verifyOtp')
+              
+    //       } catch (error) {
+    //           next(error);
+    //       }
+    //   }
+    //   const resendOtp = async (req,res,next) => {
+    //       try {
+    //           generatedOtp = generateOTP()
+    //           // const subject = "Otp Veryfication"
+      
+    //           sendVerifyMail(userdetails.userName,userdetails.email,generatedOtp)
+      
+      
+    //       } catch (error) {
+    //           next(error);
+    //       }
+    //   }
+
+    novalidate="novalidate"
+
+
+ANOTHER CART Schema
+
+module.exports = mongoose.model('Cart', cartSchema);
+// const mongoose = require('mongoose');
+    // const cartSchema = new mongoose.Schema({
+        //     userId: {
+        //         type: mongoose.Schema.Types.ObjectId,
+        //         ref: 'User',
+        //         required: true
+        //     },
+        //     items: [
+        //         {
+        //             productId: {
+        //                 type: mongoose.Schema.Types.ObjectId,
+        //                 ref: 'Product',
+        //                 required: true
+        //             },
+        //             qty: {
+        //                 type: Number,
+        //                 required: true,
+        //                 min: 1
+        //             }
+        //         }
+        //     ]
+        // });
+        
+        // const Cart = mongoose.model('Cart', cartSchema);
+        
+        // module.exports = Cart;
+        
+
+
+        /shop/search/?brand=<%= brand._id %>
+
+
+
+         <!-- <div class="sidebar-filter mt-50">
+                <div class="top-filter-head">Product Filters</div>
+                <div class="common-filter">
+                    <div class="head">Brands</div>
+                    <ul class="main-categories">
+                        <% if (brands && brands.length) { %>
+                            <% brands.forEach(brand => { %>                              
+                                  <li class="main-nav-list">
+                                    <a href=""><%= brand.brandName %></a>
+                           
+                             </li>
+                            <% }) %>
+                            <% } %>
+                            </ul>
+                </div> -->
+
+                .header_area   main.css
+
+
+
+                <div class="col-lg-8">
+                    <% if (billingDetails) { %>
+                    <h3>Billing Details</h3>
+                    <form class="row contact_form" action="/submitBillingDetails" method="post" novalidate="novalidate">
+                        <div class="col-md-6 form-group p_star">
+                            <input type="text" class="form-control" id="first" name="fname" placeholder="First name">
+                        </div>
+                        <div class="col-md-6 form-group p_star">
+                            <input type="text" class="form-control" id="last" name="lname" placeholder="Last name">
+                        </div>
+                       
+                        <div class="col-md-12 form-group p_star">
+                            <input type="text" class="form-control" id="number" name="number" placeholder="Phone number">
+                        </div>
+                       
+                        
+                        <div class="col-md-12 form-group p_star">
+                            <input type="text" class="form-control" id="house" name="house" placeholder="House">
+                        </div>
+                        <div class="col-md-12 form-group p_star">
+                            <input type="text" class="form-control" id="street" name="street" placeholder="Street">
+                        </div>
+                        <div class="col-md-12 form-group p_star">
+                            <input type="text" class="form-control" id="city" name="city" placeholder="Town/City">
+                        </div>
+                        <div class="col-md-6 form-group p_star">
+                            <input type="text" class="form-control" id="district" name="district" placeholder="district">
+                        </div>
+                        <div class="col-md-6 form-group p_star">
+                            <input type="text" class="form-control" id="state" name="state" placeholder="state">
+                        </div>
+                        <div class="col-md-12 form-group">
+                            <input type="text" class="form-control" id="zip" name="zip" placeholder="Postcode/ZIP">
+                        </div>
+                       
+                       
+                       
+                        <div class="col-md-12 form-group">
+                            <div class="creat_account">
+                                <h3>Shipping Details</h3>
+                                <input type="checkbox" id="f-option3" name="selector">
+                                <label for="f-option3">Ship to a different address?</label>
+                            </div>
+                            <textarea class="form-control" name="message" id="message" rows="1" placeholder="Order Notes"></textarea>
+                        </div>
+                        <div class="card_area d-flex align-items-center">
+                            <button type="submit" value="submit" class="primary-btn">Save</button>
+                        </div>
+                    </form>
+                    <% } else { %>
+
+
+
+                                            <!-- <button onclick="var result = document.getElementById('sst-<%= index %>'); var sst = result.value; if( !isNaN( sst )) result.value++;return false;"
+                                        class="increase items-count" type="button"><i class="lnr lnr-chevron-up"></i></button>
+                                    <button onclick="var result = document.getElementById('sst-<%= index %>'); var sst = result.value; if( !isNaN( sst ) && sst > 0 ) result.value--;return false;"
+                                        class="reduced items-count" type="button"><i class="lnr lnr-chevron-down"></i></button> -->
+
+                                    qty cart
+                                    <button onclick="var result = document.getElementById('sst-<%= index %>'); var sst = result.value; if( !isNaN( sst )) result.value++;return false;"
+                                        class="increase items-count" type="button"><i class="lnr lnr-chevron-up"></i></button>
+                                    <button onclick="var result = document.getElementById('sst-<%= index %>'); var sst = result.value; if( !isNaN( sst ) && sst > 0 ) result.value--;return false;"
+                                        class="reduced items-count" type="button"><i class="lnr lnr-chevron-down"></i></button>
+
+                                        
+// function updateQuantity(itemId, change) {
+    //     const input = document.getElementById(`sst-${itemId}`);
+    //     let qty = parseInt(input.value);
+    //     qty = isNaN(qty) ? 0 : qty;
+    //     qty = Math.max(qty + change, 1); // Ensure quantity is at least 1
+    //     input.value = qty;
+    
+    //     // Send an update request to the server
+    //     fetch('/update-cart', {
+    //         method: 'POST',
+    //         headers: { 'Content-Type': 'application/json' },
+    //         body: JSON.stringify({ itemId, qty })
+    //     }).then(response => {
+    //         if (response.ok) {
+    //             // Optionally reload the page or update the UI
+    //             updateTotals();
+    //         }
+    //     });
+    // }
+    // function updateTotals() {
+    //     // You can either fetch updated totals from the server or recalculate them on the client
+    //     // Example:
+    //     fetch('/get-cart-totals')
+    //         .then(response => response.json())
+    //         .then(data => {
+    //             document.getElementById('subtotal').innerText = data.subtotal.toFixed(2);
+    //             document.getElementById('total').innerText = (data.subtotal + data.shipping).toFixed(2);
+    //         });
+    // }
+    
+
+    users can dynamically update the quantity of items in their cart, and the page will reflect the changes either by reloading or updating the subtotal dynamically.
+
+
+    // function handleAddressSelection(index) {
+        //     // Update the default address in the database
+        //     setDefaultAddress(index);
+        
+        //     // Update the billing address display
+        //     setBillingAddress(index);
+        
+        //     updateAddressPage(index);
+        // }
+        
+        
+        // function setDefaultAddress(index) {
+        //     fetch('/set-default-address', {
+        //       method: 'POST',
+        //       headers: {
+        //         'Content-Type': 'application/json'
+        //       },
+        //       body: JSON.stringify({ addressIndex: index })
+        //     })
+        //     .then(response => {
+        //       if (response.ok) {
+        //         alert('Default address updated successfully.');
+        //       } else {
+        //         alert('Failed to update default address.');
+        //       }
+        //     })
+        //     .catch(error => {
+        //       console.error('Error:', error);
+        //       alert('An error occurred while updating the default address.');
+        //     });
+        //   }
+        
+        
+        
+        //     function setBillingAddress(index) {
+        //       document.getElementById('billingFname').innerText = document.getElementById('fname-' + index).innerText;
+        //       document.getElementById('billingLname').innerText = document.getElementById('lname-' + index).innerText;
+        //       document.getElementById('billingHouse').innerText = document.getElementById('house-' + index).innerText;
+        //       document.getElementById('billingStreet').innerText = document.getElementById('street-' + index).innerText;
+        //       document.getElementById('billingCity').innerText = document.getElementById('city-' + index).innerText;
+        //       document.getElementById('billingDistrict').innerText = document.getElementById('district-' + index).innerText;
+        //       document.getElementById('billingState').innerText = document.getElementById('state-' + index).innerText;
+        //       document.getElementById('billingZip').innerText = document.getElementById('zip-' + index).innerText;
+        //       document.getElementById('billingNumber').innerText = document.getElementById('number-' + index).innerText;
+        //     }
+        
+        //     function updateAddressPage(index) {
+        //     // Update the address page to show the selected address as the default
+        //     document.querySelectorAll('input[name="address"]').forEach((radio, idx) => {
+        //         radio.checked = idx === index;
+        //     });
+        //   }
+
+        <img src="<%= order.product.image %>" alt="">
+
+
+
+        <td>
+            <% if (order.status === 'pending') { %>
+                <form action="/cancel/<%= order._id %>" method="post">
+                    <button type="submit" class="btn btn-danger">Cancel</button>
+                </form>
+            <% } %>
+        </td>
+
+
+        <div class="order_buttons">
+            <% if (order.status === 'pending') { %>
+                <form action="/cancel/<%= order._id %>" method="post" class="d-inline">
+                    <button type="submit" class="btn btn-danger">Cancel Order</button>
+                </form>
+            <% } %>
+        </div>
+
+        <!-- class="d-block w-100" -->
+        Swal.fire({
+            position: "top-end",
+            icon: "success",
+            title: "Your work has been saved",
+            showConfirmButton: false,
+            timer: 1500
+          });

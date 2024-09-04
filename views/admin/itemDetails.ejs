@@ -1,0 +1,127 @@
+<%- include('../layouts/admin/header.ejs') %>
+
+
+
+                <!-- main-content -->
+                <div class="main-content">
+                    <!-- main-content-wrap -->
+                    <div class="main-content-inner">
+                        <!-- main-content-wrap -->
+                        <div class="main-content-wrap">
+                            <div class="flex items-center flex-wrap justify-between gap20 mb-27">
+                                <h3>Order  <%= order.orderId %></h3>
+                                <ul class="breadcrumbs flex items-center flex-wrap justify-start gap10">
+                                    <li>
+                                        <a href="index.html"><div class="text-tiny">Dashboard</div></a>
+                                    </li>
+                                    <li>
+                                        <i class="icon-chevron-right"></i>
+                                    </li>
+                                    <li>
+                                        <a href="#"><div class="text-tiny">Order</div></a>
+                                    </li>
+                                    <li>
+                                        <i class="icon-chevron-right"></i>
+                                    </li>
+                                    <li>
+                                        <a href="#"><div class="text-tiny">Order detail</div></a>
+                                    </li>
+                                    <li>
+                                        <i class="icon-chevron-right"></i>
+                                    </li>
+                                    <li>
+                                        <div class="text-tiny">Order <%= order.orderId %></div>
+                                    </li>
+                                </ul>
+                            </div>
+                            <!-- order-detail -->
+                            <div class="wg-order-detail">
+                                <div class="left flex-grow">
+                                    <div class="wg-box mb-20">
+                                        <div class="wg-table table-order-detail">
+                                            <ul class="table-title flex items-center justify-between gap20 mb-24">
+                                                <li>
+                                                    <div class="body-title"> Item</div>
+                                                </li>    
+                                                
+                                            </ul>
+                                            <ul class="flex flex-column">
+                                                <li class="product-item gap14">
+                                                    <div class="image no-bg">
+                                                        <img src="/admin/images/<%= item.productId.images[0] %>" alt="">
+                                                    </div>
+                                                    <div class="flex items-center justify-between gap40 flex-grow">
+                                                        <div class="name">
+                                                            <div class="text-tiny mb-1">Product name</div>
+                                                            <a href="product-list.html" class="body-title-2"><%= item.productId.productName %></a>
+                                                        </div>
+                                                        <div class="name">
+                                                            <div class="text-tiny mb-1">Quantity</div>
+                                                            <div class="body-title-2"><%= item.qty %></div>
+                                                        </div>
+                                                        <div class="name">
+                                                            <div class="text-tiny mb-1">Price</div>
+                                                            <div class="body-title-2"><%= item.price.toFixed(2) %></div>
+                                                        </div>
+                                                        <div class="name">
+                                                            <div class="text-tiny mb-1">total</div>
+                                                            <div class="body-title-2"><%= (item.price * item.qty).toFixed(2) %></div>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                               
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <div class="wg-box">
+                                        <div class="wg-table table-cart-totals">
+                                            <ul class="table-title flex mb-24">
+                                                <li>
+                                                    <div class="body-title">Shipping Address</div>
+                                                </li>    
+                                               
+                                            </ul>
+                                             <ul class="flex flex-column gap14">
+                                               
+                                               <div class="body-text"><%= order.address.house %>, <%= order.address.street %></div>
+                                               <div class="body-text"><%= order.address.city %>, <%= order.address.state %></div>
+                                               <div class="body-text"><%= order.address.district %>,<%= order.address.zip %></div>
+                                            </ul> 
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="right">
+                                    <div class="wg-box mb-20 gap10">
+                                        <div class="body-title">Summary</div>
+                                        <div class="summary-item">
+                                            <div class="body-text">Order ID</div>
+                                            <div class="body-title-2"><%= order.orderId %></div>
+                                        </div>
+                                        <div class="summary-item">
+                                            <div class="body-text">Date</div>
+                                            <div class="body-title-2"><%= order.createdAt.toLocaleDateString() %></div>
+                                        </div>
+                                        <!-- <div class="summary-item">
+                                            <div class="body-text">Total</div>
+                                            <div class="body-title-2 tf-color-1">$948.5</div>
+                                        </div> -->
+                                    </div>
+                                    
+                                    <div class="wg-box mb-20 gap10">
+                                        <div class="body-title">Payment Method</div>
+                                        <div class="body-text"><%= order.paymentMethod === 'cash-on-delivery' ? 'Pay on Delivery (Cash/Card)' : order.paymentMethod %></div>
+                                    </div>
+                                    <div class="wg-box gap10">
+                                        <div class="body-title">Expected Date Of Delivery</div>
+                                        <div class="body-title-2 tf-color-2"><%= order.createdAt.toLocaleDateString() %></div>
+                                        <a class="tf-button style-1 w-full" href="oder-tracking.html"><i class="icon-truck"></i>Track order</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- /order-detail -->
+                        </div>
+                        <!-- /main-content-wrap -->
+                    </div>
+
+
+<%- include('../layouts/admin/footer.ejs') %>

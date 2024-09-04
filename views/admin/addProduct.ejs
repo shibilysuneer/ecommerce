@@ -1,0 +1,366 @@
+
+<%- include('../layouts/admin/header.ejs') %>
+
+      
+            <!-- main-content -->
+            <div class="main-content">
+                <!-- main-content-wrap -->
+                <div class="main-content-inner">
+                    <!-- main-content-wrap -->
+                    <div class="main-content-wrap">
+                        <div class="flex items-center flex-wrap justify-between gap20 mb-27">
+                            <h3>Add Product</h3>
+                            <ul class="breadcrumbs flex items-center flex-wrap justify-start gap10">
+                                <li>
+                                    <a href="index.html"><div class="text-tiny">Dashboard</div></a>
+                                </li>
+                                <li>
+                                    <i class="icon-chevron-right"></i>
+                                </li>
+                                <li>
+                                    <a href="#"><div class="text-tiny">Products</div></a>
+                                </li>
+                                <li>
+                                    <i class="icon-chevron-right"></i>
+                                </li>
+                                <li>
+                                    <div class="text-tiny">Add product</div>
+                                </li>
+                            </ul>
+                        </div>
+                        <!-- form-add-product -->
+                        <form id="productForm" action="/admin/addProduct" method="post" class="tf-section-2 form-add-product" enctype="multipart/form-data" >
+                            <div class="wg-box">
+                                <fieldset class="name">
+                                    <div class="body-title mb-10">Product name <span class="tf-color-1">*</span></div>
+                                    <input id="productName" class="mb-10" type="text" placeholder="Enter product name" name="productName" tabindex="0" value="">
+                                    <span class="error-message" id="productNameError"></span>
+                                </fieldset>
+                                <div class="gap22 cols">
+                                    <fieldset class="category">
+                                        <div class="body-title mb-10">Category <span class="tf-color-1">*</span></div>
+                                       
+                                        <div class="select">
+                                          
+                                            <select id="productCategory" name="productCategory" class="" >
+                                                <option>Choose category</option>
+                                                <% categories.forEach(category => { %>
+                                                <option value="<%= category._id %>"><%= category.categoryName %></option>
+                                                <% }) %>
+                                            </select>
+                                           
+                                        </div>
+                                        <span class="error-message" id="productCategoryError"></span>
+                                    </fieldset>
+                                    <fieldset class="male">
+                                        <div class="body-title mb-10">Status <span class="tf-color-1">*</span></div>
+                                        <div class="select">
+                                            <select id="status" name="status" class="" >
+                                                <option>Instock</option>
+                                                <option>Outofstock</option>
+                                            </select>
+                                        </div>
+                                        <span class="error-message" id="statusError"></span>
+                                    </fieldset>
+                                </div>
+                                <fieldset class="brand">
+                                    <div class="body-title mb-10">Brand <span class="tf-color-1">*</span></div>
+                                    <div class="select">
+                                        <select id="productBrand" name="productBrand" class="" >
+                                            
+                                            <option >Choose Brand</option>
+                                            <% brands.forEach(brand => { %>
+                                            <option value="<%= brand._id %>"><%= brand.brandName %></option>
+                                            <% }) %>
+                                        </select>
+                                    </div>
+                                    <span class="error-message" id="productBrandError"></span>
+                                </fieldset>
+                                <div class="gap22 cols">
+                                    <fieldset class="name">
+                                      <div class="body-title mb-10">Price <span class="tf-color-1">*</span></div>
+                                      <input id="productPrice" class="mb-10" type="text" placeholder="Enter price" name="productPrice" tabindex="0" value="" >
+                                      <span class="error-message" id="productPriceError"></span>
+                                    </fieldset>
+                                    <fieldset class="name">
+                                        <div class="body-title mb-10">Stock <span class="tf-color-1">*</span></div>
+                                        <input id="stocks" class="mb-10" type="text" placeholder="Enter stock" name="stocks" tabindex="0" value=""  >
+                                        <span class="error-message" id="stocksError"></span>
+                                    </fieldset>
+                                </div>
+                                <fieldset class="description">
+                                    <div class="body-title mb-10">Description <span class="tf-color-1">*</span></div>
+                                    <textarea id="productDescription" class="mb-10" name="productDescription" placeholder="productDescription" tabindex="0"></textarea>
+                                    <div class="text-tiny">Do not exceed 100 characters when entering the product name.</div>
+                                    <span class="error-message" id="productDescriptionError"></span>
+                                </fieldset>
+                            </div>
+                            <div class="wg-box"> 
+                                <fieldset>
+                                    <div class="body-title mb-10">Upload images</div>
+                                    <div class="upload-image mb-16">
+                                    
+                                        <div class="item up-load">
+                                            <label class="uploadfile" for="myFile">
+                                                <span class="icon">
+                                                    <i class="icon-upload-cloud"></i> 
+                                                </span>
+                                                <span class="text-tiny">Drop your images here or select <span class="tf-color">click to browse</span></span>
+                                                <input type="file" id="myFile" name="images" multiple>
+                                            </label>
+                                        </div>
+                                    </div>
+                                   <div class="body-text">You need to add at least 3 images.</div>
+                                    <!-- <input type="hidden" id="croppedImage" name="croppedImage" > -->
+                                    <div id="imagePreviewContainer" class="d-flex flex-wrap"></div>
+                                    <span class="error-message" id="imagesError"></span>
+                                </fieldset>
+                               
+                                <div class="cols gap10">
+                                    <button  class="tf-button w-full" id="submitButton" type="submit"> Add product</button>
+                                </div>
+                            </div>
+                        </form>
+                        <!-- /form-add-product -->
+
+
+                        <div id="cropperModal" class="modal fade" tabindex="-1" role="dialog">
+                            <div class="modal-dialog modal-lg" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">Crop Image</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="img-container">
+                                            <img id="imageToCrop" src="" alt="Image to crop">
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-primary" id="cropButton">Crop</button>
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        
+                    </div>
+                    <!-- /main-content-wrap -->
+                </div>
+                <!-- /main-content-wrap -->
+
+ <%- include('../layouts/admin/footer.ejs') %>
+ <script src="/node_modules/cropperjs/dist/cropper.min.js"></script>
+
+
+<script>
+     let cropper;
+        const imageInput = document.getElementById("myFile");
+        const imagePreviewContainer = document.getElementById("imagePreviewContainer");
+        const cropperModal = document.getElementById("cropperModal");
+        const imageToCrop = document.getElementById("imageToCrop");
+        const cropButton = document.getElementById("cropButton");
+        const productForm = document.getElementById('productForm');
+        const submitButton = document.getElementById('submitButton');
+        let filesToCrop = [];
+        let croppedFiles = [];
+
+       
+
+
+        imageInput.addEventListener('change', function(event) {
+        filesToCrop = Array.from(event.target.files);
+        if (filesToCrop.length > 0) {
+            loadNextImage();
+        }
+    });
+    function loadNextImage() {
+        if (filesToCrop.length > 0) {
+            const file = filesToCrop.shift();
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                imageToCrop.src = e.target.result;
+                $('#cropperModal').modal('show');
+            };
+            reader.readAsDataURL(file);
+        } else {
+            updateFileInput();
+        }
+    }
+
+
+
+
+        $('#cropperModal').on('shown.bs.modal', function() {
+            cropper = new Cropper(imageToCrop, {
+                aspectRatio: 1,
+                viewMode: 1
+            });
+        }).on('hidden.bs.modal', function() {
+            cropper.destroy();
+            cropper = null;
+        });
+
+        cropButton.addEventListener('click', function() {
+            const canvas = cropper.getCroppedCanvas();
+            canvas.toBlob(function(blob) {
+               
+
+                  
+                const file = new File([blob], 'cropped.jpg',{ type: 'image/jpeg' });
+                croppedFiles.push(file);
+
+                createImageElement(blob, croppedFiles.length - 1);
+                
+
+            $('#cropperModal').modal('hide');
+            loadNextImage();
+
+    
+       });
+        });
+
+
+        
+        function createImageElement(blob, index) {
+        const url = URL.createObjectURL(blob);
+        const img = document.createElement('img');
+        img.src = url;
+        img.style.width = '100px';
+        img.style.height = 'auto';
+        img.style.margin = '5px';
+
+        const deleteButton = document.createElement('button');
+        deleteButton.textContent = 'Delete';
+        deleteButton.style.margin = '5px';
+        deleteButton.addEventListener('click', function() {
+            deleteImage(index);
+        });
+
+        const imageContainer = document.createElement('div');
+        imageContainer.style.display = 'flex';
+        imageContainer.style.flexDirection = 'column';
+        imageContainer.style.alignItems = 'center';
+        imageContainer.style.margin = '5px';
+        imageContainer.appendChild(img);
+        imageContainer.appendChild(deleteButton);
+
+        imagePreviewContainer.appendChild(imageContainer);
+    }
+    function deleteImage(index) {
+        const imageContainers = imagePreviewContainer.querySelectorAll('div');
+        imagePreviewContainer.removeChild(imageContainers[index]);
+        croppedFiles.splice(index, 1);
+        updateFileInput();
+    }
+
+
+
+
+
+function updateFileInput() {
+        const dataTransfer = new DataTransfer();
+        croppedFiles.forEach(file => dataTransfer.items.add(file));
+        imageInput.files = dataTransfer.files;
+    }
+
+
+        // Prevent double form submission
+        productForm.addEventListener('submit', function(event) {
+            submitButton.disabled = true;
+        });
+
+
+
+
+
+
+        document.getElementById('productForm').addEventListener('submit', function(event) {
+    // Prevent form submission
+    event.preventDefault();
+
+    // Get form values
+    let productName = document.getElementById('productName').value.trim();
+    let productCategory = document.getElementById('productCategory').value;
+    let status = document.getElementById('status').value;
+    let productBrand = document.getElementById('productBrand').value;
+    let productPrice = document.getElementById('productPrice').value.trim();
+    let stocks = document.getElementById('stocks').value.trim();
+    let productDescription = document.getElementById('productDescription').value.trim();
+    let images = document.getElementById('myFile').files;
+
+    // Initialize validation flag
+    let isValid = true;
+
+    // Reset previous error messages
+    document.querySelectorAll('.error-message').forEach(function(el) {
+        el.textContent = '';
+    });
+
+    // Product Name Validation
+    if (productName === "" || productName.length > 20) {
+        isValid = false;
+        document.getElementById('productNameError').textContent = "Product name is required and must not exceed 20 characters.";
+    }
+
+    // Product Category Validation
+    if (productCategory === "Choose category") {
+        isValid = false;
+        document.getElementById('productCategoryError').textContent = "Please select a product category.";
+    }
+
+    // Status Validation
+    if (status === "") {
+        isValid = false;
+        document.getElementById('statusError').textContent = "Please select the product status.";
+    }
+
+    // Brand Validation
+    if (productBrand === "Choose brand") {
+        isValid = false;
+        document.getElementById('productBrandError').textContent = "Please select a product brand.";
+    }
+
+    // Price Validation
+    if (productPrice === "" || isNaN(productPrice) || productPrice <= 0) {
+        isValid = false;
+        document.getElementById('productPriceError').textContent = "Please enter a valid price.";
+    }
+
+    // Stock Validation
+    if (stocks === "" || isNaN(stocks) || stocks <= 0) {
+        isValid = false;
+        document.getElementById('stocksError').textContent = "Please enter a valid stock quantity.";
+    }
+
+    // Description Validation
+    if (productDescription === "" || productDescription.length > 100) {
+        isValid = false;
+        document.getElementById('productDescriptionError').textContent = "Description is required and must not exceed 100 characters.";
+    }
+
+    // Images Validation
+    if (images.length > 3 || images.length===0) {
+        isValid = false;
+        document.getElementById('imagesError').textContent = "Please upload 3 images.";
+    }
+
+    // If all fields are valid, submit the form
+    if (isValid) {
+        // event.target.submit();
+        document.getElementById('productForm').submit();
+    }else{
+        document.getElementById('submitButton').disabled = false;
+    }
+});
+
+
+
+
+    </script>
+
+
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script> 

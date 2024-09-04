@@ -1,0 +1,329 @@
+<%- include('../layouts/user/header.ejs') %>
+
+	
+
+	<!-- Start Banner Area -->
+	<section class="banner-area organic-breadcrumb">
+		<div class="container">
+			<div class="breadcrumb-banner d-flex flex-wrap align-items-center justify-content-end">
+				<div class="col-first">
+					<h1>My Profile</h1>
+					<nav class="d-flex align-items-center">
+						<a href="index.html">Home<span class="lnr lnr-arrow-right"></span></a>
+						<a href="category.html">My Profile</a>
+					</nav>
+				</div>
+			</div>
+		</div>
+	</section>
+	<!-- End Banner Area -->
+
+	<!--================Login Box Area =================-->
+	<section class="login_box_area section_gap">
+
+<!-- <header> -->
+  
+    <div class="container">
+        <div class="row">
+
+            <div class="col-lg-3">
+
+    <nav id="sidebarMenu" class="collapse d-lg-block sidebar collapse bg-white">
+        <div class="position-sticky">
+          <div class="list-group list-group-flush mx-3 mt-4">
+            <a
+              href="/profile"
+              class="list-group-item list-group-item-action py-2 ripple"
+              aria-current="true"
+            >
+              <i class="fas fa-tachometer-alt fa-fw me-3"></i><span>MY Profile</span>
+            </a>
+            <a href="/address" class="list-group-item list-group-item-action py-2 ripple ">
+              <i class="fas fa-chart-area fa-fw me-3"></i><span>Address</span>
+            </a>
+            <!-- <a href="#" class="list-group-item list-group-item-action py-2 ripple"
+              ><i class="fas fa-lock fa-fw me-3"></i><span>Add Address</span></a
+            > -->
+            <!-- <a href="#" class="list-group-item list-group-item-action py-2 ripple"
+              ><i class="fas fa-chart-line fa-fw me-3"></i><span>Analytics</span></a
+            > -->
+            <a href="/addAddress" class="list-group-item list-group-item-action py-2 ripple">
+              <i class="fas fa-chart-pie fa-fw me-3"></i><span>Add Address</span>
+            </a>
+            <a href="#" class="list-group-item list-group-item-action py-2 ripple"
+              ><i class="fas fa-chart-bar fa-fw me-3"></i><span>Orders</span></a
+            >
+            <!-- <a href="#" class="list-group-item list-group-item-action py-2 ripple"
+              ><i class="fas fa-globe fa-fw me-3"></i><span>International</span></a
+            > -->
+          </div>
+        </div>
+      </nav>
+    </div>
+
+
+
+
+		    <!-- <div class="container"> -->
+				<div class="col-lg-9 mt-5">
+          <!-- <div class="container mt-5"> -->
+            <div class="card">
+                <div class="card-header text-center">
+                    <h1>Billing Address </h1>
+                </div>
+                <div class="card-body" id="billingAddress">
+                  <% if (defaultAddress) { %>
+                <div class="profile-detail-container">
+                    <span class="profile-detail-label">First Name&nbsp;:</span>
+                    <span class="profile-detail-value" id="billingFname"><%= defaultAddress.fname %></span>
+                </div>
+                <div class="profile-detail-container">
+                  <span class="profile-detail-label">Last Name&nbsp;:</span>
+                  <span class="profile-detail-value" id="billingLname"><%= defaultAddress.lname %></span>
+               </div>
+                <div class="profile-detail-container">
+                    <span class="profile-detail-label">House&nbsp;:</span>
+                    <span class="profile-detail-value" id="billingHouse"><%= defaultAddress.house %></span>
+                </div>
+                <div class="profile-detail-container">
+                    <span class="profile-detail-label">Street&nbsp;:</span>
+                    <span class="profile-detail-value" id="billingStreet"><%= defaultAddress.street %></span>
+                </div>
+                <div class="profile-detail-container">
+                    <span class="profile-detail-label">City&nbsp;:</span>
+                    <span class="profile-detail-value" id="billingCity"><%= defaultAddress.city %></span>
+                </div>
+                <div class="profile-detail-container">
+                  <span class="profile-detail-label">District&nbsp;:</span>
+                  <span class="profile-detail-value" id="billingDistrict"><%= defaultAddress.district %></span>
+              </div>
+                <div class="profile-detail-container">
+                    <span class="profile-detail-label">State/Province&nbsp;:</span>
+                    <span class="profile-detail-value" id="billingState"><%= defaultAddress.state %></span>
+                </div>
+                <div class="profile-detail-container">
+                    <span class="profile-detail-label">Zip/Postal Code&nbsp;:</span>
+                    <span class="profile-detail-value"  id="billingZip"><%= defaultAddress.zip %></span>
+                </div>
+                <!-- <div class="profile-detail-container">
+                    <span class="profile-detail-label">Country&nbsp;:</span>
+                    <span class="profile-detail-value" id="billingCountry">india</span>
+                </div> -->
+                <div class="profile-detail-container">
+                    <span class="profile-detail-label">Phone Number&nbsp;:</span>
+                    <span class="profile-detail-value" id="billingNumber"><%= defaultAddress.number %></span>
+                </div>
+                <% } %>  
+            <!-- </div> -->
+         </div>
+				</div>
+
+        <div class="container">
+        <% if(user.address && user.address.length > 0) { %>
+        <% user.address.forEach((address,index) => { %>
+        <div class="col-lg-9 mt-5">
+          <!-- <div class="container mt-5"> -->
+            <div class="card">
+                <div class="card-header text-center position-relative">
+                    <h1> Address <%= index + 1 %></h1>
+                    <div class="position-absolute top-right-corner">
+                  	<input class="pixel-radio" type="radio" id="address-<%= index %>" name="address" 
+                    <%= address.isDefault ? 'checked' : '' %> 
+                    onclick="handleAddressSelection('<%= index %>')">
+                    <a href="/editAddress/<%= address._id %>" class="icon-button ml-2">
+                      <i class="fa fa-edit"></i>
+                    </a>
+                    <a href="/delete-address/<%= address._id %>" class="icon-button ml-2">
+                      <i class="fa fa-trash"></i>
+                    </a>
+                    <!-- <div class="primary-switch position-absolute" style="top: 10px; right: 10px;">
+                      <input type="checkbox" id="primary-switch" checked>
+                      <label for="primary-switch"></label>
+                    </div> -->
+                  </div>
+                </div>
+                <div class="card-body" >
+                 
+                <div class="profile-detail-container">
+                    <span class="profile-detail-label">First Name&nbsp;:</span>
+                    <span class="profile-detail-value" id="fname-<%= index %>"><%= address.fname %></span>
+                </div>
+                <div class="profile-detail-container">
+                  <span class="profile-detail-label">Last Name&nbsp;:</span>
+                  <span class="profile-detail-value" id="lname-<%= index %>"><%= address.lname %></span>
+               </div>
+                <div class="profile-detail-container">
+                    <span class="profile-detail-label">House&nbsp;:</span>
+                    <span class="profile-detail-value" id="house-<%= index %>"><%= address.house %></span>
+                </div>
+                <div class="profile-detail-container">
+                    <span class="profile-detail-label">Street&nbsp;:</span>
+                    <span class="profile-detail-value" id="street-<%= index %>"><%= address.street %></span>
+                </div>
+                <div class="profile-detail-container">
+                    <span class="profile-detail-label">City&nbsp;:</span>
+                    <span class="profile-detail-value" id="city-<%= index %>"><%= address.city %></span>
+                </div>
+                <div class="profile-detail-container">
+                  <span class="profile-detail-label">District&nbsp;:</span>
+                  <span class="profile-detail-value" id="district-<%= index %>"><%= address.district %></span>
+              </div>
+                <div class="profile-detail-container">
+                    <span class="profile-detail-label">State/Province&nbsp;:</span>
+                    <span class="profile-detail-value" id="state-<%= index %>"><%= address.state %></span>
+                </div>
+                <div class="profile-detail-container">
+                    <span class="profile-detail-label">Zip/Postal Code&nbsp;:</span>
+                    <span class="profile-detail-value" id="zip-<%= index %>"><%= address.zip %></span>
+                </div>
+                <div class="profile-detail-container">
+                    <span class="profile-detail-label">Phone Number&nbsp;:</span>
+                    <span class="profile-detail-value" id="number-<%= index %>"><%= address.number %></span>
+                </div>
+               
+                   
+
+            <!-- </div> -->
+         </div>
+				</div>
+
+			</div>
+      <% }) %>
+      <% } %>
+      </div>
+
+        </div>
+		</div>
+	</section>
+  
+	<!--================End Login Box Area =================-->
+
+	<%- include('../layouts/user/footer.ejs') %>
+  <script>
+
+
+
+function handleAddressSelection(index) {
+        // Update the default address in the database
+        setDefaultAddress(index);
+    
+        // Update the billing address display
+        setBillingAddress(index);
+    }
+
+    function setDefaultAddress(index) {
+        fetch('/set-default-address', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ addressIndex: index })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+            console.log('Default address updated successfully');
+        } else {
+            console.error('Failed to update default address:', data.message);
+        }
+        })
+        .catch(error => {
+            console.error('Error setting default address:', error);
+        });
+    }
+
+    function setBillingAddress(index) {
+        const fname = document.getElementById(`fname-${index}`).innerText;
+        const lname = document.getElementById(`lname-${index}`).innerText;
+        const house = document.getElementById(`house-${index}`).innerText;
+        const street = document.getElementById(`street-${index}`).innerText;
+        const city = document.getElementById(`city-${index}`).innerText;
+        const district = document.getElementById(`district-${index}`).innerText;
+        const state = document.getElementById(`state-${index}`).innerText;
+        const zip = document.getElementById(`zip-${index}`).innerText;
+        const number = document.getElementById(`number-${index}`).innerText;
+        
+        document.getElementById("billingFname").innerText = fname;
+        document.getElementById("billingLname").innerText = lname;
+        document.getElementById("billingHouse").innerText = house;
+        document.getElementById("billingStreet").innerText = street;
+        document.getElementById("billingCity").innerText = city;
+        document.getElementById("billingDistrict").innerText = district;
+        document.getElementById("billingState").innerText = state;
+        document.getElementById("billingZip").innerText = zip;
+        document.getElementById("billingNumber").innerText = number;
+    }
+
+
+
+
+// function handleAddressSelection(index) {
+//     // Update the default address in the database
+//     setDefaultAddress(index)
+//         .then(() => {
+//             // Update the billing address display
+//             setBillingAddress(index);
+
+//             // Update the address page to reflect the new default address
+//             updateAddressPage(index);
+//         })
+//         .catch(error => {
+//             console.error('Error:', error);
+//             alert('An error occurred while updating the default address.');
+//         });
+// }
+
+// function setDefaultAddress(index) {
+//     return fetch('/set-default-address', {
+//         method: 'POST',
+//         headers: {
+//             'Content-Type': 'application/json'
+//         },
+//         body: JSON.stringify({ addressIndex: index })
+//     })
+//     .then(response => {
+//         if (!response.ok) {
+//             throw new Error('Failed to update default address.');
+//         }
+//         return response.json(); // assuming your API returns JSON
+//     })
+//     .then(data => {
+//         alert('Default address updated successfully.');
+//     });
+// }
+
+// function setBillingAddress(index) {
+//   const fields = ['fname', 'lname', 'house', 'street', 'city', 'district', 'state', 'zip', 'number'];
+//     fields.forEach(field => {
+//         const element = document.getElementById(`${field}-${index}`);
+//         if (element) {
+//             const billingElement = document.getElementById(`billing${capitalize(field)}`);
+//             if (billingElement) {
+//                 billingElement.innerText = element.innerText;
+//             } else {
+//                 console.warn('Billing element not found for:', `billing${capitalize(field)}`);
+//             }
+//         } else {
+//             console.warn('Element not found for:', `${field}-${index}`);
+//         }
+//     });
+// }
+
+// function updateAddressPage(index) {
+//     document.querySelectorAll('input[name="address"]').forEach((radio, idx) => {
+//         radio.checked = idx === index;
+//     });
+// }
+
+// function capitalize(str) {
+//     return str.charAt(0).toUpperCase() + str.slice(1);
+// }
+</script>
+
+
+
+
+
+
+
+    

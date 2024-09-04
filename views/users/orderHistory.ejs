@@ -1,0 +1,54 @@
+<%- include('../layouts/user/header.ejs') %>
+
+<!-- Start Banner Area -->
+<section class="banner-area organic-breadcrumb">
+    <div class="container">
+        <div class="breadcrumb-banner d-flex flex-wrap align-items-center justify-content-end">
+            <div class="col-first">
+                <h1>Order History</h1>
+                <nav class="d-flex align-items-center">
+                    <a href="index.html">Home<span class="lnr lnr-arrow-right"></span></a>
+                    <a href="order-history.html">Order History</a>
+                </nav>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- End Banner Area -->
+
+<!--================Order History Area =================-->
+<section class="order_history section_gap">
+    <div class="container">
+        <h3 class="title_confirmation">Your Order History</h3>
+        <div class="order_history_table">
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">Order Number</th>
+                            <th scope="col">Date</th>
+                            <th scope="col">Total</th>
+                          
+                            <th scope="col">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% orders.forEach(order => { %>
+                            <tr>
+                                <td><%= order.orderId %></td>
+                                <td><%= order.createdAt.toDateString() %></td>
+                                <td><%= order.total.toFixed(2) %></td>
+                                <td>
+                                    <a href="/orderDetails/<%= order._id %>" class="btn btn-primary">View Details</a>
+                                </td>
+                            </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</section>
+<!--================End Order History Area =================-->
+
+<%- include('../layouts/user/footer.ejs') %>

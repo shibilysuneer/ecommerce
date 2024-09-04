@@ -1,0 +1,257 @@
+<%- include('../layouts/user/header.ejs') %>
+
+   
+   
+   <!-- Start Banner Area -->
+   <section class="banner-area organic-breadcrumb">
+    <div class="container">
+        <div class="breadcrumb-banner d-flex flex-wrap align-items-center justify-content-end">
+            <div class="col-first">
+                <h1>Shopping Cart</h1>
+                <nav class="d-flex align-items-center">
+                    <a href="index.html">Home<span class="lnr lnr-arrow-right"></span></a>
+                    <a href="category.html">Cart</a>
+                </nav>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- End Banner Area -->
+
+<!--================Cart Area =================-->
+<section class="cart_area">
+    <div class="container">
+        <div class="cart_inner">
+
+
+          
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">Product</th>
+                            <th scope="col">Price</th>
+                            <th scope="col">Quantity</th>
+                            <th scope="col">Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                      
+                        
+                        <% if (cartItems.length > 0) { %>
+                            <% cartItems.forEach((item,index) => { %>
+                        <tr>
+                            <td>
+                                <div class="media">
+                                    <div class="d-flex">
+                                        <% if (item.product && item.product.images && item.product.images.length > 0) { %>
+                                        <img src="/admin/images/<%= item.product.images[0] %>" alt="<%= item.product.productName %>">
+                                        <% } %>
+                                    </div>
+                                    <div class="media-body">
+                                        <p><%= item.product ? item.product.productName : "Unknown Product" %></p>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <h5><%= item.price %></h5>
+                            </td>
+                            <td>
+                                <div class="product_count">
+                                    <% if (item.product && item.product._id) { %>
+                                    <input type="text" name="qty" id="sst-<%= item.product._id %>" maxlength="12" value="<%= item.quantity %>" title="Quantity:" min="1" max="10" readonly
+                                        class="input-text qty">
+                                        <button onclick="updateQuantity('<%= item.product._id %>', 1)" class="increase items-count" type="button">
+                                            <i class="lnr lnr-chevron-up"></i>
+                                        </button>
+                                        
+                                        <button onclick="updateQuantity('<%= item.product._id %>', -1)" class="reduced items-count" type="button">
+                                            <i class="lnr lnr-chevron-down"></i>
+                                        </button>
+                                        <% } else { %>
+                                            <p>Product information is missing.</p>
+                                        <% } %>
+                                        <!-- <button onclick="updateQuantity('<%= item._id %>', 1)" class="increase items-count" type="button">
+                                            <i class="lnr lnr-chevron-up"></i>
+                                        </button>
+                                        <button onclick="updateQuantity('<%= item._id %>', -1)" class="reduced items-count" type="button">
+                                            <i class="lnr lnr-chevron-down"></i>
+                                        </button> -->
+                                </div>
+                            </td>
+                            <td>
+                                <h5><%= item.price * item.quantity %></h5>
+                            </td>
+                            <td>
+                                <form action="/cart-remove" method="POST">
+                                    <input type="hidden" name="productId" value="<%= item.product ? item.product._id : "" %>">
+                                    <button type="submit" class="genric-btn primary-border small">Remove</button>
+                                </form>
+                            </td>
+                        </tr>
+                        <% }) %>
+                        <% } else { %>
+                            <tr>
+                                <td colspan="4" class="text-center">Your cart is empty.</td>
+                            </tr>
+                        <% } %>
+                       
+                        <!-- <tr class="bottom_button">
+                            <td>
+                                <a class="gray_btn" href="#">Update Cart</a>
+                            </td>
+                            <td>
+
+                            </td>
+                            <td>
+
+                            </td>
+                            <td>
+                                <div class="cupon_text d-flex align-items-center">
+                                    <input type="text" placeholder="Coupon Code">
+                                    <a class="primary-btn" href="#">Apply</a>
+                                    <a class="gray_btn" href="#">Close Coupon</a>
+                                </div>
+                            </td>
+                        </tr> -->
+                        <tr>
+                            <td>
+
+                            </td>
+                            <td>
+
+                            </td>
+                            <td>
+                                <h5>Subtotal</h5>
+                            </td>
+                            <td>
+                                <h5><%= subtotal ? subtotal.toFixed(2) : 0.00 %></h5>
+                            </td>
+                        </tr>
+                        
+                        <tr class="out_button_area">
+                            <td>
+
+                            </td>
+                            <td>
+
+                            </td>
+                            <td>
+
+                            </td>
+                            <td>
+                                <div class="checkout_btn_inner d-flex align-items-center">
+                                    <a class="gray_btn" href="/shop">Continue Shopping</a>
+                                    <a class="primary-btn" href="/checkout">Proceed to checkout</a>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</section>
+<!--================End Cart Area =================-->
+<%- include('../layouts/user/footer.ejs') %>
+ 
+
+<script>
+    function updateQuantity(productId, quantityChange) {
+    const qtyInput = document.getElementById(`sst-${productId}`);
+    let newQty = parseInt(qtyInput.value) + quantityChange;
+
+    if (newQty < 1) {
+        newQty = 1;
+        Swal.fire({
+            icon: 'warning',
+            title: 'Minimum Quantity Reached',
+            text: 'You must purchase at least 1 product.',
+            showConfirmButton: true,
+        }).then(() => {
+            qtyInput.value = newQty;
+            qtyInput.disabled = false; // Re-enable the input after the alert
+        });
+        return;
+    } else if (newQty > 10) {
+        newQty = 10;
+        // alert("Maximum 10 products can be purchased.");
+        Swal.fire({
+            icon: 'warning',
+            title: 'Limit Reached',
+            text: 'Maximum 10 products can be purchased.',
+            showConfirmButton: true,
+        }).then(() => {
+            qtyInput.value = newQty;
+            qtyInput.disabled = false; // Re-enable the input after the alert
+        });
+        return;
+    }
+
+    qtyInput.value = newQty;
+
+    qtyInput.disabled = true;
+
+    
+    fetch('/update-cart', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            productId: productId,
+            quantity: newQty
+        }),
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Swal.fire({
+            //     icon: 'success',
+            //     title: 'Cart Updated',
+            //     text: 'Your cart has been updated successfully.',
+            //     showConfirmButton: false,
+            //     timer: 1500
+            // }).then(() => {
+            //     location.reload();
+            // });
+            // Reload the checkout page to reflect updated quantities and subtotal
+             location.reload();
+        }else if (data.availableStock !== undefined){
+            // alert(`Only ${data.availableStock} items left in stock.`);
+            Swal.fire({
+                icon: 'warning',
+                title: 'Stock Limit',
+                text: `Only ${data.availableStock} items left in stock.`,
+            });
+            qtyInput.value = data.availableStock;
+        }else {
+            Swal.fire({
+                icon: 'error',
+                title: 'Update Failed',
+                text: 'Failed to update cart: ' + data.message,
+            });
+                // alert('Failed to update cart: ' + data.message);
+            }
+    })
+    .catch(error => {
+        console.error('Error updating quantity:', error);
+        // alert('An error occurred while updating the cart. Please try again.');
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'An error occurred while updating the cart. Please try again.',
+        });
+    })
+    .finally(() => {
+        // Re-enable the input field after the request completes
+        qtyInput.disabled = false;
+    });
+}
+
+</script>
+
+
+
+

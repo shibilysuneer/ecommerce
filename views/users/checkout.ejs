@@ -1,0 +1,339 @@
+<%- include('../layouts/user/header.ejs') %>
+
+
+
+
+    <!-- Start Banner Area -->
+    <section class="banner-area organic-breadcrumb">
+        <div class="container">
+            <div class="breadcrumb-banner d-flex flex-wrap align-items-center justify-content-end">
+                <div class="col-first">
+                    <h1>Checkout</h1>
+                    <nav class="d-flex align-items-center">
+                        <a href="index.html">Home<span class="lnr lnr-arrow-right"></span></a>
+                        <a href="single-product.html">Checkout</a>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- End Banner Area -->
+
+    <!--================Checkout Area =================-->
+    <section class="checkout_area section_gap">
+        <div class="container">
+            <div class="billing_details">
+                <div class="row">
+                    
+
+
+                    <div class="col-lg-8 mt-5">
+                        <!-- <div class="container mt-5"> -->
+                          <div class="card mb-3">
+                              <div class="card-header text-center">
+                                  <h1>Shipping Address </h1>
+                              </div>
+                              <div class="card-body" id="billingAddress">
+                                <% if (defaultAddress) { %>
+                              <div class="profile-detail-container">
+                                  <span class="profile-detail-label">First Name&nbsp;:</span>
+                                  <span class="profile-detail-value" id="billingFname"><%= defaultAddress.fname %></span>
+                              </div>
+                              <div class="profile-detail-container">
+                                <span class="profile-detail-label">Last Name&nbsp;:</span>
+                                <span class="profile-detail-value" id="billingLname"><%= defaultAddress.lname %></span>
+                             </div>
+                              <div class="profile-detail-container">
+                                  <span class="profile-detail-label">House&nbsp;:</span>
+                                  <span class="profile-detail-value" id="billingHouse"><%= defaultAddress.house %></span>
+                              </div>
+                              <div class="profile-detail-container">
+                                  <span class="profile-detail-label">Street&nbsp;:</span>
+                                  <span class="profile-detail-value" id="billingStreet"><%= defaultAddress.street %></span>
+                              </div>
+                              <div class="profile-detail-container">
+                                  <span class="profile-detail-label">City&nbsp;:</span>
+                                  <span class="profile-detail-value" id="billingCity"><%= defaultAddress.city %></span>
+                              </div>
+                              <div class="profile-detail-container">
+                                <span class="profile-detail-label">District&nbsp;:</span>
+                                <span class="profile-detail-value" id="billingDistrict"><%= defaultAddress.district %></span>
+                            </div>
+                              <div class="profile-detail-container">
+                                  <span class="profile-detail-label">State/Province&nbsp;:</span>
+                                  <span class="profile-detail-value" id="billingState"><%= defaultAddress.state %></span>
+                              </div>
+                              <div class="profile-detail-container">
+                                  <span class="profile-detail-label">Zip/Postal Code&nbsp;:</span>
+                                  <span class="profile-detail-value"  id="billingZip"><%= defaultAddress.zip %></span>
+                              </div>
+                              <!-- <div class="profile-detail-container">
+                                  <span class="profile-detail-label">Country&nbsp;:</span>
+                                  <span class="profile-detail-value" id="billingCountry">india</span>
+                              </div> -->
+                              <div class="profile-detail-container">
+                                  <span class="profile-detail-label">Phone Number&nbsp;:</span>
+                                  <span class="profile-detail-value" id="billingNumber"><%= defaultAddress.number %></span>
+                              </div>
+                              <% } %>  
+
+                                </div>
+                              </div>
+
+
+                              <div class="card_area d-flex align-items-center">
+                              <a href="/addAddress"> <button type="submit" value="submit" class="primary-btn">Add Address</button></a> 
+                            </div>
+
+
+               
+
+            
+                    <!-- <div class="col-lg-8 mt-5"> -->
+    <% if (addresses && addresses.length > 0) { %>
+    <% addresses.forEach((address, index) => { %>
+  
+        <div class="card mb-3">
+            <div class="card-header text-center position-relative">
+                <h1>Address <%= index + 1 %></h1>
+                <div class="position-absolute top-right-corner">
+                    <input class="pixel-radio" type="radio" id="address-<%= index %>" name="address" 
+                    <%= address.isDefault ? 'checked' : '' %> 
+                    onclick="handleAddressSelection('<%= index %>')">
+                    <a href="/editAddress/<%= address._id %>" class="icon-button ml-2">
+                        <i class="fa fa-edit"></i>
+                    </a>
+                    <a href="/delete-address/<%= address._id %>" class="icon-button ml-2">
+                        <i class="fa fa-trash"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="profile-detail-container">
+                    <span class="profile-detail-label">First Name&nbsp;:</span>
+                    <span class="profile-detail-value" id="fname-<%= index %>"><%= address.fname %></span>
+                </div>
+                <div class="profile-detail-container">
+                    <span class="profile-detail-label">Last Name&nbsp;:</span>
+                    <span class="profile-detail-value" id="lname-<%= index %>"><%= address.lname %></span>
+                </div>
+                <div class="profile-detail-container">
+                    <span class="profile-detail-label">House&nbsp;:</span>
+                    <span class="profile-detail-value" id="house-<%= index %>"><%= address.house %></span>
+                </div>
+                <div class="profile-detail-container">
+                    <span class="profile-detail-label">Street&nbsp;:</span>
+                    <span class="profile-detail-value" id="street-<%= index %>"><%= address.street %></span>
+                </div>
+                <div class="profile-detail-container">
+                    <span class="profile-detail-label">City&nbsp;:</span>
+                    <span class="profile-detail-value" id="city-<%= index %>"><%= address.city %></span>
+                </div>
+                <div class="profile-detail-container">
+                    <span class="profile-detail-label">District&nbsp;:</span>
+                    <span class="profile-detail-value" id="district-<%= index %>"><%= address.district %></span>
+                </div>
+                <div class="profile-detail-container">
+                    <span class="profile-detail-label">State/Province&nbsp;:</span>
+                    <span class="profile-detail-value" id="state-<%= index %>"><%= address.state %></span>
+                </div>
+                <div class="profile-detail-container">
+                    <span class="profile-detail-label">Zip/Postal Code&nbsp;:</span>
+                    <span class="profile-detail-value" id="zip-<%= index %>"><%= address.zip %></span>
+                </div>
+                <div class="profile-detail-container">
+                    <span class="profile-detail-label">Phone Number&nbsp;:</span>
+                    <span class="profile-detail-value" id="number-<%= index %>"><%= address.number %></span>
+                </div>
+            </div>
+        </div>
+        
+    
+    <% }) %>
+    <% } %>
+
+    <% if (!addresses || addresses.length === 0) { %>
+        <form class="row contact_form" action="/newaddress" method="post" novalidate="novalidate">
+            <div class="col-md-6 form-group p_star">
+                <input type="text" class="form-control" id="first" name="fname" placeholder="First name">
+            </div>
+            <div class="col-md-6 form-group p_star">
+                <input type="text" class="form-control" id="last" name="lname" placeholder="Last name">
+            </div>
+            <div class="col-md-12 form-group p_star">
+                <input type="text" class="form-control" id="number" name="number" placeholder="Phone number">
+            </div>
+            <div class="col-md-12 form-group p_star">
+                <input type="text" class="form-control" id="house" name="house" placeholder="House">
+            </div>
+            <div class="col-md-12 form-group p_star">
+                <input type="text" class="form-control" id="street" name="street" placeholder="Street">
+            </div>
+            <div class="col-md-12 form-group p_star">
+                <input type="text" class="form-control" id="city" name="city" placeholder="Town/City">
+            </div>
+            <div class="col-md-6 form-group p_star">
+                <input type="text" class="form-control" id="district" name="district" placeholder="District">
+            </div>
+            <div class="col-md-6 form-group p_star">
+                <input type="text" class="form-control" id="state" name="state" placeholder="State/Province">
+            </div>
+            <div class="col-md-12 form-group">
+                <input type="text" class="form-control" id="zip" name="zip" placeholder="Postcode/ZIP">
+            </div>
+            <div class="card_area d-flex align-items-center">
+                <button type="submit" value="submit" class="primary-btn">Add Address</button>
+            </div>
+        </form>
+        <% } %>
+    </div>
+
+<div class="col-lg-4">
+    <div class="order_box">
+        <h2>Your Order</h2>
+        <ul class="list">
+            <li><a href="#">Product <span>Total</span></a></li>
+            <% let subtotal = 0; %>
+            <% if (cartItems && cartItems.length > 0) { %>
+                <% cartItems.forEach((item) => { %> 
+                    <% 
+                        const productPrice = Number(item.price);
+                        const productQuantity = Number(item.qty);
+                        const itemTotal = productPrice * productQuantity; 
+                        subtotal += itemTotal; 
+                    %>
+                <li><a href="#"><%= item.productId ? item.productId.productName : "Unknown Product" %> 
+                    <span class="middle">x <%= item.qty %></span> 
+                    <span class="last"><%= itemTotal.toFixed(2) %></span>
+                </a></li>
+                <% }) %>
+            <% } %>
+        </ul>
+        
+        <ul class="list list_2">
+            <li><a href="#">Subtotal <span><%= subtotal.toFixed(2) %></span></a></li>
+            <li><a href="#">Shipping <span>Flat rate: 50.00</span></a></li>
+            <li><a href="#">Total <span><%= (subtotal + 50).toFixed(2) %></span></a></li>
+        </ul>
+
+        <form id="order-form" action="/place-order" method="POST">
+            <!-- Hidden Fields -->
+            <input type="hidden" name="addressId" id="selected-address-id" value="<%= defaultAddress ? defaultAddress._id : '' %>">
+            <!-- <input type="hidden" name="paymentMethod" id="payment-method" value="cash-on-delivery"> -->
+
+        <div class="payment_item">
+            <div class="radion_btn">
+                <input type="radio" id="f-option5" name="paymentMethod"  value="check">
+                <label for="f-option5">Check payments</label>
+                <div class="check"></div>
+            </div>
+            <p>Please send a check to Store Name, Store Street, Store Town, Store State / County, Store Postcode.</p>
+        </div>
+        <div class="payment_item ">
+            <div class="radion_btn">
+                <input type="radio" id="f-option6" name="paymentMethod" value="paypal">
+                <label for="f-option6">Paypal</label>
+                <img src="img/product/card.jpg" alt="">
+                <div class="check"></div>
+            </div>
+            <p>Pay via PayPal; you can pay with your credit card if you don’t have a PayPal account.</p>
+        </div>
+
+        <div class="payment_item active">
+            <div class="radion_btn">
+                <input type="radio" id="f-option7" name="paymentMethod" value="cash-on-delivery">
+                <label for="f-option7">Cash on Delivery</label>
+                <div class="check"></div>
+            </div>
+            <p>Pay with cash upon delivery.</p>
+        </div>
+        
+
+        <div class="creat_account">
+            <input type="checkbox" id="f-option4" name="terms">
+            <label for="f-option4">I’ve read and accept the </label>
+            <a href="#">terms & conditions*</a>
+        </div>
+        <!-- <a class="primary-btn" href="#">Place the Order</a> -->
+        <button type="submit" class="primary-btn">Place Order</button>
+      </form>
+
+
+    </div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<%- include('../layouts/user/footer.ejs') %>
+
+<script>
+    function handleAddressSelection(index) {
+        // Update the default address in the database
+        setDefaultAddress(index);
+    
+        // Update the billing address display
+        setBillingAddress(index);
+    }
+
+    function setDefaultAddress(index) {
+        fetch('/set-default-address', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ addressIndex: index })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+            console.log('Default address updated successfully');
+        } else {
+            console.error('Failed to update default address:', data.message);
+        }
+        })
+        .catch(error => {
+            console.error('Error setting default address:', error);
+        });
+    }
+
+    function setBillingAddress(index) {
+        const fname = document.getElementById(`fname-${index}`).innerText;
+        const lname = document.getElementById(`lname-${index}`).innerText;
+        const house = document.getElementById(`house-${index}`).innerText;
+        const street = document.getElementById(`street-${index}`).innerText;
+        const city = document.getElementById(`city-${index}`).innerText;
+        const district = document.getElementById(`district-${index}`).innerText;
+        const state = document.getElementById(`state-${index}`).innerText;
+        const zip = document.getElementById(`zip-${index}`).innerText;
+        const number = document.getElementById(`number-${index}`).innerText;
+        
+        document.getElementById("billingFname").innerText = fname;
+        document.getElementById("billingLname").innerText = lname;
+        document.getElementById("billingHouse").innerText = house;
+        document.getElementById("billingStreet").innerText = street;
+        document.getElementById("billingCity").innerText = city;
+        document.getElementById("billingDistrict").innerText = district;
+        document.getElementById("billingState").innerText = state;
+        document.getElementById("billingZip").innerText = zip;
+        document.getElementById("billingNumber").innerText = number;
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+    const paymentRadios = document.querySelectorAll('input[name="paymentSelector"]');
+    const paymentMethodInput = document.getElementById('payment-method');
+
+    paymentRadios.forEach(radio => {
+        radio.addEventListener('change', function () {
+            paymentMethodInput.value = this.value;
+        });
+    });
+});
+
+
+
+
+</script>
+
+
+

@@ -1,0 +1,153 @@
+<%- include('../layouts/user/header.ejs') %>
+<section class="banner-area organic-breadcrumb">
+    <div class="container">
+        <div class="breadcrumb-banner d-flex flex-wrap align-items-center justify-content-end">
+            <div class="col-first">
+                <h1>Login/Register</h1>
+                <nav class="d-flex align-items-center">
+                    <a href="index.html">Home<span class="lnr lnr-arrow-right"></span></a>
+                    <a href="category.html">Login/Register</a>
+                </nav>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- End Banner Area -->
+
+<!--================Login Box Area =================-->
+<section class="login_box_area section_gap">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="login_box_img">
+                    <img class="img-fluid" src="img/login.jpg" alt="">
+                    <div class="hover">
+                        <h4>New to our website?</h4>
+                        <p>There are advances being made in science and technology everyday, and a good example of this is the</p>
+                        <a class="primary-btn" href="registration.html">Create an Account</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="login_form_inner">
+                    <h3>Log in to enter</h3>
+                    <form class="row login_form" action="/otp" method="post" id="otpForm" onsubmit="return validateOTPForm()">
+                        <div class="col-md-12 form-group">
+                            <input type="email" class="form-control" id="emai" name="email" placeholder="Email" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Email'"required>
+                        </div>
+                        <div class="col-md-12 form-group">
+                            <input type="text" class="form-control" id="otp" name="otp" placeholder="otp" onfocus="this.placeholder = ''" onblur="this.placeholder = 'otp'"required maxlength="6" pattern="\d*">
+                        </div>
+
+                       
+                        <div class="col-md-12 form-group">
+                            <button type="submit" value="submit" class="primary-btn">verify email</button>
+                        </div>
+                        <div class="form-group text-center">
+                            <div id="otpTimer" class="otp-timer">
+                                <span id="timerValue">60</span>
+                            </div>
+                           <button type="button" class="btn btn-secondary" onclick="resendOTP()">Resend OTP</button>
+                        </div>
+                        <% if (locals.message && message.length > 0) { %>
+                        <div class="alert alert-danger"><%= message %></div>
+                        <% } %>
+        
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+    <%- include('../layouts/user/footer.ejs') %>
+
+    <script>
+
+
+
+document.getElementById("otp").focus();
+
+let timer = 60;
+let timerInterval;
+
+function startTimer() {
+    timerInterval = setInterval(() => {
+        timer--;
+        document.getElementById("timerValue").textContent = timer;
+        if (timer <= 0) {
+            clearInterval(timerInterval);
+            document.getElementById("timerValue").classList.add("expired");
+            document.getElementById("timerValue").textContent = "Expired";
+            document.getElementById("otp").disabled = true;
+        }
+    }, 1000);
+}
+startTimer();
+
+
+
+        function validateOTPForm(){
+            const otpInput = document.getElementById('otp').value;
+            $.ajax({
+                type:'post',
+                url:'otp',
+                data:{otp:otpInput},
+                success:function(response){ 
+                    if(response.success){
+                       Swal.fire({
+                        icon:'success',
+                        title:'Otp Verified successfully',
+                        showConfirmButton:false,
+                        times:1500,
+                       }).then(() =>{
+                        window.location.href=response.redirectUrl
+                       })
+                    }else{
+                        Swal.fire({
+                            icon:'error',
+                            title:response.message,
+                        })
+                    }
+                 },
+                 error:function(){
+                    Awal.fire({
+                        icon:'error',
+                        title:'invalid OTP',
+                        text:'Please try again'
+
+                    })
+                }
+            })
+            return false;
+        }
+
+        function resendOTP(){
+            clearInterval(timerInterval)
+            timer = 60
+            document.getElementById("otp").disabled=false;
+            document.getElementById("timerValue").classList.remove("expired");
+            startTimer();
+            $.ajax({
+                type:'POST',
+                url:'/resend-otp',
+                success:function(response){
+                    if(response.success){
+                        Swal.fire({
+                            icon:'success',
+                            title:'OTP Resend successfully',
+                            showConfirmButton:false,
+                            timer:1500
+                        })
+                    }else{
+                        Swal.fire({
+                            icon:'error',
+                            title:'Error',
+                            text:'An error occured while resending OTP'
+                        })
+                    }
+                }
+            })
+            return false
+        }
+
+    </script>

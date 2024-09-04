@@ -1,0 +1,213 @@
+<%- include('../layouts/user/header.ejs') %>
+   
+
+<section class="banner-area organic-breadcrumb">
+    <div class="container">
+        <div class="breadcrumb-banner d-flex flex-wrap align-items-center justify-content-end">
+            <div class="col-first">
+                <h1>Register</h1>
+                <nav class="d-flex align-items-center">
+                    <a href="index.html">Home<span class="lnr lnr-arrow-right"></span></a>
+                    <a href="category.html">Register</a>
+                </nav>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- End Banner Area -->
+
+<!--================Login Box Area =================-->
+<section class="login_box_area section_gap">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="login_box_img">
+                    <img class="img-fluid" src="img/login.jpg" alt="">
+                    <div class="hover">
+                        <h4>New to our website?</h4>
+                        <p>There are advances being made in science and technology everyday, and a good example of this is the</p>
+                    
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="login_form_inner">
+                    <h3>Log in to enter</h3>
+                    <form class="row login_form" action="/signup" method="post" id="contactForm" >
+                        <% if (typeof message !== 'undefined' && message) { %>
+                            <div class="alert alert-warning col-md-12">
+                                <%= message %>
+                            </div>
+                          <% } %>
+
+                        <div class="col-md-12 form-group">
+                            <input type="text" class="form-control" id="fname" name="fname" placeholder="First Name" onfocus="this.placeholder = ''" onblur="this.placeholder = 'First Name'">
+                            <div id="error1"class='error-message'></div>
+                        </div>
+                        <div class="col-md-12 form-group">
+                            <input type="text" class="form-control" id="lname" name="lname" placeholder="Last Name" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Last Name'">
+                            <div id="error2" class="error-message"></div>
+                        </div>
+                        <div class="col-md-12 form-group">
+                            <input type="email" class="form-control" id="email" name="email" placeholder="Email" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Email'">
+                            <div id="error3" class="error-message"></div>
+                        </div>
+                        <div class="col-md-12 form-group">
+                            <input type="text" class="form-control" id="mobile" name="mobile" placeholder="Mobile" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Mobile'">
+                            <div id="error4" class="error-message"></div>
+                        </div>
+                        <div class="col-md-12 form-group">
+                            <input type="password" class="form-control" id="password" name="password" placeholder="Password" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Password'">
+                            <div id="error5" class="error-message"></div>
+                        </div>
+                        <div class="col-md-12 form-group">
+                            <button type="submit" value="submit" class="primary-btn">Signup</button>
+                        </div>
+                        <div class="col-md-12 form-group">
+                            <!-- <button data-mdb-button-init data-mdb-ripple-init class="btn btn-lg btn-block btn-primary" style="background-color: #dd4b39;"
+                              type="submit"><a href="/auth/google"><i class="fab fa-google me-2"></i> Sign in with google</a></button>   -->
+                            <a href="/auth/google" class="tf-button style-2 w-full">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="23" height="22" viewBox="0 0 23 22" fill="none">
+                                    <g clip-path="url(#clip0_604_19993)">
+                                    <path d="M21.6676 9.08734L12.694 9.08691C12.2978 9.08691 11.9766 9.40806 11.9766 9.80432V12.671C11.9766 13.0672 12.2978 13.3884 12.694 13.3884H17.7474C17.194 14.8244 16.1612 16.0271 14.8435 16.7913L16.9983 20.5213C20.4548 18.5223 22.4983 15.0148 22.4983 11.0884C22.4983 10.5293 22.4571 10.1297 22.3747 9.67967C22.312 9.33777 22.0152 9.08734 21.6676 9.08734Z" fill="#167EE6"/>
+                                    <path d="M11.5019 17.6959C9.02885 17.6959 6.86993 16.3447 5.71041 14.3452L1.98047 16.4951C3.87861 19.7849 7.43445 22.0002 11.5019 22.0002C13.4972 22.0002 15.38 21.463 17.0019 20.5267V20.5216L14.8471 16.7915C13.8615 17.3632 12.7209 17.6959 11.5019 17.6959Z" fill="#12B347"/>
+                                    <path d="M17 20.5267V20.5216L14.8452 16.7915C13.8596 17.3631 12.7192 17.6959 11.5 17.6959V22.0002C13.4953 22.0002 15.3782 21.463 17 20.5267Z" fill="#0F993E"/>
+                                    <path d="M4.80435 10.9998C4.80435 9.78079 5.13702 8.64036 5.70854 7.65478L1.9786 5.50488C1.0372 7.12167 0.5 8.99932 0.5 10.9998C0.5 13.0002 1.0372 14.8779 1.9786 16.4947L5.70854 14.3448C5.13702 13.3592 4.80435 12.2188 4.80435 10.9998Z" fill="#FFD500"/>
+                                    <path d="M11.5019 4.30435C13.1145 4.30435 14.5958 4.87738 15.7529 5.83056C16.0383 6.06568 16.4532 6.04871 16.7146 5.78725L18.7458 3.75611C19.0424 3.45946 19.0213 2.97387 18.7044 2.69895C16.7658 1.0172 14.2436 0 11.5019 0C7.43445 0 3.87861 2.21534 1.98047 5.50511L5.71041 7.65501C6.86993 5.65555 9.02885 4.30435 11.5019 4.30435Z" fill="#FF4B26"/>
+                                    <path d="M15.751 5.83056C16.0364 6.06568 16.4513 6.04871 16.7128 5.78725L18.7439 3.75611C19.0405 3.45946 19.0194 2.97387 18.7025 2.69895C16.764 1.01716 14.2417 0 11.5 0V4.30435C13.1126 4.30435 14.594 4.87738 15.751 5.83056Z" fill="#D93F21"/>
+                                    </g>
+                                    <defs>
+                                    <clipPath id="clip0_604_19993">
+                                    <rect width="22" height="22" fill="white" transform="translate(0.5)"/>
+                                    </clipPath>
+                                    </defs>
+                                </svg>
+                                <span class="tf-color-3">Sign in with Google</span>
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<%- include('../layouts/user/footer.ejs') %>
+
+
+
+<script>
+    const fnameid=document.getElementById('fname')
+    const lnameid=document.getElementById('lname')
+    const emailid=document.getElementById('email')
+    const mobileid=document.getElementById('mobile')
+    const passwordid=document.getElementById('password')
+    const error1 = document.getElementById('error1')
+    const error2 = document.getElementById('error2')
+    const error3 = document.getElementById('error3')
+    const error4 = document.getElementById('error4')
+    const error5 = document.getElementById('error5')
+    const contactform = document.getElementById('contactForm')
+
+    function fnameValidateChecking(e){
+        const fnameval =fnameid.value;
+        const fnamepattern = /^[A-Za-z\s]+$/;
+
+        if(fnameval.trim()===""){
+            error1.style.display='block'
+            error1.innerHTML='Please enter a valid name'
+        }else if(!fnamepattern.test(fnameval)){
+             error1.style.display='block'
+              error1.innerHTML='Please can only contain alphabets and spaces'
+        }else{
+            error1.style.display='none'
+            error1.innerHTML=''
+        }
+    }
+    function lnameValidateChecking(e){
+        const lnameval =lnameid.value;
+        const lnamepattern = /^[A-Za-z\s]+$/;
+
+        if(lnameval.trim()===""){
+            error2.style.display='block'
+            error2.innerHTML='Please enter a valid name'
+        }else if(!lnamepattern.test(lnameval)){
+             error2.style.display='block'
+              error2.innerHTML='Please can only contain alphabets and spaces'
+        }else{
+            error2.style.display='none'
+            error2.innerHTML=''
+        }
+    }
+    function emailValidateChecking(e){
+        const emailVal = emailid.value
+        const emailpattern = /^[a-zA-Z0-9._-]+@([a-zA-Z0-9.-]+)\.([a-zA-Z]{2,4})$/;
+
+        if(!emailpattern.test(emailVal)){
+            error3.style.display='block'
+              error3.innerHTML='Invalid Format'
+        }else{
+            error3.style.display='none'
+            error3.innerHTML=''
+        }
+    }
+    function mobileValidateChecking(e){
+        const mobileval = mobileid.value;
+        if(mobileval.trim()===''){
+             error4.style.display='block'
+              error4.innerHTML='Enter valid mobile number'
+        } else if(mobileval.length<10 ||mobileval.length>10){
+             error4.style.display='block'
+              error4.innerHTML='Enter 10 digit'
+        }else{
+             error4.style.display='none'
+            error4.innerHTML=''
+        }
+    }
+    function passwordValidateChecking(e){
+        const passval = passwordid.value
+        const alpha =/[a-zA-Z]/;
+        const digit = /\d/;
+        if(passval.length<6){
+            error5.style.display ='block'
+            error5.innerHTML='should contain 6 charecters'
+        }else if(!alpha.test(passval)||!digit.test(passval)){
+              error5.style.display='block'
+              error5.innerHTML='should contain numbers and alphabets'
+        }else{
+             error5.style.display='none'
+            error5.innerHTML=''
+        }
+    }
+
+
+
+    document.addEventListener('DOMContentLoaded',function(){
+        contactform.addEventListener('submit',function(e){
+            fnameValidateChecking()
+            lnameValidateChecking()
+            emailValidateChecking()
+            mobileValidateChecking()
+            passwordValidateChecking()
+            if(
+                !fnameid||!lnameid||!emailid||!mobileid||passwordid||!error1||!error2||!error3||!error4||!error5||!contactform
+            ){
+                console.error('One or more elements not found');
+            }
+            if(
+                error1.innerHTML !== '' || 
+            error2.innerHTML !== '' || 
+            error3.innerHTML !== '' || 
+            error4.innerHTML !== '' || 
+            error5.innerHTML !== ''
+                ){
+                e.preventDefault()
+            }
+
+        })
+    })
+
+
+</script>
+    

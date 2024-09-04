@@ -1,0 +1,105 @@
+<%- include('../layouts/user/header.ejs') %>
+
+	
+
+	<!-- Start Banner Area -->
+	<section class="banner-area organic-breadcrumb">
+		<div class="container">
+			<div class="breadcrumb-banner d-flex flex-wrap align-items-center justify-content-end">
+				<div class="col-first">
+					<h1>My Profile</h1>
+					<nav class="d-flex align-items-center">
+						<a href="index.html">Home<span class="lnr lnr-arrow-right"></span></a>
+						<a href="category.html">My Profile</a>
+					</nav>
+				</div>
+			</div>
+		</div>
+	</section>
+	<!-- End Banner Area -->
+
+	<!--================Login Box Area =================-->
+	<section class="login_box_area section_gap">
+
+<!-- <header> -->
+  
+    <div class="container">
+        <div class="row">
+
+            <div class="col-lg-3">
+
+    <nav id="sidebarMenu" class="collapse d-lg-block sidebar collapse bg-white">
+        <div class="position-sticky">
+          <div class="list-group list-group-flush mx-3 mt-4">
+            <a
+              href="/profile"
+              class="list-group-item list-group-item-action py-2 ripple"
+              aria-current="true"
+            >
+              <i class="fas fa-tachometer-alt fa-fw me-3"></i><span>MY Profile</span>
+            </a>
+            <a href="/address" class="list-group-item list-group-item-action py-2 ripple">
+              <i class="fas fa-chart-area fa-fw me-3"></i><span>Address</span>
+            </a>
+            <!-- <a href="#" class="list-group-item list-group-item-action py-2 ripple"
+              ><i class="fas fa-lock fa-fw me-3"></i><span>Add Address</span></a
+            > -->
+            <!-- <a href="#" class="list-group-item list-group-item-action py-2 ripple"
+              ><i class="fas fa-chart-line fa-fw me-3"></i><span>Analytics</span></a
+            > -->
+            <a href="/addaddress" class="list-group-item list-group-item-action py-2 ripple">
+              <i class="fas fa-chart-pie fa-fw me-3"></i><span>Add Address</span>
+            </a>
+            <a href="#" class="list-group-item list-group-item-action py-2 ripple"
+              ><i class="fas fa-chart-bar fa-fw me-3"></i><span>Orders</span></a
+            >
+            <!-- <a href="#" class="list-group-item list-group-item-action py-2 ripple"
+              ><i class="fas fa-globe fa-fw me-3"></i><span>International</span></a
+            > -->
+            
+            
+           
+            
+          </div>
+        </div>
+      </nav>
+    </div>
+
+
+
+
+		<!-- <div class="container"> -->
+				<div class="col-lg-9">
+
+					<div class="login_form_inner">
+						<h3>My Profile</h3>
+                        <p><strong>Name : </strong> <%= user.fname %></p>
+                        <p><strong>Email : </strong> <%= user.email %></p>
+                        <p><strong>Mobile : </strong> <%= user.mobile %></p>
+
+						<!-- <form class="row login_form" action="" method="post" id="contactForm" >
+							<div class="col-md-12 form-group">
+								<input type="text" class="form-control" id="name" name="fname" placeholder="Username" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Username'">
+							</div>
+							<div class="col-md-12 form-group">
+								<input type="email" class="form-control" id="email" name="email" placeholder="email" onfocus="this.placeholder = ''" onblur="this.placeholder = 'email'">
+							</div>
+							<div class="col-md-12 form-group">
+								<input type="text" class="form-control" id="mobile" name="mobile" placeholder="mobile" onfocus="this.placeholder = ''" onblur="this.placeholder = 'mobile'">
+							</div> -->
+							<div class="col-md-12 form-group">
+							<a href="/editprofile"><button type="submit" value="submit" class="primary-btn">Edit Profile</button></a>
+							<a href="/changepassword">
+								<button type="button" class="primary-btn" style="margin-left: 10px;">Change Password</button>
+							</a>	
+							</div>
+						<!-- </form> -->
+					</div>
+				</div>
+			</div>
+        </div>
+		</div>
+	</section>
+	<!--================End Login Box Area =================-->
+
+	<%- include('../layouts/user/footer.ejs') %>

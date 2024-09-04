@@ -1,0 +1,144 @@
+.error-message{
+    color: red;
+    font-size: 0.75rem;
+    display: none;
+}
+.otp-timer {
+    display: inline-block;
+    margin-left: 10px;
+    font-size: 14px;
+    position: relative;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    line-height: 60px;
+    text-align: center;
+    background: #f2f2f2;
+    border: 2px solid #ddd;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+#timerValue {
+    display: block;
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+    line-height: 60px;
+}
+#timerValue.expired {
+    font-size: 14px;
+    color: red;
+}
+.btn-secondary {
+    width: 100%;
+    background-color: #6c757d;
+    border: none;
+    margin-top: 10px;
+    display: block;
+}
+.btn-secondary:hover {
+    background-color: #5a6268;
+}
+.text-center {
+    text-align: center;
+    margin-top: 15px;
+}
+.product-row{
+    display:inline-block;
+}
+.profile-detail-container {
+    display: grid;
+    grid-template-columns: 1fr 2fr; /* Adjust the columns ratio if needed */
+    margin-bottom: 10px; /* Spacing between rows */
+}
+
+.profile-detail-label {
+    text-align: left;
+    font-weight: bold;
+}
+
+.profile-detail-value {
+    text-align: center;
+}
+
+.position-absolute {
+    position: absolute; /* address.ejs edit delete button */
+  }
+  
+  .top-right-corner {
+    top: 10px;
+    right: 10px;
+    display: flex;
+    align-items: center;
+  }
+  
+  .icon-button {
+    color: inherit; /* inherit the text color */
+    text-decoration: none; /* remove underline */
+    border: none; /* remove border */
+    background: none; /* remove background */
+    cursor: pointer; /* show pointer cursor */
+    padding: 0; /* remove padding */
+    margin-left: 0.5rem; /* add margin */
+    font-size: 1.5rem;
+  }
+  
+  .icon-button .fa-edit {
+    color: #6c757d; /* set color for edit icon */
+  }
+  
+  .icon-button .fa-trash {
+    color: #dc3545; /* set color for delete icon */
+  }
+  
+  .pixel-radio {
+    margin: 0 5px 0 0;
+  }
+  
+  /* Optional: Add hover effect for icons */
+  .icon-button:hover .fa-edit,
+  .icon-button:hover .fa-trash {
+    opacity: 0.7; /* change opacity on hover */
+  }
+  .carousel-control-prev-icon,
+.carousel-control-next-icon {
+    background-color: rgba(0, 0, 0, 0.5); /* Adjust the color as needed */
+}
+.badge-success {
+  background-color: #28a745;
+  color: white;
+  padding: 5px;
+  border-radius: 5px;
+  font-size: 0.9em;
+}
+
+.badge-danger {
+  background-color: #dc3545;
+  color: white;
+  padding: 5px;
+  border-radius: 5px;
+  font-size: 0.9em;
+}
+.in-stock {
+  color: green;
+}
+
+.out-of-stock {
+  color: red;
+}
+
+.image-container {
+  position: relative;
+  max-width: 100%; /* Ensures the image does not overflow */
+}
+
+#main-image {
+  display: block;
+  width: 100%;
+}
+.zoomContainer {
+  /* Ensure the zoom container is correctly positioned */
+  position: absolute;
+  z-index: 1000; /* Ensure it appears above the image */
+}
+
+
