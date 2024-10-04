@@ -45,13 +45,20 @@ const orderSchema = new mongoose.Schema({
          },
         status: {
             type: String,
-            enum: ['pending', 'confirmed', 'shipped', 'delivered', 'canceled'],
+            enum: ['pending', 'confirmed', 'shipped', 'delivered','returned', 'canceled'],
             default: 'pending'
         },
+        offerPercentage: {
+             type: Number 
+            }, // Add this field to store the offer percentage
+        offerAmount: {
+             type: Number 
+            }, 
        is_cancel:{
             type:Boolean,
             default:false
-        }
+        },
+        returnReason: String
     }],
     subtotal: {
         type: Number,
@@ -60,7 +67,7 @@ const orderSchema = new mongoose.Schema({
     shipping: {
         type: Number,
         required: true,
-        default: 50 // Assuming a flat rate for simplicity
+        default: 50 
     },
     total: {
         type: Number,
@@ -68,14 +75,21 @@ const orderSchema = new mongoose.Schema({
     },
     paymentMethod: {
         type: String,
-        enum: ['cash-on-delivery', 'paypal', 'check'],
+        enum: ['cash-on-delivery', 'razorpay','wallet'],
         required: true
     },
-    // status: {
-    //     type: String,
-    //     enum: ['pending', 'confirmed', 'shipped', 'delivered', 'canceled'],
-    //     default: 'pending'
-    // },
+    coupon: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Coupon'
+    },
+    couponDiscount: { // New field for storing the total coupon discount
+        type: Number,
+        default: 0
+    },
+    couponApplied: {
+        type: Boolean,
+        default: false
+    },
     createdAt: {
         type: Date,
         default: Date.now

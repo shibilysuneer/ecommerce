@@ -109,13 +109,23 @@
                                     
                                     <div class="wg-box mb-20 gap10">
                                         <div class="body-title">Payment Method</div>
-                                        <div class="body-text"><%= order.paymentMethod === 'cash-on-delivery' ? 'Pay on Delivery (Cash/Card)' : order.paymentMethod %></div>
+                                        <div class="body-text"><%= order.paymentMethod %></div>
                                     </div>
-                                    <div class="wg-box gap10">
+                                    <div class="wg-box mb-20 gap10">
+                                        <div class="body-title">Status</div>
+                                        <div class="body-text"><%= item.status %></div>
+                                    </div>
+                                    <% if (item.status === 'returned' && item.returnReason) { %>
+                                        <div class="wg-box mb-20 gap10">
+                                            <div class="body-title">Return Reason</div>
+                                            <div class="body-text"><%= item.returnReason %></div>
+                                        </div>
+                                        <% } %>
+                                    <!-- <div class="wg-box gap10">
                                         <div class="body-title">Expected Date Of Delivery</div>
                                         <div class="body-title-2 tf-color-2"><%= order.createdAt.toLocaleDateString() %></div>
                                         <a class="tf-button style-1 w-full" href="oder-tracking.html"><i class="icon-truck"></i>Track order</a>
-                                    </div>
+                                    </div> -->
                                 </div>
                             </div>
                             <!-- /order-detail -->

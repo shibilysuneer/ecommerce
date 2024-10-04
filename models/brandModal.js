@@ -12,16 +12,16 @@ const brandSchema =new mongoose.Schema({
     // is_blocked:{
     //     type:Boolean
      },
-    stock:{
-        type:Number,
-     required:true
+    // stock:{
+    //     type:Number,
+    //  required:true
 
-    },
-    sale:{
-        type:Number,
-     required:true
+    // },
+    // sale:{
+    //     type:Number,
+    //  required:true
 
-    }
+    // }
     
 })
 

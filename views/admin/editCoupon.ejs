@@ -1,0 +1,138 @@
+<%- include('../layouts/admin/header.ejs') %>
+
+<!-- main-content -->
+<div class="main-content">
+    <!-- main-content-wrap -->
+    <div class="main-content-inner">
+        <!-- main-content-wrap -->
+        <div class="main-content-wrap">
+            <div class="flex items-center flex-wrap justify-between gap20 mb-27">
+                <h3>Edit Coupon</h3>
+                <ul class="breadcrumbs flex items-center flex-wrap justify-start gap10">
+                    <li>
+                        <a href="index.html"><div class="text-tiny">Dashboard</div></a>
+                    </li>
+                    <li>
+                        <i class="icon-chevron-right"></i>
+                    </li>
+                    <li>
+                        <a href="#"><div class="text-tiny">Coupon</div></a>
+                    </li>
+                    <li>
+                        <i class="icon-chevron-right"></i>
+                    </li>
+                    <li>
+                        <div class="text-tiny">Edit Coupon</div>
+                    </li>
+                </ul>
+            </div>
+            <!-- new-coupon -->
+            <div class="wg-box">
+                <form action="/admin/editcoupon/<%= coupon._id %>" method="post" class="form-new-coupon form-style-1" id="editCouponForm">
+                    <fieldset class="name">
+                        <div class="body-title">Coupon Name <span class="tf-color-1">*</span></div>
+                        <input class="flex-grow" type="text" placeholder="Enter coupon name" name="couponCode" tabindex="0" value="<%= coupon.couponCode %>" >
+                        <div class="error-message"></div>
+                    </fieldset>
+                    <fieldset>
+                        <div class="body-title">Discount (%) <span class="tf-color-1">*</span></div>
+                        <input class="flex-grow" type="number" placeholder="Enter discount percentage" name="discount" min="0" max="100"  value="<%= coupon.discount %>" >
+                        <div class="error-message"></div>
+                    </fieldset>
+                    <fieldset>
+                        <div class="body-title">Valid From <span class="tf-color-1">*</span></div>
+                        <input class="flex-grow" type="date" name="validFrom" tabindex="0" value="<%= coupon.validFrom.toISOString().split('T')[0] %>" >
+                        <div class="error-message"></div>
+                    </fieldset>
+                    <fieldset>
+                        <div class="body-title">Expiry Date <span class="tf-color-1">*</span></div>
+                        <input class="flex-grow" type="date" name="expiryDate" tabindex="0" value="<%= coupon.expiryDate.toISOString().split('T')[0] %>" >
+                        <div class="error-message"></div>
+                    </fieldset>
+                    <!-- <fieldset>
+                        <div class="body-title">Limit <span class="tf-color-1">*</span></div>
+                        <input class="flex-grow" type="number" placeholder="Enter usage limit" name="limit" min="0"  value="<%= coupon.Limit %>" >
+                    </fieldset>
+                    <fieldset class="name"></fieldset>
+                        <div class="body-title">Times Used</div>
+                        <input class="flex-grow" type="number" name="timesUsed" value="<%= coupon.timesUsed %>" min="0" readonly>
+                    </fieldset> -->
+                    <fieldset class="name">
+                        <div class="body-title">Status</div>
+                        <select class="flex-grow" name="isActive" required>
+                            <option value="true" <%= coupon.isActive ? 'selected' : '' %>>Active</option>
+                            <option value="false" <%= !coupon.isActive ? 'selected' : '' %>>Inactive</option>
+                        </select>
+                        <div class="error-message"></div>
+                    </fieldset>
+                    <div class="bot">
+                        <div></div>
+                        <button class="tf-button w208" type="submit">Update Coupon</button>
+                    </div>
+                </form>
+            </div>
+            <!-- /new-coupon -->
+        </div>
+        <!-- /main-content-wrap -->
+    </div>
+    <!-- /main-content-wrap -->
+
+    <%- include('../layouts/admin/footer.ejs') %>
+</div>
+<!-- /main-content -->
+<script>
+    document.getElementById('editCouponForm').addEventListener('submit', function(event) {
+        // Clear all previous error messages
+        const errorMessages = document.querySelectorAll('.error-message');
+        errorMessages.forEach(el => el.textContent = '');
+    
+        // Collect form values
+        const couponName = document.querySelector('input[name="couponCode"]').value.trim();
+        const discount = document.querySelector('input[name="discount"]').value.trim();
+        const validFrom = document.querySelector('input[name="validFrom"]').value;
+        const expiryDate = document.querySelector('input[name="expiryDate"]').value;
+    
+        let isValid = true;
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+    
+        // Validate Coupon Name
+        if (!couponName) {
+            isValid = false;
+            document.querySelector('input[name="couponCode"]').nextElementSibling.textContent = "Coupon name is required.";
+        }
+    
+        // Validate Discount
+        if (!discount || discount < 0 || discount > 100) {
+            isValid = false;
+            document.querySelector('input[name="discount"]').nextElementSibling.textContent = "Discount must be between 0 and 100.";
+        }
+    
+        // Validate Valid From date
+        if (!validFrom) {
+            isValid = false;
+            document.querySelector('input[name="validFrom"]').nextElementSibling.textContent = "Valid From date is required.";
+        }else if (new Date(validFrom) < today) {
+            isValid = false;
+            document.querySelector('input[name="validFrom"]').nextElementSibling.textContent = "Valid From date cannot be before today.";
+        }
+    
+        // Validate Expiry Date
+        if (!expiryDate) {
+            isValid = false;
+            document.querySelector('input[name="expiryDate"]').nextElementSibling.textContent = "Expiry date is required.";
+        }else if (new Date(expiryDate) < today) {
+            isValid = false;
+            document.querySelector('input[name="expiryDate"]').nextElementSibling.textContent = "Expiry date cannot be before today.";
+        } else if (new Date(expiryDate) <= new Date(validFrom)) {
+            isValid = false;
+            document.querySelector('input[name="expiryDate"]').nextElementSibling.textContent = "Expiry date must be after Valid From date.";
+        }
+    
+        // Prevent form submission if invalid
+        if (!isValid) {
+            event.preventDefault();
+        }
+    });
+    </script>
+    

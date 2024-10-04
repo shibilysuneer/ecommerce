@@ -23,72 +23,108 @@
 		<div class="container">
 			<div class="row s_product_inner">
 				<div class="col-lg-6">
-					<div id="glide">
-					  <div class="glide__track" data-glide-el="track">
-						<ul class="glide__slides">
-					<!-- <div class="carousel-inner"> -->
-						<% if (product.images && product.images.length>0 ) { %>
-							<%product.images.slice(0, 3).forEach((image,index) =>{%>
-								<!-- <div class="carousel-item <%= index === 0 ? 'active' : '' %>"> -->
-						<!-- <div class="single-prd-item"> -->
-							<li class="glide__slide">
-							 <div class="image-container">	
-							<img id="main-image" src="/admin/images/<%= image%>" alt="<%= product.productName %>">
-						     </div>
-						   </li>
-						<!-- </div> -->
-						<% })%>
-						<% } %>
-					   </ul>
-					  </div>
-					  <div class="glide__arrows" data-glide-el="controls">
-						<button class="glide__arrow glide__arrow--left" data-glide-dir="<">←</button>
-						<button class="glide__arrow glide__arrow--right" data-glide-dir=">">→</button>
+
+
+
+					<div class="s_Product_carousel">
+						<!-- Display the first image -->
+						<div class="main-image" id="mainImageContainer">
+							<img id="mainImage" class="img-fluid" src="/admin/images/<%= product.images[0] %>"
+								data-zoom-image="/admin/images/<%= product.images[0] %>" alt="Main Product Image">
+						</div>
+
+						<!-- Display all images (including the first one) underneath as thumbnails -->
+						<div class="thumbnail-gallery">
+							<% product.images.forEach(function(image) { %>
+								<div class="thumbnail-item" onclick="changeImage('/admin/images/<%= image %>')">
+									<img class="img-thumbnail" src="/admin/images/<%= image %>" alt="Product Thumbnail">
+								</div>
+								<% }); %>
+						</div>
 					</div>
-			  </div>
-			 
-			</div>
+
+
+
+
+
+
+				</div>
 				<div class="col-lg-5 offset-lg-1">
 					<form id="addToCartForm" action="/cart" method="POST">
 						<input type="hidden" name="productId" value="<%= product._id %>">
 
-					<div class="s_product_text">
-						<h3><%= product.productName %></h3>
-						<h2><%= product.productPrice %></h2>
-						<ul class="list">
-							<!-- <li><a class="active" href="#"><span>Category</span> : <%= product.productCategory.categoryName  %></a></li> -->
-							<li><a href="#"><span>Availability</span> :
-								<!-- <span style="color: <%= product.stocks > 0 ? 'green' : 'red' %>;"> -->
-									<span class="<%= product.stocks > 0 ? 'in-stock' : 'out-of-stock' %>">
-										<%= product.stocks > 0 ? 'In Stock' : 'Out of Stock' %>
-									</span></a></li>
-									<% if (product.stocks > 0 && product.stocks < 10) { %>
-										<li><a href="#" style="color: red;"> Only <%= product.stocks %> left in stock</a></li>
-									<% } %>
-							<!-- <li><a href="#"><span>Stock Left</span> : <%= product.stocks %></a></li> -->
-						</ul>
-						<p>Mill Oil is an innovative oil filled radiator with the most modern technology. If you are looking for
-							something that can make your interior look awesome, and at the same time give you the pleasant warm feeling
-							during the winter.</p>
-							<!-- <p><%= product.productDescription %></p> -->
+						<div class="s_product_text">
+							<h3>
+								<%= product.productName %>
+							</h3>
 
-						<div class="product_count">
-							<label for="qty">Quantity:</label>
-							<input type="number" name="qty" id="sst-<%= product._id %>" maxlength="12" value="<%= product.stocks > 0 ? 1 : 0 %>" title="Quantity:" class="input-text qty" min="1" max="10" <%= product.stocks === 0 ? 'disabled' : '' %>>
-							<!-- <button onclick="var result = document.getElementById('sst'); var sst = result.value; if( !isNaN( sst )) result.value++;return false;"
+							
+									<% if (product.stocks > 0) { %>
+										<% if (bestOffer) { %> 
+										  <h2>
+											<span class="old-price">₹<%= product.productPrice %></span>
+											₹<%= finalPrice %>
+											<% if (bestOffer === productOffer) { %>
+											  <small class="discount-text">(<%= bestOffer.offerPercentage %>% OFF)</small>
+											<% } else if (bestOffer === categoryoffer) { %>
+											  <small class="discount-text">(<%= bestOffer.offerPercentage %>% OFF)</small>
+											<% } %>
+										  </h2>
+										<% } else { %>
+										  <h2 class="product-price">₹<%= product.productPrice %></h2>
+										<% } %>
+									  <% } else { %>
+										<h2 class="product-price">₹<%= product.productPrice %></h2>
+									  <% } %>
+									  
+
+										<ul class="list">
+											<!-- <li><a class="active" href="#"><span>Category</span> : <%= product.productCategory.categoryName  %></a></li> -->
+											<li><a href="#"><span>Availability</span> :
+													<!-- <span style="color: <%= product.stocks > 0 ? 'green' : 'red' %>;"> -->
+													<span
+														class="<%= product.stocks > 0 ? 'in-stock' : 'out-of-stock' %>">
+														<%= product.stocks> 0 ? 'In Stock' : 'Out of Stock' %>
+													</span></a></li>
+											<% if (product.stocks> 0 && product.stocks < 10) { %>
+													<li><a href="#" style="color: red;"> Only <%= product.stocks %> left
+																in stock</a></li>
+													<% } %>
+														<!-- <li><a href="#"><span>Stock Left</span> : <%= product.stocks %></a></li> -->
+										</ul>
+										<p>Mill Oil is an innovative oil filled radiator with the most modern
+											technology. If you are looking for
+											something that can make your interior look awesome, and at the same time
+											give you the pleasant warm feeling
+											during the winter.</p>
+										<!-- <p><%= product.productDescription %></p> -->
+
+										<div class="product_count">
+											<label for="qty">Quantity:</label>
+											<input type="number" name="qty" id="sst-<%= product._id %>" maxlength="12"
+												value="<%= product.stocks > 0 ? 1 : 0 %>" title="Quantity:"
+												class="input-text qty" min="1" max="10" <%=product.stocks===0
+												? 'disabled' : '' %>>
+											<!-- <button onclick="var result = document.getElementById('sst'); var sst = result.value; if( !isNaN( sst )) result.value++;return false;"
 							 class="increase items-count" type="button"><i class="lnr lnr-chevron-up"></i></button>
 							<button onclick="var result = document.getElementById('sst'); var sst = result.value; if( !isNaN( sst ) && sst > 0 ) result.value--;return false;"
 							 class="reduced items-count" type="button"><i class="lnr lnr-chevron-down"></i></button> -->
-							 <button onclick="increaseQty('<%= product._id %>', '<%= product.stocks %>')" class="increase items-count" type="button"><i class="lnr lnr-chevron-up"></i></button>
-							 <button onclick="decreaseQty('<%= product._id %>');" class="reduced items-count" type="button"><i class="lnr lnr-chevron-down"></i></button>
+											<button onclick="increaseQty('<%= product._id %>', '<%= product.stocks %>')"
+												class="increase items-count" type="button"><i
+													class="lnr lnr-chevron-up"></i></button>
+											<button onclick="decreaseQty('<%= product._id %>');"
+												class="reduced items-count" type="button"><i
+													class="lnr lnr-chevron-down"></i></button>
+										</div>
+										<div id="errorMessage" style="color: red;"></div>
+										<div class="card_area d-flex align-items-center">
+											<button class="primary-btn" type="submit" <%=product.stocks===0 ? 'disabled'
+												: '' %>>Add to Cart</button>
+											<!-- <a class="primary-btn" href="/cart">Add to Cart</a> -->
+											<a class="icon_btn" href="#"><i class="lnr lnr lnr-diamond"></i></a>
+											<a class="icon_btn" href="#"><i class="lnr lnr lnr-heart"></i></a>
+										</div>
 						</div>
-						<div class="card_area d-flex align-items-center">
-							<button class="primary-btn" type="submit" <%= product.stocks === 0 ? 'disabled' : '' %>>Add to Cart</button>
-							<!-- <a class="primary-btn" href="/cart">Add to Cart</a> -->
-							<a class="icon_btn" href="#"><i class="lnr lnr lnr-diamond"></i></a>
-							<a class="icon_btn" href="#"><i class="lnr lnr lnr-heart"></i></a>
-						</div>
-					</div>
 				</div>
 			</div>
 		</div>
@@ -100,37 +136,51 @@
 		<div class="container">
 			<ul class="nav nav-tabs" id="myTab" role="tablist">
 				<li class="nav-item">
-					<a class="nav-link" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Description</a>
+					<a class="nav-link" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home"
+						aria-selected="true">Description</a>
 				</li>
 				<li class="nav-item">
-					<a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile"
-					 aria-selected="false">Specification</a>
+					<a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab"
+						aria-controls="profile" aria-selected="false">Specification</a>
 				</li>
 				<li class="nav-item">
-					<a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact"
-					 aria-selected="false">Comments</a>
+					<a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab"
+						aria-controls="contact" aria-selected="false">Comments</a>
 				</li>
 				<li class="nav-item">
-					<a class="nav-link active" id="review-tab" data-toggle="tab" href="#review" role="tab" aria-controls="review"
-					 aria-selected="false">Reviews</a>
+					<a class="nav-link active" id="review-tab" data-toggle="tab" href="#review" role="tab"
+						aria-controls="review" aria-selected="false">Reviews</a>
 				</li>
 			</ul>
 			<div class="tab-content" id="myTabContent">
 				<div class="tab-pane fade" id="home" role="tabpanel" aria-labelledby="home-tab">
-					<p>Beryl Cook is one of Britain’s most talented and amusing artists .Beryl’s pictures feature women of all shapes
-						and sizes enjoying themselves .Born between the two world wars, Beryl Cook eventually left Kendrick School in
-						Reading at the age of 15, where she went to secretarial school and then into an insurance office. After moving to
-						London and then Hampton, she eventually married her next door neighbour from Reading, John Cook. He was an
-						officer in the Merchant Navy and after he left the sea in 1956, they bought a pub for a year before John took a
-						job in Southern Rhodesia with a motor company. Beryl bought their young son a box of watercolours, and when
-						showing him how to use it, she decided that she herself quite enjoyed painting. John subsequently bought her a
-						child’s painting set for her birthday and it was with this that she produced her first significant work, a
-						half-length portrait of a dark-skinned lady with a vacant expression and large drooping breasts. It was aptly
+					<p>Beryl Cook is one of Britain’s most talented and amusing artists .Beryl’s pictures feature women
+						of all shapes
+						and sizes enjoying themselves .Born between the two world wars, Beryl Cook eventually left
+						Kendrick School in
+						Reading at the age of 15, where she went to secretarial school and then into an insurance
+						office. After moving to
+						London and then Hampton, she eventually married her next door neighbour from Reading, John Cook.
+						He was an
+						officer in the Merchant Navy and after he left the sea in 1956, they bought a pub for a year
+						before John took a
+						job in Southern Rhodesia with a motor company. Beryl bought their young son a box of
+						watercolours, and when
+						showing him how to use it, she decided that she herself quite enjoyed painting. John
+						subsequently bought her a
+						child’s painting set for her birthday and it was with this that she produced her first
+						significant work, a
+						half-length portrait of a dark-skinned lady with a vacant expression and large drooping breasts.
+						It was aptly
 						named ‘Hangover’ by Beryl’s husband and</p>
-					<p>It is often frustrating to attempt to plan meals that are designed for one. Despite this fact, we are seeing
-						more and more recipe books and Internet websites that are dedicated to the act of cooking for one. Divorce and
-						the death of spouses or grown children leaving for college are all reasons that someone accustomed to cooking for
-						more than one would suddenly need to learn how to adjust all the cooking practices utilized before into a
+					<p>It is often frustrating to attempt to plan meals that are designed for one. Despite this fact, we
+						are seeing
+						more and more recipe books and Internet websites that are dedicated to the act of cooking for
+						one. Divorce and
+						the death of spouses or grown children leaving for college are all reasons that someone
+						accustomed to cooking for
+						more than one would suddenly need to learn how to adjust all the cooking practices utilized
+						before into a
 						streamlined plan of cooking that is more efficient for one person creating less</p>
 				</div>
 				<div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
@@ -220,8 +270,10 @@
 											<a class="reply_btn" href="#">Reply</a>
 										</div>
 									</div>
-									<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et
-										dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
+									<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor
+										incididunt ut labore et
+										dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
+										laboris nisi ut aliquip ex ea
 										commodo</p>
 								</div>
 								<div class="review_item reply">
@@ -235,8 +287,10 @@
 											<a class="reply_btn" href="#">Reply</a>
 										</div>
 									</div>
-									<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et
-										dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
+									<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor
+										incididunt ut labore et
+										dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
+										laboris nisi ut aliquip ex ea
 										commodo</p>
 								</div>
 								<div class="review_item">
@@ -250,8 +304,10 @@
 											<a class="reply_btn" href="#">Reply</a>
 										</div>
 									</div>
-									<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et
-										dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
+									<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor
+										incididunt ut labore et
+										dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
+										laboris nisi ut aliquip ex ea
 										commodo</p>
 								</div>
 							</div>
@@ -259,25 +315,30 @@
 						<div class="col-lg-6">
 							<div class="review_box">
 								<h4>Post a comment</h4>
-								<form class="row contact_form" action="contact_process.php" method="post" id="contactForm" novalidate="novalidate">
+								<form class="row contact_form" action="contact_process.php" method="post"
+									id="contactForm" novalidate="novalidate">
 									<div class="col-md-12">
 										<div class="form-group">
-											<input type="text" class="form-control" id="name" name="name" placeholder="Your Full name">
+											<input type="text" class="form-control" id="name" name="name"
+												placeholder="Your Full name">
 										</div>
 									</div>
 									<div class="col-md-12">
 										<div class="form-group">
-											<input type="email" class="form-control" id="email" name="email" placeholder="Email Address">
+											<input type="email" class="form-control" id="email" name="email"
+												placeholder="Email Address">
 										</div>
 									</div>
 									<div class="col-md-12">
 										<div class="form-group">
-											<input type="text" class="form-control" id="number" name="number" placeholder="Phone Number">
+											<input type="text" class="form-control" id="number" name="number"
+												placeholder="Phone Number">
 										</div>
 									</div>
 									<div class="col-md-12">
 										<div class="form-group">
-											<textarea class="form-control" name="message" id="message" rows="1" placeholder="Message"></textarea>
+											<textarea class="form-control" name="message" id="message" rows="1"
+												placeholder="Message"></textarea>
 										</div>
 									</div>
 									<div class="col-md-12 text-right">
@@ -303,16 +364,21 @@
 									<div class="rating_list">
 										<h3>Based on 3 Reviews</h3>
 										<ul class="list">
-											<li><a href="#">5 Star <i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i
-													 class="fa fa-star"></i><i class="fa fa-star"></i> 01</a></li>
-											<li><a href="#">4 Star <i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i
-													 class="fa fa-star"></i><i class="fa fa-star"></i> 01</a></li>
-											<li><a href="#">3 Star <i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i
-													 class="fa fa-star"></i><i class="fa fa-star"></i> 01</a></li>
-											<li><a href="#">2 Star <i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i
-													 class="fa fa-star"></i><i class="fa fa-star"></i> 01</a></li>
-											<li><a href="#">1 Star <i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i
-													 class="fa fa-star"></i><i class="fa fa-star"></i> 01</a></li>
+											<li><a href="#">5 Star <i class="fa fa-star"></i><i
+														class="fa fa-star"></i><i class="fa fa-star"></i><i
+														class="fa fa-star"></i><i class="fa fa-star"></i> 01</a></li>
+											<li><a href="#">4 Star <i class="fa fa-star"></i><i
+														class="fa fa-star"></i><i class="fa fa-star"></i><i
+														class="fa fa-star"></i><i class="fa fa-star"></i> 01</a></li>
+											<li><a href="#">3 Star <i class="fa fa-star"></i><i
+														class="fa fa-star"></i><i class="fa fa-star"></i><i
+														class="fa fa-star"></i><i class="fa fa-star"></i> 01</a></li>
+											<li><a href="#">2 Star <i class="fa fa-star"></i><i
+														class="fa fa-star"></i><i class="fa fa-star"></i><i
+														class="fa fa-star"></i><i class="fa fa-star"></i> 01</a></li>
+											<li><a href="#">1 Star <i class="fa fa-star"></i><i
+														class="fa fa-star"></i><i class="fa fa-star"></i><i
+														class="fa fa-star"></i><i class="fa fa-star"></i> 01</a></li>
 										</ul>
 									</div>
 								</div>
@@ -332,8 +398,10 @@
 											<i class="fa fa-star"></i>
 										</div>
 									</div>
-									<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et
-										dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
+									<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor
+										incididunt ut labore et
+										dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
+										laboris nisi ut aliquip ex ea
 										commodo</p>
 								</div>
 								<div class="review_item">
@@ -350,8 +418,10 @@
 											<i class="fa fa-star"></i>
 										</div>
 									</div>
-									<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et
-										dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
+									<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor
+										incididunt ut labore et
+										dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
+										laboris nisi ut aliquip ex ea
 										commodo</p>
 								</div>
 								<div class="review_item">
@@ -368,8 +438,10 @@
 											<i class="fa fa-star"></i>
 										</div>
 									</div>
-									<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et
-										dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
+									<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor
+										incididunt ut labore et
+										dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
+										laboris nisi ut aliquip ex ea
 										commodo</p>
 								</div>
 							</div>
@@ -386,25 +458,34 @@
 									<li><a href="#"><i class="fa fa-star"></i></a></li>
 								</ul>
 								<p>Outstanding</p>
-								<form class="row contact_form" action="contact_process.php" method="post" id="contactForm" novalidate="novalidate">
+								<form class="row contact_form" action="contact_process.php" method="post"
+									id="contactForm" novalidate="novalidate">
 									<div class="col-md-12">
 										<div class="form-group">
-											<input type="text" class="form-control" id="name" name="name" placeholder="Your Full name" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Your Full name'">
+											<input type="text" class="form-control" id="name" name="name"
+												placeholder="Your Full name" onfocus="this.placeholder = ''"
+												onblur="this.placeholder = 'Your Full name'">
 										</div>
 									</div>
 									<div class="col-md-12">
 										<div class="form-group">
-											<input type="email" class="form-control" id="email" name="email" placeholder="Email Address" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Email Address'">
+											<input type="email" class="form-control" id="email" name="email"
+												placeholder="Email Address" onfocus="this.placeholder = ''"
+												onblur="this.placeholder = 'Email Address'">
 										</div>
 									</div>
 									<div class="col-md-12">
 										<div class="form-group">
-											<input type="text" class="form-control" id="number" name="number" placeholder="Phone Number" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Phone Number'">
+											<input type="text" class="form-control" id="number" name="number"
+												placeholder="Phone Number" onfocus="this.placeholder = ''"
+												onblur="this.placeholder = 'Phone Number'">
 										</div>
 									</div>
 									<div class="col-md-12">
 										<div class="form-group">
-											<textarea class="form-control" name="message" id="message" rows="1" placeholder="Review" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Review'"></textarea></textarea>
+											<textarea class="form-control" name="message" id="message" rows="1"
+												placeholder="Review" onfocus="this.placeholder = ''"
+												onblur="this.placeholder = 'Review'"></textarea></textarea>
 										</div>
 									</div>
 									<div class="col-md-12 text-right">
@@ -427,7 +508,8 @@
 				<div class="col-lg-6 text-center">
 					<div class="section-title">
 						<h1>Deals of the Week</h1>
-						<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore
+						<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut
+							labore et dolore
 							magna aliqua.</p>
 					</div>
 				</div>
@@ -556,107 +638,86 @@
 		</div>
 	</section>
 	<!-- End related-product Area -->
-    <%- include('../layouts/user/footer.ejs') %>
-	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/elevatezoom/3.0.8/jquery.elevatezoom.min.js"></script>
-	
-
-	<script>
-		function increaseQty(productId, availableStock) {
-    var result = document.getElementById(`sst-${productId}`);
-    var sst = parseInt(result.value);
-
-    if (!isNaN(sst) && sst <  Math.min(10, availableStock)) { 
-        result.value = sst + 1;
-    }else if (sst >= availableStock) {
-		Swal.fire({
-            icon: 'warning',
-            title: 'Stock Limit',
-            text: `Only ${availableStock} items left in stock.`,
-            showConfirmButton: true,
-        });
-    } else if (sst >= 10) {
-		Swal.fire({
-            icon: 'warning',
-            title: 'Limit Reached',
-            text: 'Maximum 10 products can be purchased.',
-            showConfirmButton: true,
-        });
-    }
-}
-
-function decreaseQty(productId) {
-    var result = document.getElementById(`sst-${productId}`);
-    var sst = parseInt(result.value);
-
-    if (!isNaN(sst) && sst > 1) { 
-        result.value = sst - 1;
-    }else if (sst <= 1) {
-        Swal.fire({
-            icon: 'warning',
-            title: 'Minimum Quantity Reached',
-            text: 'You must purchase at least 1 product.',
-            showConfirmButton: true,
-        });
-    }
-}
+	<%- include('../layouts/user/footer.ejs') %>
+		<!-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/elevatezoom/3.0.8/jquery.elevatezoom.min.js"></script> -->
+		<!-- // zoom -->
+		<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/elevatezoom/3.0.8/jquery.elevatezoom.min.js"></script>
 
 
-        // slide
-document.addEventListener('DOMContentLoaded', function () {
-	var glide =  new Glide('#glide', {
-            type: 'carousel',
-            startAt: 0,
-            perView: 1
-        }).mount();
-    
+		<script>
+			function increaseQty(productId, availableStock) {
+				var result = document.getElementById(`sst-${productId}`);
+				var sst = parseInt(result.value);
+
+				if (!isNaN(sst) && sst < Math.min(10, availableStock)) {
+					result.value = sst + 1;
+				} else if (sst >= availableStock) {
+					Swal.fire({
+						icon: 'warning',
+						title: 'Stock Limit',
+						text: `Only ${availableStock} items left in stock.`,
+						showConfirmButton: true,
+					});
+				} else if (sst >= 10) {
+					Swal.fire({
+						icon: 'warning',
+						title: 'Limit Reached',
+						text: 'Maximum 10 products can be purchased.',
+						showConfirmButton: true,
+					});
+				}
+			}
+
+			function decreaseQty(productId) {
+				var result = document.getElementById(`sst-${productId}`);
+				var sst = parseInt(result.value);
+
+				if (!isNaN(sst) && sst > 1) {
+					result.value = sst - 1;
+				} else if (sst <= 1) {
+					Swal.fire({
+						icon: 'warning',
+						title: 'Minimum Quantity Reached',
+						text: 'You must purchase at least 1 product.',
+						showConfirmButton: true,
+					});
+				}
+			}
 
 
-     // zoom
-	 function initializeZoom() {
-        console.log("Initializing ElevateZoom");
-        $('#main-image').elevateZoom({
-            zoomType: "lens",
-            lensShape: "round",
-            lensSize: 200,
-            scrollZoom: true,
-            easing: true,
-            containLensZoom: true
-        });
-    }
 
- // Initialize ElevateZoom after Glide has mounted
- glide.on('mount.after', function() {
-        initializeZoom();
-    });
 
-    // Reinitialize ElevateZoom after Glide slides change
-    glide.on('run.after', function() {
-        console.log("Reinitializing ElevateZoom");
-        // Destroy previous zoom instance
-        $.removeData($('#main-image'), 'elevateZoom');
-        $('.zoomContainer').remove();
+			$(document).ready(function () {
+				// Function to initialize elevateZoom
+				function initializeZoom() {
+					$('#mainImage').elevateZoom({
+						zoomType: "window",           // Change to "window" zoom style for a separate zoom window
+						zoomWindowWidth: 400,         // Zoom window width (smaller size gives the illusion of less zoom)
+						zoomWindowHeight: 400,        // Zoom window height
+						lensShape: "square",          // Lens shape
+						lensSize: 200,                // Size of the zoom lens
+						borderSize: 1,                // Border size for the lens
+						borderColour: "#000",         // Lens border color
+						zoomWindowFadeIn: 500,        // Zoom window fade-in effect
+						zoomWindowFadeOut: 500
+					});
+				}
 
-        // Reinitialize ElevateZoom with the new image
-        initializeZoom();
-   
-});
- // Handle image loading for ElevateZoom initialization
- $('#main-image').on('load', function() {
-        initializeZoom();
-    });
-	 // Ensure zoom initialization for dynamically added images
-	 $(document).on('click', '.glide__slide img', function() {
-        var newImage = $(this).attr('src');
-        var ez = $('#main-image').data('elevateZoom');
-        if (ez) {
-            console.log("Switching zoom image");
-            ez.swaptheimage(newImage, newImage);
-        } else {
-            console.log("No ElevateZoom instance found");
-        }
-    });
-});
+				// Initialize elevateZoom on the main image initially
+				initializeZoom();
 
-	</script>
-	
+				// Define the changeImage function
+				window.changeImage = function (src) {
+
+					$('#mainImage').attr('src', src); // Change the main image
+					$('#mainImage').attr('data-zoom-image', src);
+					
+
+					// Reinitialize elevateZoom with the new image
+					initializeZoom();
+				};
+			});
+
+		</script>

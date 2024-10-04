@@ -32,11 +32,11 @@
                 <div class="login_form_inner">
                     <h3>Log in to enter</h3>
                     <form class="row login_form" action="/otp" method="post" id="otpForm" onsubmit="return validateOTPForm()">
-                        <div class="col-md-12 form-group">
+                        <!-- <div class="col-md-12 form-group">
                             <input type="email" class="form-control" id="emai" name="email" placeholder="Email" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Email'"required>
-                        </div>
+                        </div> -->
                         <div class="col-md-12 form-group">
-                            <input type="text" class="form-control" id="otp" name="otp" placeholder="otp" onfocus="this.placeholder = ''" onblur="this.placeholder = 'otp'"required maxlength="6" pattern="\d*">
+                            <input type="text" class="form-control" id="otp" name="otp" placeholder="otp" onfocus="this.placeholder = ''" onblur="this.placeholder = 'otp'"required maxlength="6" pattern="\d{6}">
                         </div>
 
                        
@@ -87,7 +87,37 @@ startTimer();
 
 
         function validateOTPForm(){
-            const otpInput = document.getElementById('otp').value;
+            const otpInput = document.getElementById('otp').value.trim();
+
+        
+            if(!otpInput){
+                Swal.fire({
+                    icon:'error',
+                    title:'OTP Required',
+                    text:"Please enter the OTP"
+                })
+                return false;
+            }
+            if(otpInput.length !==6){
+                Swal.fire({
+                    icon:'error',
+                    title:'Invalid OTP Length',
+                    text:'OTP mustbe 6 digit'
+                })
+                return false;
+            }
+            if(!/^\d{6}$/.test(otpInput)){
+                Swal.fire({
+                    icon:'error',
+                    title:'Invalid OTP Format',
+                    text:'OTP must contain only digits'
+                })
+                return false;
+            }
+
+
+
+
             $.ajax({
                 type:'post',
                 url:'otp',

@@ -74,7 +74,7 @@
                                         </ul>
                                         <ul class="flex flex-column">
                                             <% orders.forEach(order => { %>
-                                                <% order.cartItems.forEach(item => { %>
+                                                <% order.cartItems.forEach(item => { %> 
                                                     <li class="product-item gap14 ">
                                                 <div class="image no-bg">
                                                     <img src="/admin/images/<%= item.productId.images[0] %>" alt="">
@@ -96,14 +96,15 @@
                                                                     <option value="confirmed" <%= item.status === 'confirmed' ? 'selected' : '' %>>Confirmed</option>
                                                                     <option value="shipped" <%= item.status === 'shipped' ? 'selected' : '' %>>Shipped</option>
                                                                     <option value="delivered" <%= item.status === 'delivered' ? 'selected' : '' %>>Delivered</option>
+                                                                    <option value="returned" <%= item.status === 'returned' ? 'selected' : '' %>>Returned</option>
                                                                     <option value="canceled" <%= item.status === 'canceled' ? 'selected' : '' %>>Canceled</option>
                                                                 </select>
                                                             </form>
                                                         </div>
                                                     </div>
                                                     <div >
-                                                       <form action="/admin/orders/<%= order._id %>/items/<%= item._id %>/cancel" method="post">
-                                                          <button type="submit" class="btn btn-secondary" >
+                                                       <form id="cancelForm-<%= order._id %>-<%= item._id %>" action="/admin/orders/<%= order._id %>/items/<%= item._id %>/cancel" method="post">
+                                                          <button type="button" class="btn btn-secondary" onclick="confirmCancel('<%= order._id %>', '<%= item._id %>')">
                                                              Cancel
                                                           </button>
                                                         </form>
@@ -122,21 +123,31 @@
                                     <div class="flex items-center justify-between flex-wrap gap10">
                                         <div class="text-tiny">Showing 10 entries</div>
                                         <ul class="wg-pagination">
-                                            <li>
-                                                <a href="#"><i class="icon-chevron-left"></i></a>
-                                            </li>
-                                            <li>
-                                                <a href="#">1</a>
-                                            </li>
-                                            <li class="active">
-                                                <a href="#">2</a>
-                                            </li>
-                                            <li>
-                                                <a href="#">3</a>
-                                            </li>
-                                            <li>
-                                                <a href="#"><i class="icon-chevron-right"></i></a>
-                                            </li>
+                                            <% if (currentPage > 1) { %>
+                                                <li>
+                                                    <a href="?page=<%= currentPage - 1 %>"><i class="icon-chevron-left"></i></a>
+                                                </li>
+                                            <% } else { %>
+                                                <li class="disabled">
+                                                    <a href="#"><i class="icon-chevron-left"></i></a>
+                                                </li>
+                                            <% } %>
+                                        
+                                            <% for (let i = 1; i <= totalPages; i++) { %>
+                                                <li class="<%= currentPage === i ? 'active' : '' %>">
+                                                    <a href="?page=<%= i %>"><%= i %></a>
+                                                </li>
+                                            <% } %>
+                                        
+                                            <% if (currentPage < totalPages) { %>
+                                                <li>
+                                                    <a href="?page=<%= currentPage + 1 %>"><i class="icon-chevron-right"></i></a>
+                                                </li>
+                                            <% } else { %>
+                                                <li class="disabled">
+                                                    <a href="#"><i class="icon-chevron-right"></i></a>
+                                                </li>
+                                            <% } %>
                                         </ul>
                                     </div>
                                 </div>
@@ -151,3 +162,20 @@
 
 
 <%- include('../layouts/admin/footer.ejs') %>
+<script>
+    function confirmCancel(orderId, itemId) {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: 'Do you really want to cancel this item?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, cancel it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                document.getElementById(`cancelForm-${orderId}-${itemId}`).submit();
+            }
+        });
+    }
+    </script>

@@ -153,7 +153,7 @@
                 <!-- /main-content-wrap -->
 
  <%- include('../layouts/admin/footer.ejs') %>
- <script src="/node_modules/cropperjs/dist/cropper.min.js"></script>
+ <!-- <script src="/node_modules/cropperjs/dist/cropper.min.js"></script> -->
 
 
 <script>
@@ -343,9 +343,9 @@ function updateFileInput() {
     }
 
     // Images Validation
-    if (images.length > 3 || images.length===0) {
+    if (images.length < 3 || images.length===0) {
         isValid = false;
-        document.getElementById('imagesError').textContent = "Please upload 3 images.";
+        document.getElementById('imagesError').textContent = "Please upload atleast 3 images.";
     }
 
     // If all fields are valid, submit the form

@@ -7,20 +7,21 @@ const categorySchema =new mongoose.Schema({
      },
      image:{
      type:[String]
-    // required:true
-    // },
-    // is_blocked:{
-    //     type:Boolean
+    
     },
     stock:{
         type:Number,
-        required:true
+        // required:true
 
     },
     sale:{
         type:Number,
-        required:true
+        // required:true
 
+    },
+    offerPercentage:{
+        type:Number,
+        default:0
     },
     is_blocked:{
         type:Boolean,

@@ -64,7 +64,8 @@ const showProducts = async(req,res) => {
         const categories = await Category.find();
         const brands = await Brand.find()
         // console.log('Fetched Categories:', categories);
-        res.render('shop', { Products,categories,brands ,currentPage: page,totalPages,limit});
+        res.render('shop', { Products,categories,brands ,currentPage: page,totalPages,limit,selectedCategory: req.query.category || '',  
+            selectedBrand: req.query.brandId || ''   });
     } catch (error) {
         console.log(error.message);
         res.status(500).send('Internal Server Error');
@@ -103,7 +104,9 @@ const sortedLists = async(req,res)=>{
         res.render('shop', { Products: products ,categories:categories,brands:brands,
             currentPage: page,
             totalPages: totalPages,
-            limit: limit});
+            limit: limit,
+            selectedCategory: categoryId,
+            selectedBrand: brandId});
     }
     catch(err){
         console.log(err);       
@@ -112,7 +115,7 @@ const sortedLists = async(req,res)=>{
 const showProductDetails =async(req,res) => {
     try{
        const productId = req.params.id;
-       console.log(`Product ID:-- ${productId}`);
+    //    console.log(`Product ID:-- ${productId}`);
        const product = await Product.findById(productId).populate('productCategory', 'categoryName');
     // console.log('product---',product);
      

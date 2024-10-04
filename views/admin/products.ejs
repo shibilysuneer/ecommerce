@@ -120,8 +120,9 @@
                                             <a href="/admin/editproduct/<%= product._id %>"> <i class="icon-edit-3"></i></a>
                                         </div>
                                        
-                                        <form action="/admin/pblock/<%= product._id %>" method='post'>
-                                            <button type="submit" class="btn btn-secondary"><%= product.is_blocked ? 'Unhide' : 'Hide' %>
+                                        <form id="blockForm-<%= product._id %>" action="/admin/pblock/<%= product._id %>" method='post'>
+                                            <button type="button" class="btn btn-secondary" onclick="confirmBlock('<%= product._id %>', '<%= product.is_blocked %>')">
+                                                <%= product.is_blocked ? 'Unhide' : 'Hide' %>
                                             </button>
 
                                         </form>
@@ -165,3 +166,22 @@
 
 
 <%- include('../layouts/admin/footer.ejs') %>
+<script>
+    function confirmBlock(productId, isBlocked) {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: `Do you really want to ${isBlocked ? 'unhide' : 'hide'} this product?`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, do it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                setTimeout(()=>{
+                    document.getElementById(`blockForm-${productId}`).submit();
+                },500)
+            }
+        });
+    }
+    </script>

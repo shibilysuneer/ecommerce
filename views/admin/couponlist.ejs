@@ -1,0 +1,151 @@
+<%- include('../layouts/admin/header.ejs') %>
+
+<div class="main-content">
+    <!-- main-content-wrap -->
+    <div class="main-content-inner">
+        <!-- main-content-wrap -->
+        <div class="main-content-wrap">
+            <div class="flex items-center flex-wrap justify-between gap20 mb-27">
+                <h3>All Coupons</h3>
+                <ul class="breadcrumbs flex items-center flex-wrap justify-start gap10">
+                    <li>
+                        <a href="index.html"><div class="text-tiny">Dashboard</div></a>
+                    </li>
+                    <li>
+                        <i class="icon-chevron-right"></i>
+                    </li>
+                    <li>
+                        <a href="#"><div class="text-tiny">Coupons</div></a>
+                    </li>
+                    <li>
+                        <i class="icon-chevron-right"></i>
+                    </li>
+                    <li>
+                        <div class="text-tiny">All Coupons</div>
+                    </li>
+                </ul>
+            </div>
+            <!-- all-coupons -->
+            <div class="wg-box">
+                <div class="flex items-center justify-between gap10 flex-wrap">
+                    <div class="wg-filter flex-grow">
+                        <!-- <div class="show">
+                            <div class="text-tiny">Showing</div>
+                            <div class="select">
+                                <select class="">
+                                    <option>10</option>
+                                    <option>20</option>
+                                    <option>30</option>
+                                </select>
+                            </div>
+                            <div class="text-tiny">entries</div>
+                        </div> -->
+                        <form class="form-search">
+                            <fieldset class="name">
+                                <input type="text" placeholder="Search here..." class="" name="name" tabindex="2" value="" aria-required="true" required="">
+                            </fieldset>
+                            <div class="button-submit">
+                                <button class="" type="submit"><i class="icon-search"></i></button>
+                            </div>
+                        </form>
+                    </div>
+                    <a class="tf-button style-1 w208" href="/admin/addcoupon"><i class="icon-plus"></i>Add new</a>
+                </div>
+                <div class="wg-table table-all-coupons">
+                    <ul class="table-title flex gap20 mb-14">
+                        <li>
+                            <div class="body-title">Coupon Code</div>
+                        </li>
+                        <li>
+                            <div class="body-title">Discount (%)</div>
+                        </li>
+                        <li></li>
+                            <div class="body-title">Minimum Price</div>
+                        </li>
+                        <li>
+                            <div class="body-title">Valid From</div>
+                        </li>
+                        <li>
+                            <div class="body-title">Expiry Date</div>
+                        </li>
+                        <!-- <li>
+                            <div class="body-title">Limit</div>
+                        </li>
+                        <li>
+                            <div class="body-title">Times Used</div>
+                        </li> -->
+                        <li>
+                            <div class="body-title">Action</div>
+                        </li>
+                    </ul>
+                    <ul class="flex flex-column">
+                        <% coupons.forEach((coupon, index) => { %>
+                        <li class="coupon-item gap14">
+                            <div class="flex items-center justify-between gap20 flex-grow">
+                                <div class="name">
+                                    <span class="body-title-2 coupon-name"><%= coupon.couponCode %></span> 
+                                </div>
+                                <div class="body-text"><%= coupon.discount %>%</div>
+                                <div class="body-text"><%= coupon.minimumPrice %></div>
+                                <div class="body-text"><%= coupon.validFrom.toDateString() %></div>
+                                <div class="body-text"><%= coupon.expiryDate.toDateString() %></div>
+                                
+                                <div class="list-icon-function">
+                                    <div class="item edit">
+                                        <a href="/admin/editcoupon/<%= coupon._id %>"><i class="icon-edit-3"></i></a>
+                                    </div>
+                                    <% if (coupon.isActive) { %>
+                                    <div class="item block">
+                                            <form action="/admin/blockcoupon/<%= coupon._id %>" method="post">
+                                                <button type="submit" class="icon-block"><i class="icon-block"></i> Block</button>
+                                            </form>
+                                    </div>
+                                        <% } else { %>
+                                    <div class="item unblock">
+                                            <form action="/admin/unblockcoupon/<%= coupon._id %>" method="post">
+                                                <button type="submit" class="icon-unblock"><i class="icon-unblock"></i> Unblock</button>
+                                            </form>
+                                    </div>
+                                        <% } %>
+                                </div>
+                            </div>
+                        </li>
+                        <% if (index < coupons.length - 1) { %>
+                            <hr>
+                        <% } %>
+                        <% }) %>
+                    </ul>
+                </div>
+                <div class="divider"></div>
+                <div class="flex items-center justify-between flex-wrap gap10">
+                    <div class="text-tiny">Showing <%= coupons.length %> entries</div>
+                    <ul class="wg-pagination">
+                        <% if (currentPage > 1) { %>
+                            <li>
+                                <a href="?page=<%= currentPage - 1 %>"><i class="icon-chevron-left"></i></a>
+                            </li>
+                        <% } %>
+                        
+                        <% for (let i = 1; i <= totalPages; i++) { %>
+                            <li class="<%= i === currentPage ? 'active' : '' %>">
+                                <a href="?page=<%= i %>"><%= i %></a>
+                            </li>
+                        <% } %>
+                
+                        <% if (currentPage < totalPages) { %>
+                            <li>
+                                <a href="?page=<%= currentPage + 1 %>"><i class="icon-chevron-right"></i></a>
+                            </li>
+                        <% } %>
+                    </ul>
+                </div>
+                
+            </div>
+            <!-- /all-coupons -->
+        </div>
+        <!-- /main-content-wrap -->
+    </div>
+</div>
+
+
+<%- include('../layouts/admin/footer.ejs') %>

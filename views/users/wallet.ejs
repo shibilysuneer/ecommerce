@@ -1,0 +1,72 @@
+<%- include('../layouts/user/header.ejs') %>
+<!-- Start Banner Area -->
+<section class="banner-area organic-breadcrumb">
+    <div class="container">
+        <div class="breadcrumb-banner d-flex flex-wrap align-items-center justify-content-end">
+            <div class="col-first">
+                <h1>Wallet</h1>
+                <nav class="d-flex align-items-center">
+                    <a href="/">Home<span class="lnr lnr-arrow-right"></span></a>
+                    <a href="/wallet">Wallet</a>
+                </nav>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- End Banner Area -->
+
+<section class="cart_area">
+    <div class="container">
+        <div class="cart_inner">
+            <div class="table-responsive">
+                <h2>Wallet Balance: ₹<%= wallet.balance.toFixed(2) %></h2>
+              
+
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">Date</th>
+                            <th scope="col">Type</th>
+                            <th scope="col">Amount</th>
+                            <th scope="col">Description</th>
+                            <!-- <th scope="col">Order ID</th> -->
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% if (wallet.transactions.length > 0) { %>
+                            <% wallet.transactions.forEach(transaction => { %>
+                                <tr>
+                                    <td><%= new Date(transaction.date).toLocaleDateString() %></td>
+                                    <td class="<%= transaction.type === 'credit' ? 'text-success' : 'text-danger' %>">
+                                        <%= transaction.type.charAt(0).toUpperCase() + transaction.type.slice(1) %>
+                                    </td>
+                                    <td>₹<%= transaction.amount.toFixed(2) %></td>
+                                    <td><%= transaction.description || '-' %></td>
+                                    <!-- <td><%= transaction.orderId ? transaction.orderId : 'N/A' %></td> -->
+                                </tr>
+                            <% }) %>
+                        <% } else { %>
+                            <tr>
+                                <td colspan="5" class="text-center">
+                                    <p>No transactions found.</p>
+                                </td>
+                            </tr>
+                        <% } %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</section>
+
+<%- include('../layouts/user/footer.ejs') %>
+<!-- <script>
+    document.getElementById('addFundsButton').addEventListener('click', function() {
+        var form = document.getElementById('addFundsForm');
+        if (form.style.display === 'none' || form.style.display === '') {
+            form.style.display = 'block'; // Show the form
+        } else {
+            form.style.display = 'none'; // Hide the form if already visible
+        }
+    });
+</script> -->

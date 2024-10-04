@@ -1,0 +1,56 @@
+<%- include('../layouts/user/header.ejs') %>
+<!-- Start Banner Area -->
+<section class="banner-area organic-breadcrumb">
+    <div class="container">
+        <div class="breadcrumb-banner d-flex flex-wrap align-items-center justify-content-end">
+            <div class="col-first">
+                <h1>Available Coupons</h1>
+                <nav class="d-flex align-items-center">
+                    <a href="index.html">Home<span class="lnr lnr-arrow-right"></span></a>
+                    <a href="order-history.html">Available Coupons</a>
+                </nav>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- End Banner Area -->
+ <!--================Available Coupons Area =================-->
+<section class="available_coupons section_gap">
+    <div class="container">
+        <h3 class="title_confirmation">Your Available Coupons</h3>
+        <div class="coupon_table">
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">Coupon Code</th>
+                            <th scope="col">Discount(%)</th>
+                            <th scope="col">Expiration Date</th>
+                            <!-- <th scope="col">Actions</th> -->
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% if (coupons.length > 0) { %>
+                            <% coupons.forEach(coupon => { %>
+                                <tr>
+                                    <td><%= coupon.couponCode %></td>
+                                    <td><%= coupon.discount %>%</td>
+                                    <td><%= new Date(coupon.expiryDate).toDateString() %></td>
+                                </tr>
+                            <% }) %>
+                        <% } else { %>
+                            <tr>
+                                <td colspan="3">No coupons available .</td>
+                            </tr>
+                        <% } %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <div class="text-right mt-4">
+            <a href="/checkout" class="genric-btn primary radius">Back to Checkout</a>
+        </div>
+    </div>
+</section>
+<%- include('../layouts/user/footer.ejs') %>

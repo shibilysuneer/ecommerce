@@ -16,6 +16,14 @@ const cartItemSchema = new Schema({
     price: {
         type: Number,
         // required: true
+    } ,
+    discountedPrice: {  // Add this field for the discounted price
+        type: Number,
+        required: false
+    },
+    offerPercentage: {  // Add this field for the offer percentage
+        type: Number,
+        required: false
     }
 });
 
@@ -31,6 +39,10 @@ const cartSchema = new Schema({
         // required: true,
         default: 0
     },
+    totalPriceWithCoupon: {
+        type: Number,
+        default: 0
+    },
     createdAt: {
         type: Date,
         default: Date.now
@@ -40,14 +52,7 @@ const cartSchema = new Schema({
         default: Date.now
     }
 });
-// Middleware to calculate totalPrice before saving
-// cartSchema.pre('save', function(next) {
-//     this.totalPrice = this.cartItems.reduce((total, item) => {
-//         return total + (item.price * item.qty);
-//     }, 0);
-//     this.updatedAt = Date.now();
-//     next();
-// });
+
 
 module.exports = mongoose.model('Cart', cartSchema);
 

@@ -1,7 +1,5 @@
  const User = require("../models/userModel");
 
-
-
 const islogin = async(req,res,next)=>{
     try{
         if(!req.session.userId){
@@ -10,15 +8,16 @@ const islogin = async(req,res,next)=>{
         const user = await User.findById(req.session.userId);
 
         if (user.is_blocked) {
-            // Optionally destroy session
+
             req.session.destroy(() => {
-                res.redirect('/login?message=Admin%20blocked%20your%20account'); // Redirect to a blocked page or any other page
+                res.redirect('/login?message=Admin%20blocked%20your%20account'); 
             });
             return;
         }
         next();
         }catch(error){
         console.log(error.message)
+        res.status(500).send("An internal error occurred");
     }
 }
 
@@ -29,10 +28,9 @@ const islogout = async (req,res,next)=>{
         }else{
             next();
         }
-        
-
     }catch(error){
         console.log(error.message)
+        res.status(500).send("An internal error occurred");
     }
 }
 

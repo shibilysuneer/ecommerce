@@ -22,6 +22,9 @@
     <!--================Checkout Area =================-->
     <section class="checkout_area section_gap">
         <div class="container">
+
+         
+
             <div class="billing_details">
                 <div class="row">
                     
@@ -212,31 +215,64 @@
         
         <ul class="list list_2">
             <li><a href="#">Subtotal <span><%= subtotal.toFixed(2) %></span></a></li>
-            <li><a href="#">Shipping <span>Flat rate: 50.00</span></a></li>
-            <li><a href="#">Total <span><%= (subtotal + 50).toFixed(2) %></span></a></li>
+           
+
+            <li><a href="#">CouponDiscount <span id="discount-amount">- 0</span></a></li>
+
+           <div class="coupon-section">
+    <% 
+    const availableCoupons = coupons.filter(coupon => subtotal >= coupon.minimumPrice);
+    let hasAvailableCoupon = false;
+
+    availableCoupons.forEach(coupon => {
+        if (!coupon.usedBy.includes(user._id)) {
+            hasAvailableCoupon = true;
+        }
+    });
+    %>
+
+    <% if (availableCoupons.length === 0) { %>
+        <p>No coupons available.</p>
+    <% } else if (!hasAvailableCoupon) { %>
+        <p class="text-danger">You have already used all available coupons.</p>
+    <% } else { %>
+        <div class="coupon-field">
+            <a href="/coupon" class="text-info" id="couponLink">Available coupons?</a>
+            <input type="text" class="form-control" id="coupon_code" placeholder="Enter coupon code">
+            <button id="applyCoupon" class="btn btn-primary mt-2">Apply Coupon</button>
+            <p id="couponMessage" class="text-danger"></p> 
+        </div>
+    <% } %>
+</div>
+
+            
+
+
+            
+
+                <li><a href="#">Shipping <span>Flat rate: ₹50.00</span></a></li>
+                
+           
+             
+            <li><a href="#">Total <span id="total-amount"><%= (subtotal + shipping).toFixed(2) %></span></a></li>
         </ul>
 
         <form id="order-form" action="/place-order" method="POST">
             <!-- Hidden Fields -->
             <input type="hidden" name="addressId" id="selected-address-id" value="<%= defaultAddress ? defaultAddress._id : '' %>">
-            <!-- <input type="hidden" name="paymentMethod" id="payment-method" value="cash-on-delivery"> -->
-
-        <div class="payment_item">
-            <div class="radion_btn">
-                <input type="radio" id="f-option5" name="paymentMethod"  value="check">
-                <label for="f-option5">Check payments</label>
-                <div class="check"></div>
-            </div>
-            <p>Please send a check to Store Name, Store Street, Store Town, Store State / County, Store Postcode.</p>
-        </div>
+            <input type="hidden" name="couponId" id="coupon-id">
+            <input type="hidden" name="razorpayPaymentId" id="razorpay-payment-id">
+            <input type="hidden" name="razorpayOrderId" id="razorpay-order-id">
+            <input type="hidden" name="razorpaySignature" id="razorpay-signature">
+        
         <div class="payment_item ">
             <div class="radion_btn">
-                <input type="radio" id="f-option6" name="paymentMethod" value="paypal">
-                <label for="f-option6">Paypal</label>
+                <input type="radio" id="f-option6" name="paymentMethod" value="razorpay" >
+                <label for="f-option6">razorpay</label>
                 <img src="img/product/card.jpg" alt="">
                 <div class="check"></div>
             </div>
-            <p>Pay via PayPal; you can pay with your credit card if you don’t have a PayPal account.</p>
+            <p>Pay via Razorpay using a credit card, debit card, UPI, etc.</p>
         </div>
 
         <div class="payment_item active">
@@ -247,6 +283,14 @@
             </div>
             <p>Pay with cash upon delivery.</p>
         </div>
+        <div class="payment_item">
+            <div class="radion_btn">
+                <input type="radio" id="f-option8" name="paymentMethod" value="wallet">
+                <label for="f-option8">Wallet</label>
+                <div class="check"></div>
+            </div>
+            <p>Pay using your wallet balance.</p>
+        </div>
         
 
         <div class="creat_account">
@@ -255,7 +299,7 @@
             <a href="#">terms & conditions*</a>
         </div>
         <!-- <a class="primary-btn" href="#">Place the Order</a> -->
-        <button type="submit" class="primary-btn">Place Order</button>
+        <button type="submit" class="primary-btn" id="place-order-btn"  onclick="submitOrder()">Place Order</button>
       </form>
 
 
@@ -266,7 +310,6 @@
 </div>
 </section>
 <%- include('../layouts/user/footer.ejs') %>
-
 <script>
     function handleAddressSelection(index) {
         // Update the default address in the database
@@ -331,7 +374,140 @@
 });
 
 
+async function submitOrder() {
+    const selectedPaymentMethod = document.querySelector('input[name="paymentMethod"]:checked').value;
+    const placeOrderButton = document.getElementById('place-order-btn');
 
+    // Disable the button to prevent multiple clicks
+    placeOrderButton.disabled = true;
+
+    // If the order is already being processed, exit the function
+    if (placeOrderButton.dataset.processing === "true") {
+        return; // Prevent further processing
+    }
+    placeOrderButton.dataset.processing = "true"; // Mark as processing
+
+    try {
+        if (selectedPaymentMethod === 'razorpay') {
+            const response = await fetch('/create-razorpay-order', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    amount: '<%= (subtotal + 50) %>', 
+                    currency: 'INR'
+                })
+            });
+
+            const orderData = await response.json();
+            if (orderData.order && orderData.order.id) {
+                const options = {
+                    key: orderData.key_id,
+                    amount: orderData.order.amount,
+                    currency: orderData.order.currency,
+                    order_id: orderData.order.id, 
+                    handler: function (response) {
+                        document.getElementById('razorpay-payment-id').value = response.razorpay_payment_id;
+                        document.getElementById('razorpay-order-id').value = response.razorpay_order_id;
+                        document.getElementById('razorpay-signature').value = response.razorpay_signature;
+                        document.getElementById('order-form').submit();
+                    },
+                    prefill: {
+                        name: "<%= user ? user.name : '' %>",
+                        email: "<%= user ? user.email : '' %>",
+                        contact: "<%= user ? user.phone : '' %>",
+                    },
+                    theme: {
+                        color: "#3399cc"
+                    }
+                };
+
+                const rzp1 = new Razorpay(options);
+                rzp1.open();
+            } else {
+                showAlert('Failed to create Razorpay order');
+            }
+        } else if (selectedPaymentMethod === 'wallet') {
+            const walletResponse = await fetch('/wallet-balance', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    amount: '<%= (subtotal + 50) %>' // Subtotal + shipping
+                })
+            });
+
+            const walletData = await walletResponse.json();
+            if (walletData.success && walletData.sufficientBalance) {
+                document.getElementById('order-form').submit();
+            } else {
+                showAlert('Your wallet balance is insufficient to complete this order.');
+            }
+        } else {
+            // For cash-on-delivery or other payment methods
+            document.getElementById('order-form').submit();
+        }
+    } catch (error) {
+        console.error('Error during order submission:', error);
+        showAlert('An unexpected error occurred. Please try again.');
+    } finally {
+        // Re-enable the button after processing is complete
+        placeOrderButton.disabled = false;
+        placeOrderButton.dataset.processing = "false"; // Reset processing state
+    }
+}
+
+function showAlert(message) {
+    Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: message,
+    });
+}
+
+document.getElementById('place-order-btn').addEventListener('click', (event) => {
+    event.preventDefault();
+    submitOrder();
+});
+
+
+    // apply coupon
+
+    document.getElementById('applyCoupon').addEventListener('click', function() {
+    const couponCode = document.getElementById('coupon_code').value;
+    
+    // Send a request to the server to validate the coupon
+    fetch('/apply-coupon', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            couponCode: couponCode,
+            subtotal: '<%= subtotal %>'// Send the current subtotal to the server
+        }),
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Update the discount amount and the total
+            document.getElementById('discount-amount').textContent = `- ${data.discountAmount.toFixed(2)}`;
+            document.getElementById('total-amount').textContent = (data.newTotal).toFixed(2);
+            document.getElementById('coupon-id').value = data.couponId; // Store the coupon ID in the hidden field
+            document.getElementById('couponMessage').textContent = ''; // Clear any error message
+        } else {
+            // Display an error message if the coupon is not valid
+            document.getElementById('couponMessage').textContent = data.message;
+            document.getElementById('discount-amount').textContent = '- 0';
+        }
+    })
+    .catch(error => {
+        console.error('Error applying coupon:', error);
+    });
+});
+    
 
 </script>
 

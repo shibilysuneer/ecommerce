@@ -1,0 +1,148 @@
+
+
+
+
+
+<%- include('../layouts/admin/header.ejs') %>
+
+<div class="main-content">
+    <div class="main-content-inner">
+        <div class="main-content-wrap">
+            <div class="flex items-center flex-wrap justify-between gap20 mb-27">
+                <h3>All Offers</h3>
+                <ul class="breadcrumbs flex items-center flex-wrap justify-start gap10">
+                    <li><a href="index.html"><div class="text-tiny">Dashboard</div></a></li>
+                    <li><i class="icon-chevron-right"></i></li>
+                    <li><a href="#"><div class="text-tiny">Offers</div></a></li>
+                    <li><i class="icon-chevron-right"></i></li>
+                    <li><div class="text-tiny">All Offers</div></li>
+                </ul>
+            </div>
+            <!-- Product Offers -->
+            <h4>Product Offers</h4>
+            <div class="wg-box">
+                <div class="wg-table">
+                    <ul class="table-title flex gap20 mb-14">
+                        <li><div class="body-title">Product</div></li>
+                        <li><div class="body-title">Offer Name</div></li>
+                        <li><div class="body-title">Discount (%)</div></li>
+                        <li><div class="body-title">Status</div></li>
+                        <li><div class="body-title">Action</div></li>
+                    </ul>
+                    <ul class="flex flex-column">
+                        <% productOffers.forEach((offer, index) => { %>
+                        <li class="offer-item gap14">
+                            <div class="flex items-center justify-between gap20 flex-grow">
+                                <div class="name">
+                                    <span class="body-title-2 offer-name"><%= offer.productId.productName %></span>
+                                </div>
+                                <div class="body-text"><%= offer.offerName %></div>
+                                <div class="body-text"><%= offer.offerPercentage %>%</div>
+                                <!-- <div class="body-text"><%= offer.isActive ? 'Active' : 'Inactive' %></div> -->
+                                <% if (offer.isActive) { %>
+                                    <div class="item block">
+                                        <form id="blockOfferForm-<%= offer._id %>" action="/admin/blockproductoffer/<%= offer._id %>" method="post" >
+                                            <button type="button" class="icon-block" onclick="confirmBlock('<%= offer._id %>', 'block')"><i class="icon-block"></i> Block</button>
+                                        </form>
+                                    </div>
+                                    <% } else { %>
+                                    <div class="item unblock">
+                                        <form id="unblockOfferForm-<%= offer._id %>" action="/admin/unblockproductoffer/<%= offer._id %>" method="post" onsubmit="return confirm('Are you sure you want to unblock this offer?');">
+                                            <button type="button" class="icon-unblock" onclick="confirmBlock('<%= offer._id %>', 'unblock')"><i class="icon-unblock"></i> Unblock</button>
+                                        </form>
+                                    </div>
+                                    <% } %>
+                                <div class="list-icon-function">
+                                    <div class="item edit">
+                                        <a href="/admin/editproductOffer/<%= offer._id %>"><i class="icon-edit-3"></i></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        <% if (index < productOffers.length - 1) { %>
+                            <hr>
+                        <% } %>
+                        <% }) %>
+                    </ul>
+                </div>
+                <a class="tf-button style-1 w208" href="/admin/addproductoffer"><i class="icon-plus"></i>Add new</a>
+
+            </div>
+
+            <!-- Category Offers -->
+            <h4>Category Offers</h4>
+            <div class="wg-box">
+                <div class="wg-table">
+                    <ul class="table-title flex gap20 mb-14">
+                        <li><div class="body-title">Category</div></li>
+                        <li><div class="body-title">Offer Name</div></li>
+                        <li><div class="body-title">Discount (%)</div></li>
+                        <li><div class="body-title">Status</div></li>
+                        <li><div class="body-title">Action</div></li>
+                    </ul>
+                    <ul class="flex flex-column">
+                        <% categoryOffers.forEach((offer, index) => { %>
+                        <li class="offer-item gap14">
+                            <div class="flex items-center justify-between gap20 flex-grow">
+                                <div class="name">
+                                    <span class="body-title-2 offer-name"><%= offer.categoryId.categoryName %></span>
+                                </div>
+                                <div class="body-text"><%= offer.offerName %></div>
+                                <div class="body-text"><%= offer.offerPercentage %>%</div>
+                                <!-- <div class="body-text"><%= offer.isActive ? 'Active' : 'Inactive' %></div> -->
+                                <% if (offer.isActive) { %>
+                                    <div class="item block">
+                                        <form  action="/admin/blockcategoryoffer/<%= offer._id %>" method="post">
+                                            <button type="submit" class="icon-block" ><i class="icon-block"></i> Block</button>
+                                        </form>
+                                    </div>
+                                    <% } else { %>
+                                    <div class="item unblock">
+                                        <form  action="/admin/unblockcategoryoffer/<%= offer._id %>" method="post">
+                                            <button type="submit" class="icon-unblock"><i class="icon-unblock" ></i> Unblock</button>
+                                        </form>
+                                    </div>
+                                    <% } %>
+                                <div class="list-icon-function">
+                                    <div class="item edit">
+                                        <a href="/admin/editcategoryOffer/<%= offer._id %>"><i class="icon-edit-3"></i></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        <% if (index < categoryOffers.length - 1) { %>
+                            <hr>
+                        <% } %>
+                        <% }) %>
+                    </ul>
+                </div>
+                <a class="tf-button style-1 w208" href="/admin/addcategoryoffer"><i class="icon-plus"></i>Add new</a>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<%- include('../layouts/admin/footer.ejs') %>
+<script>
+    function confirmBlock(offerId, actionType) {
+        let actionText = actionType === 'block' ? 'block' : 'unblock';
+    
+        Swal.fire({
+            title: `Are you sure you want to ${actionText} this offer?`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, ' + actionText + ' it!',
+            cancelButtonText: 'No, cancel!',
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                document.getElementById(`${actionType}OfferForm-${offerId}`).submit();
+            }
+        });
+    }
+
+    
+
+    </script>
+    

@@ -45,3 +45,180 @@
     </div>
 </body>
 </html>
+
+
+
+
+
+
+!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sales Report</title>
+</head>
+<body>
+  <h1>Sales Report</h1>
+
+  <!-- Filters -->
+  <!-- <form method="GET" action="/sales-report">
+    <label for="period">Filter By:</label>
+    <select name="period" id="period">
+      <option value="">Custom Date Range</option>
+      <option value="day">Last 1 Day</option>
+      <option value="week">Last 1 Week</option>
+      <option value="month">Last 1 Month</option>
+    </select>
+    
+    <label for="startDate">Start Date:</label>
+    <input type="date" name="startDate" id="startDate" value="<%= startDate || '' %>">
+    
+    <label for="endDate">End Date:</label>
+    <input type="date" name="endDate" id="endDate" value="<%= endDate || '' %>">
+    
+    <button type="submit">Filter</button>
+  </form> --> -->
+
+  <!-- Summary -->
+  <!-- <div>
+    <h3>Overall Sales Summary</h3>
+    <p>Total Orders: <%= totalSales %></p>
+    <p>Total Sales Amount: ₹<%= totalAmount %></p>
+    <p>Total Discount Applied: ₹<%= totalDiscount %></p>
+  </div> -->
+  
+
+  <!-- Sales Table -->
+  <!-- <table border="1">
+    <thead>
+      <tr>
+        <th>Order ID</th>
+        <th>Date</th>
+        <th>Total Amount</th>
+        <th>Discount</th>
+        <th>Coupon Applied</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% orders.forEach(order => { %>
+        <tr>
+          <td><%= order.orderId %></td>
+          <td><%= new Date(order.createdAt).toLocaleDateString() %></td>
+          <td>₹<%= order.total %></td>
+          <td>₹<%= order.coupon ? order.coupon.discount : 0 %></td>
+          <td><%= order.coupon ? order.coupon.code : 'No Coupon' %></td>
+        </tr>
+      <% }); %>
+    </tbody>
+  </table> -->
+
+
+  
+// // Preview images before uploading
+// function previewImages(event) {
+//     const files = event.target.files;
+//     const previewContainer = document.getElementById("editImagePreviewContainer");
+//     previewContainer.innerHTML = ''; // Clear previous previews
+
+//     Array.from(files).forEach((file) => {
+//         const reader = new FileReader();
+//         reader.onload = function(e) {
+//             const img = document.createElement("img");
+//             img.src = e.target.result;
+//             img.classList.add("new-image-preview");
+//             img.onclick = function() {
+//                 openCropper(e.target.result);
+//             };
+//             previewContainer.appendChild(img);
+//         };
+//         reader.readAsDataURL(file);
+//     });
+// }
+
+// // Function to open the cropper modal
+// function openCropper(imageSrc) {
+//     console.log('Image clicked for cropping:', imageSrc);
+//     $('#cropperModal').modal('show');
+//     const imageElement = document.getElementById("imageToCrop");
+//     imageElement.src = imageSrc;
+
+//     // // Show modal first before initializing cropper
+//     // $('#cropperModal').modal('show');
+
+//     // Initialize Cropper only after the image has fully loaded
+//     imageElement.onload = function() {
+//         console.log('Cropper initialized');
+//         if (cropper) {
+//             cropper.destroy(); // Destroy previous instance if exists
+//         }
+//         cropper = new Cropper(imageElement, {
+//             aspectRatio: 16 / 9, // You can adjust this as needed
+//             viewMode: 1,
+//         });
+//     };
+// }
+
+// // function openCropper(imageSrc) {
+// //     document.getElementById("imageToCrop").src = imageSrc;
+// //     $('#cropperModal').modal('show');
+
+// //     const image = document.getElementById("imageToCrop");
+// //     cropper = new Cropper(image, {
+// //         aspectRatio: 16 / 9, // Set your aspect ratio here
+// //         viewMode: 1,
+// //     });
+  
+// //  }
+
+
+
+// // Crop the image and replace the image in the preview container
+// document.getElementById("cropButton").onclick = function() {
+//     console.log('Cropping image...');
+//     const canvas = cropper.getCroppedCanvas();
+//     canvas.toBlob(function(blob) {
+//         const newImg = document.createElement("img");
+//         const newImgUrl = URL.createObjectURL(blob);
+//         newImg.src = newImgUrl;
+//         newImg.classList.add("new-image-preview"); 
+//         document.getElementById("editImagePreviewContainer").appendChild(newImg);
+//         // You can also upload the blob to your server or save it to a FormData object here.
+//     });
+//     $('#cropperModal').modal('hide');
+//     cropper.destroy();
+// };
+
+// // Remove existing image
+// function removeImage(event) {
+//     const index = event.currentTarget.getAttribute("data-index");
+//     const imageName = event.currentTarget.getAttribute("data-image");
+//     const existingImagesContainer = document.getElementById("existingImagesPreviewContainer");
+//     existingImagesContainer.removeChild(event.currentTarget.parentElement); // Remove image from the preview
+
+//     const removedImagesInput = document.getElementById("removedImages");
+//     removedImagesInput.value += (removedImagesInput.value ? ',' : '') + imageName; // Track removed images
+// }
+
+
+
+
+// document.querySelectorAll('.remove-existing-image').forEach(button => {
+//     button.addEventListener('click', function() {
+//         const image = this.dataset.image;
+//         const index = this.dataset.index;
+        
+//         // Add the image to the hidden input for removal
+//         const removedImagesInput = document.getElementById('removedImages');
+//         let removedImages = removedImagesInput.value ? removedImagesInput.value.split(',') : [];
+        
+//         // Add image to removed list if not already present
+//         if (!removedImages.includes(image)) {
+//             removedImages.push(image);
+//             removedImagesInput.value = removedImages.join(',');
+//         }
+        
+//         // Optionally, hide or remove the image preview from the UI
+//         this.closest('.image-preview-item').remove();
+//     });
+// });

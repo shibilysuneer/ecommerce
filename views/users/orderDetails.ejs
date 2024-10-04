@@ -62,23 +62,47 @@
                                         <span class="text-success">Shipped</span>
                                     <% } else if (item.status === 'delivered') { %>
                                         <span class="text-success">Delivered</span>
+                                    <% } else if (item.status === 'returned') { %>
+                                            <span class="text-danger">Returned</span>
                                     <% } else { %>
                                         <span class="text-warning">Pending</span>
                                         <% } %>
                                 </td>
                                 <td>
-                                    <% if (item.status !== 'canceled') { %>
-                                        <form action="/cancel/<%= order._id %>/<%= item._id %>" method="post">
+                                    <% if (item.status === 'delivered') { %>
+                                       
+                                 <form action="/return-order/<%= order._id %>/<%= item._id %>" method="POST" >
+                                            <input type="hidden" name="status" value="returned">
+                                            <textarea id="returnReason" name="returnReason" required></textarea>
+                                            <button type="submit" class="btn btn-danger" >Return</button>
+                                      </form>
+                                    <% } else { %>
+                                        <span class="text-muted"></span>
+                                    <% } %>
+                                </td>
+
+                                <td>
+                                    <% if (item.status !== 'canceled' && item.status !== 'delivered'  && item.status !== 'returned') { %>
+                                        <form  action="/cancel/<%= order._id %>/<%= item._id %>" method="post">
                                             <button type="submit" class="btn btn-danger">Cancel</button>
                                         </form>
-                                    <% } else {  %>
+                                    <% } else if (item.status === 'canceled') { %>
                                         <span class="text-muted">Canceled</span>
+                                    <% } else if (item.status === 'delivered') { %>
+                                        <span class="text-muted">Delivered (Return Available)</span>
+                                        <% } else if (item.status === 'returned') { %>
+                                            <span class="text-muted">Returned (Cancel not available)</span>
                                         <% } %>
                                 </td>
+                                
                             </tr>
                         <% }) %>
                     </tbody>
                 </table>
+
+
+               
+
             </div>
         </div>
         <div class="text-right mt-4">

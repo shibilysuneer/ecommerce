@@ -35,6 +35,10 @@ const productSchema =new mongoose.Schema({
       type:String,
       required:true   
      },
+   //   offerPercentage:{
+   //    type:Number,
+   //    default:0
+   //   },
      is_blocked:{
       type:Boolean,
       default:false

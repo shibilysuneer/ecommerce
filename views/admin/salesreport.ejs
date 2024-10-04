@@ -1,0 +1,122 @@
+<%- include('../layouts/admin/header.ejs') %>
+<!-- main-content -->
+<div class="main-content">
+    <!-- main-content-wrap -->
+    <div class="main-content-inner">
+        <!-- main-content-wrap -->
+        <div class="main-content-wrap">
+            <div class="flex items-center flex-wrap justify-between gap20 mb-27">
+                <h3>Sales Report</h3>
+                <ul class="breadcrumbs flex items-center flex-wrap justify-start gap10">
+                    <li>
+                        <a href="/admin/dashboard"><div class="text-tiny">Dashboard</div></a>
+                    </li>
+                    <li>
+                        <i class="icon-chevron-right"></i>
+                    </li>
+                    <li>
+                        <a href="#"><div class="text-tiny">Reports</div></a>
+                    </li>
+                    <li>
+                        <i class="icon-chevron-right"></i>
+                    </li>
+                    <li>
+                        <div class="text-tiny">Sales Report</div>
+                    </li>
+                </ul>
+            </div>
+
+           <!-- Overall Sales Summary -->
+<div class="wg-box flex justify-between">
+    <div>
+        <h3>Overall Sales Summary</h3>
+        <p>Total Orders: <%= totalSales %></p>
+        <p>Total Sales Amount: ₹<%= totalAmount %></p>
+        <p>Total Discount Applied: ₹<%= totalDiscount %></p>
+    </div>
+    <div class="flex gap10 ">
+        <a class="tf-button style-1" href="/admin/download-pdf">Download PDF</a>
+        <a class="tf-button style-1" href="/admin/download-excel">Download Excel</a>
+    </div>
+</div>
+
+
+            <!-- Sales report filter options -->
+            <div class="wg-box">
+                <div class="flex items-center justify-between gap10 flex-wrap">
+                    <div class="wg-filter flex-grow">
+                        <form class="form-search" method="GET" action="/admin/salesReport">
+                            <fieldset class="name">
+                                <label for="dateRange">Custom Date Range</label>
+                                <input type="date" name="startDate" >
+                                <input type="date" name="endDate">
+                            </fieldset>
+                            <div class="select">
+                                <select name="reportType">
+                                    <option value="">Select Report Type</option>
+                                    <option value="daily">1 Day</option>
+                                    <option value="weekly">1 Week</option>
+                                    <option value="monthly">1 Month</option>
+                                    <option value="yearly">1 Year</option>
+                                </select>
+                            </div>
+                            <div class="button-submit">
+                                <button class="tf-button style-1" type="submit">Filter</button>
+                            </div>
+                        </form>
+                    </div>
+                    
+
+                </div>
+            </div>
+
+<div class="wg-table table-sales-report">
+    <table>
+        <thead>
+            <tr>
+                <th>Order ID</th>
+                <th>Date</th>
+                <th>Total Amount</th>
+                <th>Offer Discount</th>
+                <th>Coupon Discount</th>
+                <th>Payment Method</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% if (orders && orders.length > 0) { %>
+                <% orders.forEach(order => { %>
+                    <tr>
+                        <td><%= order.orderId %></td>
+                        <td><%= new Date(order.createdAt).toLocaleDateString() %></td>
+                        <td>₹<%= order.total.toFixed(2) %></td>
+                        <td>₹<%= order.cartItems[0].offerAmount ? order.cartItems[0].offerAmount.toFixed(2) : 0 %></td>
+                        <td>₹<%= order.couponDiscount ? order.couponDiscount.toFixed(2) : 0 %></td>
+                        <td><%= order.paymentMethod %></td>
+                        <!-- <td><%= order.coupon ? order.coupon.couponCode : 'No Coupon' %></td> -->
+                    </tr>
+                <% }) %>
+            <% } else { %>
+                <tr>
+                    <td colspan="5" class="no-data">No sales data available for the selected range.</td>
+                </tr>
+            <% } %>
+        </tbody>
+    </table>
+</div>
+
+
+
+  <!-- Download options -->
+  <!-- <div>
+    <a href="/sales-report/download/pdf">Download PDF</a>
+    <a href="/sales-report/download/excel">Download Excel</a>
+  </div>
+</body>
+</html> -->
+</div>
+<!-- /main-content-wrap -->
+</div>
+<!-- /main-content-inner -->
+</div>
+<!-- /main-content -->
+<%- include('../layouts/admin/footer.ejs') %>

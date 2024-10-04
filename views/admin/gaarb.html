@@ -1,46 +1,214 @@
-<nav id="sidebarMenu" class="collapse d-lg-block sidebar collapse bg-white">
-    <div class="position-sticky">
-      <div class="list-group list-group-flush mx-3 mt-4">
-        <a
-          href="#"
-          class="list-group-item list-group-item-action py-2 ripple"
-          aria-current="true"
-        >
-          <i class="fas fa-tachometer-alt fa-fw me-3"></i><span>Main dashboard</span>
-        </a>
-        <a href="#" class="list-group-item list-group-item-action py-2 ripple active">
-          <i class="fas fa-chart-area fa-fw me-3"></i><span>Webiste traffic</span>
-        </a>
-        <a href="#" class="list-group-item list-group-item-action py-2 ripple"
-          ><i class="fas fa-lock fa-fw me-3"></i><span>Password</span></a
-        >
-        <a href="#" class="list-group-item list-group-item-action py-2 ripple"
-          ><i class="fas fa-chart-line fa-fw me-3"></i><span>Analytics</span></a
-        >
-        <a href="#" class="list-group-item list-group-item-action py-2 ripple">
-          <i class="fas fa-chart-pie fa-fw me-3"></i><span>SEO</span>
-        </a>
-        <a href="#" class="list-group-item list-group-item-action py-2 ripple"
-          ><i class="fas fa-chart-bar fa-fw me-3"></i><span>Orders</span></a
-        >
-        <a href="#" class="list-group-item list-group-item-action py-2 ripple"
-          ><i class="fas fa-globe fa-fw me-3"></i><span>International</span></a
-        >
-        <a href="#" class="list-group-item list-group-item-action py-2 ripple"
-          ><i class="fas fa-building fa-fw me-3"></i><span>Partners</span></a
-        >
-        <a href="#" class="list-group-item list-group-item-action py-2 ripple"
-          ><i class="fas fa-calendar fa-fw me-3"></i><span>Calendar</span></a
-        >
-        <a href="#" class="list-group-item list-group-item-action py-2 ripple"
-          ><i class="fas fa-users fa-fw me-3"></i><span>Users</span></a
-        >
-        <a href="#" class="list-group-item list-group-item-action py-2 ripple"
-          ><i class="fas fa-money-bill fa-fw me-3"></i><span>Sales</span></a
-        >
-      </div>
+<%- include('../layouts/admin/header.ejs') %>
+
+<div class="main-content">
+    <div class="main-content-inner">
+        <div class="main-content-wrap">
+            <div class="flex items-center flex-wrap justify-between gap20 mb-27">
+                <h3>All Offers</h3>
+                <ul class="breadcrumbs flex items-center flex-wrap justify-start gap10">
+                    <li>
+                        <a href="/admin"><div class="text-tiny">Dashboard</div></a>
+                    </li>
+                    <li>
+                        <i class="icon-chevron-right"></i>
+                    </li>
+                    <li>
+                        <a href="#"><div class="text-tiny">Offers</div></a>
+                    </li>
+                    <li>
+                        <i class="icon-chevron-right"></i>
+                    </li>
+                    <li>
+                        <div class="text-tiny">All Offers</div>
+                    </li>
+                </ul>
+            </div>
+            
+            <div class="wg-box">
+                <div class="flex items-center justify-between gap10 flex-wrap">
+                    <div class="wg-filter flex-grow">
+                        <form class="form-search">
+                            <fieldset class="name">
+                                <input type="text" placeholder="Search here..." name="search" tabindex="2">
+                            </fieldset>
+                            <div class="button-submit">
+                                <button type="submit"><i class="icon-search"></i></button>
+                            </div>
+                        </form>
+                    </div>
+                    <a class="tf-button style-1 w208" href="/admin/addproductoffer"><i class="icon-plus"></i>Add new</a>
+                </div>
+
+                <div class="wg-table table-all-offers">
+                    <ul class="table-title flex gap20 mb-14">
+                        <li><div class="body-title">Offer Name</div></li>
+                        <li><div class="body-title">Offer Type</div></li>
+                        <li><div class="body-title">Discount (%)</div></li>
+                        <li><div class="body-title">Action</div></li>
+                    </ul>
+
+                    <ul class="flex flex-column">
+                        <!-- Loop through product offers -->
+                        <% productOffers.forEach((offer, index) => { %>
+                        <li class="offer-item gap14">
+                            <div class="flex items-center justify-between gap20 flex-grow">
+                                <div class="name">
+                                    <span class="body-title-2 offer-name"><%= offer.offerName %></span>
+                                </div>
+                                <div class="body-text">Product Offer</div>
+                                <div class="body-text"><%= offer.offerPercentage %>%</div>
+                                <div class="list-icon-function">
+                                    <div class="item edit">
+                                        <a href="/admin/editoffer/<%= offer._id %>"><i class="icon-edit-3"></i></a>
+                                    </div>
+                                    <% if (offer.isActive) { %>
+                                    <div class="item block">
+                                        <form action="/admin/blockoffer/<%= offer._id %>" method="post">
+                                            <button type="submit" class="icon-block"><i class="icon-block"></i> Block</button>
+                                        </form>
+                                    </div>
+                                    <% } else { %>
+                                    <div class="item unblock">
+                                        <form action="/admin/unblockoffer/<%= offer._id %>" method="post">
+                                            <button type="submit" class="icon-unblock"><i class="icon-unblock"></i> Unblock</button>
+                                        </form>
+                                    </div>
+                                    <% } %>
+                                </div>
+                            </div>
+                        </li>
+                        <% if (index < productOffers.length - 1) { %>
+                            <hr>
+                        <% } %>
+                        <% }) %>
+
+                        <!-- Loop through category offers -->
+                        <% categoryOffers.forEach((offer, index) => { %>
+                        <li class="offer-item gap14">
+                            <div class="flex items-center justify-between gap20 flex-grow">
+                                <div class="name">
+                                    <span class="body-title-2 offer-name"><%= offer.offerName %></span>
+                                </div>
+                                <div class="body-text">Category Offer</div>
+                                <div class="body-text"><%= offer.offerPercentage %>%</div>
+                                <div class="list-icon-function">
+                                    <div class="item edit">
+                                        <a href="/admin/editoffer/<%= offer._id %>"><i class="icon-edit-3"></i></a>
+                                    </div>
+                                    <% if (offer.isActive) { %>
+                                    <div class="item block">
+                                        <form action="/admin/blockoffer/<%= offer._id %>" method="post">
+                                            <button type="submit" class="icon-block"><i class="icon-block"></i> Block</button>
+                                        </form>
+                                    </div>
+                                    <% } else { %>
+                                    <div class="item unblock">
+                                        <form action="/admin/unblockoffer/<%= offer._id %>" method="post">
+                                            <button type="submit" class="icon-unblock"><i class="icon-unblock"></i> Unblock</button>
+                                        </form>
+                                    </div>
+                                    <% } %>
+                                </div>
+                            </div>
+                        </li>
+                        <% if (index < categoryOffers.length - 1) { %>
+                            <hr>
+                        <% } %>
+                        <% }) %>
+                    </ul>
+                </div>
+
+                <!-- Pagination -->
+                <div class="divider"></div>
+                <div class="flex items-center justify-between flex-wrap gap10">
+                    <div class="text-tiny">Showing 10 entries</div>
+                    <ul class="wg-pagination">
+                        <li><a href="#"><i class="icon-chevron-left"></i></a></li>
+                        <li><a href="#">1</a></li>
+                        <li class="active"><a href="#">2</a></li>
+                        <li><a href="#">3</a></li>
+                        <li><a href="#"><i class="icon-chevron-right"></i></a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
     </div>
-  </nav>
+</div>
+
+<%- include('../layouts/admin/footer.ejs') %>
+
+// function openCropper(imageSrc) {
+    //     const imageToCrop = document.getElementById('imageToCrop');
+    //     imageToCrop.src = imageSrc;
+    //     $('#cropperModal').modal('show');
+    
+    //     // Initialize Cropper
+    //     cropper = new Cropper(imageToCrop, {
+    //         aspectRatio: 1,
+    //         viewMode: 2,
+    //         autoCropArea: 1
+    //     });
+    // }
+    
+    // // Handle cropping the image
+    // document.getElementById('cropButton').addEventListener('click', () => {
+    //     const croppedCanvas = cropper.getCroppedCanvas();
+    //     croppedCanvas.toBlob((blob) => {
+    //         // Convert the cropped image blob to a File and add to the form
+    //         const croppedFile = new File([blob], currentImageFile.name, { type: blob.type });
+    //         // You can now append this cropped file to a FormData object or directly to the image input for submission.
+    //     });
+    
+    //     $('#cropperModal').modal('hide'); // Close the modal
+    //     cropper.destroy(); // Destroy the cropper instance
+    // });
 
 
-  onchange="previewImages(event)"
+<!-- addto cart -->
+    
+    //  if (cart) {
+        //      const itemIndex = cart.cartItems.findIndex(p => p.productId.toString()  === productId);
+        //      if (itemIndex > -1) {
+        //         const currentQty = cart.cartItems[itemIndex].qty;
+        //         const newQty = currentQty + requestedQty;
+        //         if (newQty > availableStock) {
+        //             cart.cartItems[itemIndex].qty = availableStock;
+        //             await cart.save();
+        //             return res.redirect(`/cart?error=${encodeURIComponent(`Cannot add more than ${availableStock} items to the cart.`)}`);
+                   
+        //         }else{
+        //             cart.cartItems[itemIndex].qty = newQty;
+
+        //         }
+
+        //       } else {
+               
+        //         const addQty = Math.min(requestedQty, Math.min(maxQtyPerPerson, availableStock));
+        //         cart.cartItems.push({ 
+        //             productId,
+        //             qty: addQty,
+        //             price: finalPrice ,
+        //             // price: product.productPrice,
+        //              images: product.images,
+        //             //  discountedPrice:product.productPrice * (1 - (item.offerPercentage / 100)),
+        //             //  offerPercentage: productOffer ? productOffer.offerPercentage : 0
+        //              });
+        //      }
+        //      await cart.save();
+        //      console.log("cart",cart);
+             
+        //     } else {
+                
+        //         const addQty = Math.min(requestedQty, Math.min(maxQtyPerPerson, availableStock));
+        //     cart = new Cart({
+        //         userId: userObjectId,
+        //         cartItems: [{ productId, qty: addQty,
+        //             //  price: product.productPrice, 
+        //             images: product.images,
+        //             price: finalPrice 
+        //             // discountedPrice:product.productPrice * (1 - (item.offerPercentage / 100)),offerPercentage: productOffer ? productOffer.offerPercentage : 0 
+        //          }]
+        //         });
+        //         await cart.save();   
+        //     }
+        //     res.redirect('/cart');

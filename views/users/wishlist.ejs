@@ -1,0 +1,142 @@
+<%- include('../layouts/user/header.ejs') %>
+<!-- Start Banner Area -->
+<section class="banner-area organic-breadcrumb">
+    <div class="container">
+        <div class="breadcrumb-banner d-flex flex-wrap align-items-center justify-content-end">
+            <div class="col-first">
+                <h1>Wishlist</h1>
+                <nav class="d-flex align-items-center">
+                    <a href="index.html">Home<span class="lnr lnr-arrow-right"></span></a>
+                    <a href="category.html">Wishlist</a>
+                </nav>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- End Banner Area -->
+<section class="cart_area">
+    <div class="container">
+        <div class="cart_inner">
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">Product</th>
+                            <th scope="col">Price</th>
+                            <th scope="col">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% if (wishlistItems.length > 0) { %>
+                            <% wishlistItems.forEach(item => { %>
+                                <tr>
+                                    <td>
+                                        <div class="media">
+                                            <div class="d-flex">
+                                                    <img src="/admin/images/<%= item.images[0] %>" alt="<%= item.productName %>">
+                                            <div class="media-body">
+                                                <p><%= item.productName %></p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <h5><%= item.productPrice %></h5>
+                                    </td>
+                                    
+                                    <td>
+                                        <form action="/removewishlist" method="POST">
+                                            <input type="hidden" name="productId" value="<%= item._id %>">
+                                            <button type="submit" class="genric-btn primary-border small">Remove</button>
+                                        </form>
+                                    </td>
+                                    <td>
+                                        <a href="" class="genric-btn primary small" onclick="event.preventDefault(); addToBag('<%= item._id %>')">Move to Cart</a>
+                                    </td>
+                                </tr>
+                            <% }) %>
+                        <% } else { %>
+                            <tr>
+                                <td colspan="5" class="text-center">
+                                    <p>Your wishlist is empty.</p>
+                                </td>
+                            </tr>
+                        <% } %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</section>
+
+<%- include('../layouts/user/footer.ejs') %>
+<script>
+    function addToBag(productId){
+        fetch('/addtobag',{
+            method:'POST',
+            headers:{
+            'Content-Type':'application/json',   
+             },
+             body:JSON.stringify({productId})
+        })
+        .then(response => response.json())
+    .then(data => {
+        if(data.success){
+            Swal.fire({
+                title:'Added',
+                text:'The product has been added to your bag.',
+                icon: 'success',
+                 confirmButtonText: 'OK'
+            })
+        }else{
+            Swal.fire({
+                title: 'Error!',
+                text: data.message || 'Failed to add the product to the bag.',
+                icon: 'error',
+                confirmButtonText: 'Try Again'
+            });
+        }
+    })
+    .catch(error => {
+        Swal.fire({
+            title: 'Error!',
+            text: 'Something went wrong. Please try again.',
+            icon: 'error',
+            confirmButtonText: 'OK'
+        })
+    })
+}
+// add to wishlist
+function addToWishlist(productId){
+    fetch('/wishlist',{
+        method:'POST',
+        headers:{
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ productId: productId })
+    }) 
+    .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Added to Wishlist',
+                    text: 'The product has been added to your wishlist!',
+                });
+            }else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Failed to Add',
+                    text: data.message || 'Failed to add product to wishlist.',
+                });
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'An error occurred while adding the product to the wishlist.',
+            });
+        });
+}
+</script>
