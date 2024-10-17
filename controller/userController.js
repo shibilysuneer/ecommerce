@@ -6,7 +6,7 @@ const env = require('dotenv').config()  ///c
 const nodemailer = require('nodemailer')
 const mongoose = require("mongoose")
 const { ObjectId } = require('mongodb')
-
+// const session = require('express-session')
 
 const securePassword = async (password) => {
   try {
@@ -24,6 +24,7 @@ const signupload = async (req, res) => {
 
   } catch (error) {
     console.log(error.message)
+    res.redirect("/pageNotfound")
   }
 }
 
@@ -105,16 +106,24 @@ const verifyOtp = async (req, res) => {
 
   } catch (error) {
     console.log(error.message);
+    res.redirect("/pageNotfound")
   }
 }
 const resendOtp = async (req, res) => {
   try {
-    const { email } = req.session.userData;
+    const email = req.session.userData;
+    // console.log(req.session);
+    // console.log(req.session.userData);
+    // console.log(email,'qwe');
+    
     if (!email) {
       return res.status(400).json({ success: false, message: "Email not found in session" })
     }
+    
     const otp = generateOtp()
+    
     req.session.userOtp = otp;
+
     const emailSent = await sendVerificationEmail(email, otp)
     if (emailSent) {
       console.log('Resend OTP:', otp);
@@ -124,6 +133,7 @@ const resendOtp = async (req, res) => {
     }
   } catch (error) {
     console.log(error.messsage);
+    res.redirect("/pageNotfound")
   }
 }
 
@@ -134,9 +144,11 @@ const loginload = async (req, res) => {
       return res.redirect('/home');
     }
     const message = req.query.message || '';
+    const user = req.session.userId ? await User.findById(req.session.userId) : null;
 
-    res.render('login', { message });
+    res.render('login', { message,user:user });
   } catch (error) {
+    res.redirect("/pageNotfound")
     console.log(error.message);
   }
 }
@@ -165,7 +177,81 @@ const verifylogin = async (req, res) => {
     return res.render('login', { message: 'login failed please try again' })
   }
 }
-
+const getForgotPassPage = async(req,res)=>{
+  try {
+    res.render('forgotPassword')
+  } catch (error) {
+    res.redirect("/pageNotfound")
+  }
+}
+const forgotEmailValid = async(req,res)=> {
+  try {
+    const {email} = req.body;
+    console.log('email',email);
+    
+    const user = await User.findOne({email:email})
+    if(user){
+      const otp = generateOtp();      
+      const emailSent = await sendVerificationEmail(email,otp);
+      if(emailSent){
+        req.session.userOtp = otp;
+        req.session.userData = email;
+        res.render('forgotpass-otp')
+        console.log('OTP:',otp);
+        
+      }else{
+        res.json({success:false,message:'failed to send otp'})
+      }
+    }else {
+      res.redirect('/forgotPassword?invalid')
+  }
+  } catch (error) {
+    console.log(error,'not found');
+    res.redirect("/pageNotfound")
+  }
+}
+const verifyForgotOtp= async(req,res) => {
+  try {
+    const enteredotp = req.body.otp;
+    console.log('enteredotp',enteredotp);
+    if(enteredotp == req.session.userOtp){
+      res.json({success:true,redirectUrl:'/reset-password'})
+    }else{
+      res.json({success:false,message:'OTP not matching'})
+    }
+  } catch (error) {
+    res.status(500).json({success:false,message:'An error occured'})
+    console.log(error.message);
+    
+  }
+}
+const getResetPassword = async(req,res) => {
+  try {
+    res.render('resetPassword')
+  } catch (error) {
+    console.log(error.message);
+    
+  }
+}
+const newPassword = async(req,res) => {
+  try {
+    const {newPass1 ,newPass2} =req.body;
+    const email = req.session.userData
+    if(newPass1==newPass2){
+      const passwordHash = await securePassword(newPass1);
+      await User.updateOne(
+        {email:email},
+        {$set:{password:passwordHash}}
+      )
+      res.redirect('/login')
+    }else{
+      res.render('resetPassword',{message:'Password not match'})
+    }
+  } catch (error) {
+    console.log(error.message);
+    
+  }
+}
 
 
 
@@ -177,13 +263,20 @@ const loadHome = async (req, res) => {
     console.log('User after Google auth:', req.user);
     console.log('Session after Google auth:', req.session);
 
+    const user = req.session.userId ? await User.findById(req.session.userId) : null;
+
     const Products = await Product.find({})
     // console.log('products:--',Products); // Debugging statement
 
-    res.render('home', { Products })
+    res.render('home', {
+       Products,
+       user:user
+      })
   } catch (error) {
     console.log('Error fetching products:', error.message);
-    res.status(500).send('Server Error');
+    // res.status(500).send('Server Error');
+    res.redirect("/pageNotfound")
+
   }
 }
 
@@ -216,6 +309,7 @@ const logout = async (req, res) => {
 
   } catch (error) {
     console.log(error.message);
+    res.redirect("/pageNotfound")
   }
 }
 
@@ -226,9 +320,6 @@ const productdetailsload = async (req, res) => {
     const product = await Product.findById(productId)
     const productOffer = await ProductOffer.findOne({ productId: product._id, isActive: true });
     const categoryoffer = await CategoryOffer.findOne({ categoryId: product.productCategory, isActive: true })
-    //    console.log('productOffer',productOffer);
-    //  console.log('categoryoffer',categoryoffer);
-
     let finalPrice = product.productPrice;
     let bestOffer = null;
 
@@ -247,10 +338,12 @@ const productdetailsload = async (req, res) => {
       finalPrice = product.productPrice - (product.productPrice * categoryoffer.offerPercentage / 100);
       bestOffer = categoryoffer;
     }
+    const user = req.session.userId ? await User.findById(req.session.userId) : null;
 
-    res.render('productdetails', { product, finalPrice, productOffer, categoryoffer, bestOffer })
+    res.render('productdetails', { product, finalPrice, productOffer, categoryoffer, bestOffer ,user})
   } catch (error) {
     console.log(error.message);
+    res.redirect("/pageNotfound")
   }
 }
 const loadprofile = async (req, res) => {
@@ -263,6 +356,7 @@ const loadprofile = async (req, res) => {
 
   } catch (error) {
     console.log(error.message);
+    res.redirect("/pageNotfound")
   }
 }
 const loadeditprofile = async (req, res) => {
@@ -274,7 +368,8 @@ const loadeditprofile = async (req, res) => {
     res.render('editProfile', { user });
   } catch (error) {
     console.log(error.message);
-    res.status(500).send('Server Error');
+    // res.status(500).send('Server Error');
+    res.redirect("/pageNotfound")
   }
 };
 const editProfile = async (req, res) => {
@@ -293,7 +388,9 @@ const editProfile = async (req, res) => {
 }
 const loadChangePassword = async (req, res) => {
   try {
-    res.render('changepassword', { successMessage: null, errorMessage: null })
+    const user = req.session.userId ? await User.findById(req.session.userId) : null;
+
+    res.render('changepassword', { successMessage: null, errorMessage: null ,user})
   } catch (error) {
     console.log(error.message);
     res.render('changepassword', { successMessage: null, errorMessage: 'Error loading the page' });
@@ -331,10 +428,11 @@ const changePassword = async (req, res) => {
 }
 const loadAddAddress = async (req, res) => {
   try {
-    res.render('addAddress')
+    const user = req.session.userId ? await User.findById(req.session.userId) : null;
+    res.render('addAddress',{user})
   } catch (error) {
     console.log(error.message);
-
+    res.redirect("/pageNotfound")
   }
 }
 const addAddress = async (req, res) => {
@@ -376,8 +474,8 @@ const addAddress = async (req, res) => {
     res.redirect('/address')
   } catch (error) {
     console.log(error.message);
-    res.status(500).send('Internal Server Error');
-
+    // res.status(500).send('Internal Server Error');
+    res.redirect("/pageNotfound")
   }
 }
 
@@ -432,13 +530,14 @@ const loadEditAddress = async (req, res) => {
     const user = await User.findById(userId);
     const address = user.address.id(addressId);
     if (address) {
-      res.render('editAddress', { address });
+      res.render('editAddress', { address,user });
     } else {
       res.status(404).send('Address not found');
     }
   } catch (error) {
     console.error('Error loading address for editing:', error);
-    res.status(500).send('Server error');
+    // res.status(500).send('Server error');
+    res.redirect("/pageNotfound")
   }
 }
 const editAddress = async (req, res) => {
@@ -494,7 +593,18 @@ const deleteAddress = async (req, res) => {
     res.redirect('/address');
   } catch (error) {
     console.error('Error deleting address:', error);
-    res.status(500).send('Server error');
+    // res.status(500).send('Server error');
+    res.redirect("/pageNotfound")
+  }
+}
+
+const pageNotFound = async (req, res) => {
+  try {
+      res.render('404', { url: req.url })
+  }
+  catch (error) {
+      console.log(error, 'page not found error');
+      res.redirect("/pageNotfound")
   }
 }
 
@@ -503,6 +613,11 @@ module.exports = {
   insertuser,
   loginload,
   verifylogin,
+  getForgotPassPage,
+  forgotEmailValid,
+  verifyForgotOtp,
+  getResetPassword,
+  newPassword,
   loadHome,
   loadauth,
   successGoogle,
@@ -521,7 +636,8 @@ module.exports = {
   editAddress,
   defaultAddress,
   deleteAddress,
-  getUserAddressPage
+  getUserAddressPage,
+  pageNotFound
 
 
 }

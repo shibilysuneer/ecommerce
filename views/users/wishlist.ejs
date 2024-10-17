@@ -6,8 +6,8 @@
             <div class="col-first">
                 <h1>Wishlist</h1>
                 <nav class="d-flex align-items-center">
-                    <a href="index.html">Home<span class="lnr lnr-arrow-right"></span></a>
-                    <a href="category.html">Wishlist</a>
+                    <a href="home">Home<span class="lnr lnr-arrow-right"></span></a>
+                    <a href="/wishlist">Wishlist</a>
                 </nav>
             </div>
         </div>
@@ -33,7 +33,7 @@
                                     <td>
                                         <div class="media">
                                             <div class="d-flex">
-                                                    <img src="/admin/images/<%= item.images[0] %>" alt="<%= item.productName %>">
+                                                    <img class="wishlist-img" src="/admin/images/<%= item.images[0] %>" alt="<%= item.productName %>">
                                             <div class="media-body">
                                                 <p><%= item.productName %></p>
                                             </div>
@@ -44,7 +44,7 @@
                                     </td>
                                     
                                     <td>
-                                        <form action="/removewishlist" method="POST">
+                                        <form action="/remove-wishlist" method="POST">
                                             <input type="hidden" name="productId" value="<%= item._id %>">
                                             <button type="submit" class="genric-btn primary-border small">Remove</button>
                                         </form>

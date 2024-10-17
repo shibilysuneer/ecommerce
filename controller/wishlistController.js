@@ -1,14 +1,19 @@
 const Product = require('../models/prodectModel')
 const Wishlist = require('../models/wishlistModal')
+const User = require('../models/userModel');
+
 
 const loadWishlist = async(req,res) =>{
     try {
         const userId = req.session.userId;
         const wishlist = await Wishlist.findOne({user:userId}).populate('products')
         const wishlistItems = wishlist ? wishlist.products : [];
-        res.render('wishlist',{wishlistItems})
+        const user = req.session.userId ? await User.findById(req.session.userId) : null;
+
+        res.render('wishlist',{wishlistItems,user})
     } catch (error) {
-        res.status(500).send('Server Error');
+        // res.status(500).send('Server Error');
+        res.redirect("/pageNotfound")
     }
 }
 const addWishlist=async(req,res) => {

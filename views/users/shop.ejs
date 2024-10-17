@@ -1,7 +1,8 @@
-
-
 <%- include('../layouts/user/header.ejs') %>
 
+	<!-- End Header Area --> 
+
+<!-- -------------------------------------------------------------------------------------------------------------- -->
 <!-- Start Banner Area -->
 <section class="banner-area organic-breadcrumb">
     <div class="container">
@@ -9,9 +10,9 @@
             <div class="col-first">
                 <h1>Shop page</h1>
                 <nav class="d-flex align-items-center">
-                    <a href="index.html">Home<span class="lnr lnr-arrow-right"></span></a>
-                    <a href="#">Shop<span class="lnr lnr-arrow-right"></span></a>
-                    <a href="category.html">Fashon Category</a>
+                    <a href="/home">Home<span class="lnr lnr-arrow-right"></span></a>
+                    <a href="/shop">Shop<span class="lnr lnr-arrow-right"></span></a>
+                    <a href="">Fashon Category</a>
                 </nav>
             </div>
         </div>
@@ -135,8 +136,14 @@
                             <div class="product-details">
                                 <h6><%= product.productName %></h6>
                                 <div class="price">
-                                    <h6><%= product.productPrice %></h6>
-                                    <h6 class="l-through">5999</h6>
+                                    <% if (product.bestOffer) { %>
+                                    <h6><%= product.finalPrice %></h6>
+                                    <h6 class="l-through"><%= product.productPrice %></h6>
+                                    <!-- <span class="badge badge-success"> <%= product.bestOffer.offerPercentage %>% off</span> -->
+                                     <small class="discount-text">(<%= product.bestOffer.offerPercentage %>% off)</small>
+                                    <% } else { %>
+                                        <h6><%= product.productPrice %></h6>
+                                    <% } %>
                                 </div>
                                 <% if (product.stocks > 0) { %>
                                     <span class="badge badge-success">In Stock</span>

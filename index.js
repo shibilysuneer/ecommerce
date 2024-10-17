@@ -1,14 +1,18 @@
+require('dotenv').config()
 
 const mongoose=require('mongoose')
-mongoose.connect( 'mongodb://127.0.0.1:27017/CanWalk')
 
-require('dotenv').config()
+mongoose.connect(process.env.MONGO_URL)
+.then(() => console.log('MongoDB connected'))
+.catch((err) => console.error('MongoDB connection error:', err));
 
 const express=require("express")  
 const app = express()
 const path=require('path')
 const PORT = process.env.PORT || 3000;
 
+// const methodOverride = require('method-override');
+// app.use(methodOverride('_method'));
 
 app.use(express.static(path.join(__dirname,'public')))
 app.set('views',path.join(__dirname,'views'))

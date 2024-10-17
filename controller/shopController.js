@@ -2,6 +2,7 @@ const User = require("../models/userModel");
 const Product = require('../models/prodectModel')
 const Category = require('../models/categoryModal')
 const Brand =require('../models/brandModal')
+const { ProductOffer, CategoryOffer } = require('../models/offerModal')
 
 
 const showProducts = async(req,res) => {
@@ -64,11 +65,43 @@ const showProducts = async(req,res) => {
         const categories = await Category.find();
         const brands = await Brand.find()
         // console.log('Fetched Categories:', categories);
-        res.render('shop', { Products,categories,brands ,currentPage: page,totalPages,limit,selectedCategory: req.query.category || '',  
+//   ---- -------------------------------------------------------
+        const updatedProducts = await Promise.all(Products.map(async (product) => {
+            const productOffer = await ProductOffer.findOne({ productId: product._id, isActive: true });
+            const categoryOffer = await CategoryOffer.findOne({ categoryId: product.productCategory, isActive: true });
+            
+            let finalPrice = product.productPrice;
+            let bestOffer = null;
+
+            if (productOffer && categoryOffer) {
+                if (productOffer.offerPercentage >= categoryOffer.offerPercentage) {
+                    finalPrice = product.productPrice - (product.productPrice * productOffer.offerPercentage / 100);
+                    bestOffer = productOffer; 
+                } else {
+                    finalPrice = product.productPrice - (product.productPrice * categoryOffer.offerPercentage / 100);
+                    bestOffer = categoryOffer; 
+                }
+            } else if (productOffer) {
+                finalPrice = product.productPrice - (product.productPrice * productOffer.offerPercentage / 100);
+                bestOffer = productOffer;
+            } else if (categoryOffer) {
+                finalPrice = product.productPrice - (product.productPrice * categoryOffer.offerPercentage / 100);
+                bestOffer = categoryOffer;
+            }
+            
+            product.finalPrice = finalPrice;
+            product.bestOffer = bestOffer;
+            return product;
+        }));
+        const user = req.session.userId ? await User.findById(req.session.userId) : null;
+
+// ---------------------------------------------------------------
+        res.render('shop', { user,Products:updatedProducts,categories,brands ,currentPage: page,totalPages,limit,selectedCategory: req.query.category || '',  
             selectedBrand: req.query.brandId || ''   });
     } catch (error) {
         console.log(error.message);
-        res.status(500).send('Internal Server Error');
+        // res.status(500).send('Internal Server Error');
+        res.redirect("/pageNotfound")
     }
 }
 const sortedLists = async(req,res)=>{
@@ -100,8 +133,11 @@ const sortedLists = async(req,res)=>{
         .skip((page - 1) * limit)
         .limit(limit);
        // console.log("Products found:", products);
+       const user = req.session.userId ? await User.findById(req.session.userId) : null;
+
         
         res.render('shop', { Products: products ,categories:categories,brands:brands,
+            user,
             currentPage: page,
             totalPages: totalPages,
             limit: limit,
@@ -118,14 +154,17 @@ const showProductDetails =async(req,res) => {
     //    console.log(`Product ID:-- ${productId}`);
        const product = await Product.findById(productId).populate('productCategory', 'categoryName');
     // console.log('product---',product);
+    const user = req.session.userId ? await User.findById(req.session.userId) : null;
+
      
        if (!product) {
         return res.status(404).send('Product not found');
     }
 
-      res.render('productdetails',{product}) 
+      res.render('productdetails',{product,user}) 
      }catch(error){
       console.log(error.message);
+      res.redirect("/pageNotfound")
     }
   }
 module.exports = {

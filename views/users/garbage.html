@@ -1,94 +1,11 @@
-    
-        const cartItems = cart.cartItems.map(item => {
-            const originalPrice = item.price; // Get the original price
-            const offerPercentage = item.offerPercentage ; // Get the offer percentage
-            const discount = (offerPercentage > 0) ? (originalPrice * (offerPercentage / 100)) : 0; // Calculate discount
-            const discountedPrice = originalPrice - discount; // Calculate price after discount
-console.log('originalPrice',originalPrice);
-
-
-            return {
-                product: item.productId, 
-                quantity: item.qty || 0,
-                ogprice:originalPrice,
-                discount:discount,
-                price: discountedPrice, // Use discounted price here
-                 offerPercentage 
-            };
-        });
-        console.log('asdfghjk',cartItems);
-        
-
-
-        <!-- <div id="glide">
-					  <div class="glide__track" data-glide-el="track">
-						<ul class="glide__slides">
-						<% if (product.images && product.images.length>0 ) { %>
-							<%product.images.slice(0, 3).forEach((image,index) =>{%>
-							
-							<li class="glide__slide">
-							 <div class="image-container" >	
-							<img  class="zoom-img" src="/admin/images/<%= image%>"
-							  data-zoom-image="/admin/images/<%= image %>" alt="<%= product.productName %>">
-						     </div>
-						   </li>
-						<% })%>
-						<% } %>
-					   </ul>
-					  </div>
-					   
-			        </div> -->
-					<!-- <div class="product-images">
-						<div class="image-gallery">
-							<% if (product.images && product.images.length > 0) { %>
-								<% product.images.slice(0, 3).forEach(function(image) { %>
-									<div class="image-item">
-										<img src="/admin/images/<%= image%>" alt="Product Image" class="product-image">
-									</div>
-								<% }); %>
-							
-							<% } %>
-						</div>
-					</div> -->
-
-					<!-- <div class="s_Product_carousel">
-					<% if (product.images && product.images.length > 0) { %>
-						<% product.images.slice(0, 3).forEach(function(image) { %>
-						<div class="single-prd-item">
-							<img class="img-fluid" src="/admin/images/<%= image%>" alt="">
-						</div>
-						<% }); %>
-					</div> -->
-                    data-src="/admin/images/<%= image %>"
-
-
-                    $('#mainImage').elevateZoom({
-                        zoomType: "lens", // Change to "window" or "inner" for different styles
-                        lensShape: "round", // Lens shape: "round" or "square"
-                        lensSize: 200, // Size of the zoom lens
-                        borderSize: 1, // Size of the lens border
-                        borderColour: "#000" // Color of the lens border
-                    });
-                    $('#mainImage').elevateZoom({
-                        zoomType: "window",
-                        zoomWindowWidth: 400,
-                        zoomWindowHeight: 400,
-                        borderSize: 1,
-                        borderColour: "#888"
-                    });
-                    						<!-- <% if (product.images && product.images.length > 0) { %> -->
-
-                                            the zoom functionality is consistently showing the first image's zoom effect even when selecting different images,
-
-											<!-- <% if (product.stocks> 0 && productOffer) { %>
-								<h2>
-									<span class="old-price">₹<%= product.productPrice %></span>
-									₹<%= finalPrice %>
-										<small class="discount-text">(<%= productOffer.offerPercentage %>% OFF)</small>
-								</h2>
-								<% } else { %>
-									<h2 class="product-price">₹<%= product.productPrice %>
-									</h2>
-									<% } %> -->
-
-									// .populate('cartItems.productId.productCategory', 'categoryOfferPercentage'); 
+<% if (typeof error !=='undefined' ) { %>
+    <div class="alert alert-danger">
+        <!-- <%  if (error==='coupon-invalid' ) { %>
+                This coupon is invalid or expired.
+                <% } else if (error==='coupon-not-found' ) { %>
+                    Coupon not found.
+                    <% } else if (error==='terms' ) { %>
+                        Please accept the terms and conditions.
+                        <% } %>
+    </div>
+    <% } %>

@@ -9,3 +9,105 @@
     display: block; /* Ensures it takes up full width */
     max-width: 150px; /* Adjust this width as needed */
 }
+
+
+/* top  products/ brand/ category*/
+.tf-section-3 {
+    margin: 20px 0;
+}
+
+.wg-box {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+.wg-box h5 {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 15px;
+    color: #333;
+}
+
+.dropdown .btn {
+    background-color: #f5f5f5;
+    border: none;
+}
+
+.dropdown-menu a {
+    font-size: 14px;
+    padding: 8px 15px;
+    color: #333;
+}
+
+.wg-table ul.table-title {
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 10px;
+}
+
+.wg-table ul.table-title .body-title {
+    font-weight: 600;
+    color: #555;
+}
+
+.wg-table ul.flex {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.wg-table ul.flex li {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.wg-table ul.flex li:last-child {
+    border-bottom: none;
+}
+
+.wg-table ul.flex .body-text {
+    font-size: 16px;
+    color: #333;
+}
+
+.flex.items-center {
+    display: flex;
+    align-items: center;
+}
+
+.flex.items-center .name a {
+    font-size: 16px;
+    color: #007bff;
+    text-decoration: none;
+}
+
+.flex.items-center .name a:hover {
+    text-decoration: underline;
+}
+/* Table title spacing */
+.gap10 {
+    gap: 10px;
+}
+
+/* Content spacing */
+.gap18 {
+    gap: 18px;
+}
+
+/* Ensure alignment of elements */
+.table-top-product-1 {
+    width: 100%;
+}
+
+.table-top-product-1 .product-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+
+

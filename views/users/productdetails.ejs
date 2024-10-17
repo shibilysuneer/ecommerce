@@ -8,8 +8,8 @@
 				<div class="col-first">
 					<h1>Product Details Page</h1>
 					<nav class="d-flex align-items-center">
-						<a href="index.html">Home<span class="lnr lnr-arrow-right"></span></a>
-						<a href="#">Shop<span class="lnr lnr-arrow-right"></span></a>
+						<a href="/home">Home<span class="lnr lnr-arrow-right"></span></a>
+						<a href="/shop">Shop<span class="lnr lnr-arrow-right"></span></a>
 						<a href="single-product.html">product-details</a>
 					</nav>
 				</div>
@@ -57,8 +57,6 @@
 							<h3>
 								<%= product.productName %>
 							</h3>
-
-							
 									<% if (product.stocks > 0) { %>
 										<% if (bestOffer) { %> 
 										  <h2>

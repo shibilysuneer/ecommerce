@@ -1,114 +1,273 @@
 <%- include('../layouts/user/header.ejs') %>
 
-<section class="order_details section_gap">
-    <div class="container">
-        <h3 class="title_confirmation">Order Details</h3>
-        <div class="row order_d_inner">
-            <div class="col-lg-6">
-                <div class="details_item">
-                    <h4>Order Info</h4>
-                    <ul class="list">
-                        <li><span>Order number</span> : <%= order. orderId%></li>
-                        <li><span>Date</span> : <%= order.createdAt.toDateString() %></li>
-                        <!-- <li><span>Status</span> : <%= order.status %></li> -->
-                        <li><span>Total</span> : <%= order.total.toFixed(2) %></li>
-                        <li><span>Payment method</span> : <%= order.paymentMethod %></li>
-                    </ul>
-                </div>
-            </div>
-            <div class="col-lg-6">
-                <div class="details_item">
-                    <h4>Shipping Address</h4>
-                    <ul class="list">
-                        <li><span>Street</span> : <%= order.address.street %></li>
-                        <li><span>City</span> : <%= order.address.city %></li>
-                        <li><span>State</span> : <%= order.address.state %></li>
-                        <li><span>Zip Code</span> : <%= order.address.zip %></li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-        <div class="order_details_table">
-            <h2>Order Items</h2>
-            <div class="table-responsive">
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>ProductImage</th>
-                            <th>Product</th>
-                            <th>Quantity</th>
-                            <th>Total</th>
-                            <th>Status</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <% order.cartItems.forEach(item => { %>
-                            <tr>
-                                <td>
-                                  
-                                    <img src="/admin/images/<%= item.productId.images[0] %>" alt="<%= item.productId.productName %>" style="width: 50px; height: auto;">
-                                </td>
-                                <td><%= item.productId.productName %></td>
-                                <td>x <%= item.qty %></td>
-                                <td><%= (item.price * item.qty).toFixed(2) %></td>
-                                <!-- <td><%= item.status %></td> -->
-                                <td>
-                                    <% if (item.status === 'canceled') { %>
-                                        <span class="text-muted">Canceled</span>
-                                    <% } else if (item.status === 'confirmed') { %>
-                                        <span class="text-success">Confirmed</span>
-                                    <% } else if (item.status === 'shipped') { %>
-                                        <span class="text-success">Shipped</span>
-                                    <% } else if (item.status === 'delivered') { %>
-                                        <span class="text-success">Delivered</span>
-                                    <% } else if (item.status === 'returned') { %>
-                                            <span class="text-danger">Returned</span>
+    <section class="order_details section_gap">
+        <div class="container">
+            <h3 class="title_confirmation">Order Details</h3>
+            <div class="row order_d_inner">
+                <div class="col-lg-4">
+                    <div class="details_item">
+                        <h4>Order Info</h4>
+                        <ul class="list">
+                            <li><span>Order number</span> : <%= order. orderId%>
+                            </li>
+                            <li><span>Date</span> : <%= order.createdAt.toDateString() %>
+                            </li>
+                            <!-- <li><span>Status</span> : <%= order.status %></li> -->
+                            <li><span>Total</span> : <%= order.total.toFixed(2) %>
+                            </li>
+                            <li><span>Payment method</span> : <%= order.paymentMethod %>
+                            </li>
+                            <li><span>Payment status</span> :
+                                <% if (order.paymentStatus==='pending' && order.paymentMethod === 'razorpay' ) { %>
+                                    <span class="text-warning">Pending</span>
+                                    <button class="btn" onclick="retryPayment('<%= order._id %>')">Retry
+                                        Payment</button>
                                     <% } else { %>
-                                        <span class="text-warning">Pending</span>
+                                        <span class="text-success">Paid</span>
                                         <% } %>
-                                </td>
-                                <td>
-                                    <% if (item.status === 'delivered') { %>
-                                       
-                                 <form action="/return-order/<%= order._id %>/<%= item._id %>" method="POST" >
-                                            <input type="hidden" name="status" value="returned">
-                                            <textarea id="returnReason" name="returnReason" required></textarea>
-                                            <button type="submit" class="btn btn-danger" >Return</button>
-                                      </form>
-                                    <% } else { %>
-                                        <span class="text-muted"></span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <!-- Coupon Info in the Middle -->
+                <div class="col-lg-4">
+                    <div class="details_item">
+                        <h4>Coupon Info</h4>
+                        <ul class="list">
+                            <% if (order.couponApplied) { %>
+                                <li><span>Coupon Applied</span> : Yes</li>
+                                <li><span>Coupon Discount</span> : -₹<%= order.couponDiscount.toFixed(2) %>
+                                </li>
+                                <% } else { %>
+                                    <li><span>Coupon Applied</span> : No</li>
                                     <% } %>
-                                </td>
-
-                                <td>
-                                    <% if (item.status !== 'canceled' && item.status !== 'delivered'  && item.status !== 'returned') { %>
-                                        <form  action="/cancel/<%= order._id %>/<%= item._id %>" method="post">
-                                            <button type="submit" class="btn btn-danger">Cancel</button>
-                                        </form>
-                                    <% } else if (item.status === 'canceled') { %>
-                                        <span class="text-muted">Canceled</span>
-                                    <% } else if (item.status === 'delivered') { %>
-                                        <span class="text-muted">Delivered (Return Available)</span>
-                                        <% } else if (item.status === 'returned') { %>
-                                            <span class="text-muted">Returned (Cancel not available)</span>
-                                        <% } %>
-                                </td>
-                                
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="details_item">
+                        <h4>Shipping Address</h4>
+                        <ul class="list">
+                            <li><span>Street</span> : <%= order.address.street %>
+                            </li>
+                            <li><span>City</span> : <%= order.address.city %>
+                            </li>
+                            <li><span>State</span> : <%= order.address.state %>
+                            </li>
+                            <li><span>Zip Code</span> : <%= order.address.zip %>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="order_details_table">
+                <h2>Order Items</h2>
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>ProductImage</th>
+                                <th>Product</th>
+                                <th>Quantity</th>
+                                <th>Total</th>
+                                <th>Status</th>
+                                <th>Actions</th>
                             </tr>
-                        <% }) %>
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            <% order.cartItems.forEach(item=> { %>
+                                <tr>
+                                    <td>
+
+                                        <img src="/admin/images/<%= item.productId.images[0] %>"
+                                            alt="<%= item.productId.productName %>" style="width: 50px; height: auto;">
+                                    </td>
+                                    <% if (item.offerPercentage) { %>
+                                        <td>
+                                            <%= item.productId.productName %>(<span style="color: green;">
+                                                    <%= item.offerPercentage %>% off
+                                                </span>)
+                                        </td>
 
 
-               
+                                        <% } else {%>
+                                            <td>
+                                                <%= item.productId.productName %>
+                                            </td>
+                                            <% } %>
+                                                <td>x <%= item.qty %>
+                                                </td>
+                                                <td>
+                                                    <%= (item.price * item.qty).toFixed(2) %>
+                                                </td>
+                                                <!-- <td><%= item.status %></td> -->
+                                                <td>
+                                                    <% if (item.status==='canceled' ) { %>
+                                                        <span class="text-muted">Canceled</span>
+                                                        <% } else if (item.status==='confirmed' ) { %>
+                                                            <span class="text-success">Confirmed</span>
+                                                            <% } else if (item.status==='shipped' ) { %>
+                                                                <span class="text-success">Shipped</span>
+                                                                <% } else if (item.status==='delivered' ) { %>
+                                                                    <span class="text-success">Delivered</span>
+                                                                    <% } else if (item.status==='returnRequest' ) { %>
+                                                                        <span class="text-danger">ReturnRequest</span>
+                                                                        <% } else if (item.status==='returned' ) { %>
+                                                                            <span class="text-danger">Returned</span>
+                                                                            <% } else if (item.status==='returnRejected'
+                                                                                ) { %>
+                                                                                <span
+                                                                                    class="text-danger">ReturnRejected</span>
+                                                                                <% } else { %>
+                                                                                    <span
+                                                                                        class="text-warning">Pending</span>
+                                                                                    <% } %>
+                                                </td>
+                                                <td>
+                                                    <% if (item.status==='delivered' ) { %>
 
+                                                        <form action="/return-order/<%= order._id %>/<%= item._id %>"
+                                                            method="POST">
+                                                            <input type="hidden" name="status" value="returned">
+                                                            <textarea id="returnReason" name="returnReason"
+                                                                required></textarea>
+                                                            <button type="submit" class="btn btn-danger">Return</button>
+                                                        </form>
+                                                        <% } else { %>
+                                                            <span class="text-muted"></span>
+                                                            <% } %>
+                                                </td>
+
+                                                <td>
+                                                    <% if (item.status==='canceled' ) { %>
+                                                        <span class="text-muted">Canceled</span>
+                                                        <% } else if (item.status==='delivered' ) { %>
+                                                            <span class="text-muted">Delivered (Return Available)</span>
+                                                            <% } else if (item.status==='returned' ) { %>
+                                                                <span class="text-muted">Returned (Request
+                                                                    accepted)</span>
+                                                                <% } else if (item.status==='returnRequest' ) { %>
+                                                                    <span class="text-muted">Request to return
+                                                                        (Pending..)</span>
+                                                                    <% } else if (item.status==='returnRejected' ) { %>
+                                                                        <span class="text-muted">Rejected (Return not
+                                                                            Available)</span>
+                                                                        <% } else { %>
+                                                                            <form id="cancelForm-<% item._id %>"
+                                                                                action="/cancel/<%= order._id %>/<%= item._id %>"
+                                                                                method="post">
+                                                                                <button type="submit"
+                                                                                    class="btn btn-danger"
+                                                                                    onclick="confirmCancel('<%= item._id %>')">Cancel</button>
+                                                                            </form>
+                                                                            <% } %>
+                                                </td>
+
+
+                                </tr>
+                                <% }) %>
+                        </tbody>
+                    </table>
+
+
+                    <div class="text-right mt-4">
+                        <a href="/invoice/<%= order._id %>" class="genric-btn primary radius">Download Invoice</a>
+                    </div>
+
+                </div>
+            </div>
+            <div class="text-right mt-4">
+                <a href="/order-history" class="genric-btn primary radius">Back</a>
             </div>
         </div>
-        <div class="text-right mt-4">
-            <a href="/orderHistory" class="genric-btn primary radius">Back</a>
-        </div>
-    </div>
-</section>
+    </section>
 
-<%- include('../layouts/user/footer.ejs') %>
+    <%- include('../layouts/user/footer.ejs') %>
+        <script>
+            function confirmCancel(itemId) {
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You won't be able to revert this action!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, cancel it!',
+                    cancelButtonText: 'No, keep it',
+
+                })
+                    .then((result) => {
+                        if (result.isConfirmed) {
+                            // If confirmed, submit the form
+
+                            document.getElementById('cancelForm-' + itemId).submit();
+
+                        }
+                    });
+            }
+        </script>
+        <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+        <script>
+               
+            function retryPayment(orderId) {
+                console.log('Retrying payment for order ID:', orderId);
+
+                axios.post('/create-razorpay-order', {
+                    amount: <%= order.total %>,  
+                    currency: 'INR'
+                })
+                    .then((response) => {
+                        console.log('Razorpay order details:', response.data);
+
+
+                        // Initialize Razorpay options with the received data
+                        var options = {
+                            key: response.data.key_id,
+                            amount: response.data.order.amount,
+                            currency: response.data.order.currency,
+                            order_id: response.data.order.id,
+                            handler: function (response) {
+                                console.log('Payment response:', response);
+
+                                const { razorpay_payment_id, razorpay_order_id, razorpay_signature } = response;
+
+                                // Handle successful payment response
+                                axios.post("/verify-repayment", {
+                                    razorpayPaymentId: razorpay_payment_id,
+                                    razorpayOrderId: razorpay_order_id,
+                                    razorpaySignature: razorpay_signature,
+                                    orderId
+                                })
+                                .then((verifyResponse) => {
+                        if (verifyResponse.data.success) {
+                            // alert('Payment successful.');
+                            Swal.fire('Success', 'Payment completed successfully!', 'success')
+                            window.location.reload();
+                        } else {
+                            // alert('Payment failed. Please try again.');
+                            Swal.fire('Error', response.data.message, 'error');
+                        }
+                    })
+                    .catch((error) => {
+                        console.error('Payment verification failed:', error);
+                        alert('Payment verification failed. Please try again.');
+                    });
+                },
+                            "theme": {
+                                "color": "#3399cc"
+                            }
+                        };
+
+                        // Open Razorpay checkout
+                        var rzp1 = new Razorpay(options);
+                        rzp1.open();
+                    })
+                    .catch(error => {
+                        console.error("Error fetching payment details:", error);
+                    });
+            }
+</script>
+
+
+
+

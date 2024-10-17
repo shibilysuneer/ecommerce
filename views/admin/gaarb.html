@@ -1,214 +1,194 @@
-<%- include('../layouts/admin/header.ejs') %>
+<%- include('../layouts/user/header.ejs') -%>
 
-<div class="main-content">
-    <div class="main-content-inner">
-        <div class="main-content-wrap">
-            <div class="flex items-center flex-wrap justify-between gap20 mb-27">
-                <h3>All Offers</h3>
-                <ul class="breadcrumbs flex items-center flex-wrap justify-start gap10">
-                    <li>
-                        <a href="/admin"><div class="text-tiny">Dashboard</div></a>
-                    </li>
-                    <li>
-                        <i class="icon-chevron-right"></i>
-                    </li>
-                    <li>
-                        <a href="#"><div class="text-tiny">Offers</div></a>
-                    </li>
-                    <li>
-                        <i class="icon-chevron-right"></i>
-                    </li>
-                    <li>
-                        <div class="text-tiny">All Offers</div>
-                    </li>
-                </ul>
-            </div>
-            
-            <div class="wg-box">
-                <div class="flex items-center justify-between gap10 flex-wrap">
-                    <div class="wg-filter flex-grow">
-                        <form class="form-search">
-                            <fieldset class="name">
-                                <input type="text" placeholder="Search here..." name="search" tabindex="2">
-                            </fieldset>
-                            <div class="button-submit">
-                                <button type="submit"><i class="icon-search"></i></button>
-                            </div>
-                        </form>
-                    </div>
-                    <a class="tf-button style-1 w208" href="/admin/addproductoffer"><i class="icon-plus"></i>Add new</a>
-                </div>
-
-                <div class="wg-table table-all-offers">
-                    <ul class="table-title flex gap20 mb-14">
-                        <li><div class="body-title">Offer Name</div></li>
-                        <li><div class="body-title">Offer Type</div></li>
-                        <li><div class="body-title">Discount (%)</div></li>
-                        <li><div class="body-title">Action</div></li>
-                    </ul>
-
-                    <ul class="flex flex-column">
-                        <!-- Loop through product offers -->
-                        <% productOffers.forEach((offer, index) => { %>
-                        <li class="offer-item gap14">
-                            <div class="flex items-center justify-between gap20 flex-grow">
-                                <div class="name">
-                                    <span class="body-title-2 offer-name"><%= offer.offerName %></span>
-                                </div>
-                                <div class="body-text">Product Offer</div>
-                                <div class="body-text"><%= offer.offerPercentage %>%</div>
-                                <div class="list-icon-function">
-                                    <div class="item edit">
-                                        <a href="/admin/editoffer/<%= offer._id %>"><i class="icon-edit-3"></i></a>
-                                    </div>
-                                    <% if (offer.isActive) { %>
-                                    <div class="item block">
-                                        <form action="/admin/blockoffer/<%= offer._id %>" method="post">
-                                            <button type="submit" class="icon-block"><i class="icon-block"></i> Block</button>
-                                        </form>
-                                    </div>
-                                    <% } else { %>
-                                    <div class="item unblock">
-                                        <form action="/admin/unblockoffer/<%= offer._id %>" method="post">
-                                            <button type="submit" class="icon-unblock"><i class="icon-unblock"></i> Unblock</button>
-                                        </form>
-                                    </div>
-                                    <% } %>
-                                </div>
-                            </div>
-                        </li>
-                        <% if (index < productOffers.length - 1) { %>
-                            <hr>
-                        <% } %>
-                        <% }) %>
-
-                        <!-- Loop through category offers -->
-                        <% categoryOffers.forEach((offer, index) => { %>
-                        <li class="offer-item gap14">
-                            <div class="flex items-center justify-between gap20 flex-grow">
-                                <div class="name">
-                                    <span class="body-title-2 offer-name"><%= offer.offerName %></span>
-                                </div>
-                                <div class="body-text">Category Offer</div>
-                                <div class="body-text"><%= offer.offerPercentage %>%</div>
-                                <div class="list-icon-function">
-                                    <div class="item edit">
-                                        <a href="/admin/editoffer/<%= offer._id %>"><i class="icon-edit-3"></i></a>
-                                    </div>
-                                    <% if (offer.isActive) { %>
-                                    <div class="item block">
-                                        <form action="/admin/blockoffer/<%= offer._id %>" method="post">
-                                            <button type="submit" class="icon-block"><i class="icon-block"></i> Block</button>
-                                        </form>
-                                    </div>
-                                    <% } else { %>
-                                    <div class="item unblock">
-                                        <form action="/admin/unblockoffer/<%= offer._id %>" method="post">
-                                            <button type="submit" class="icon-unblock"><i class="icon-unblock"></i> Unblock</button>
-                                        </form>
-                                    </div>
-                                    <% } %>
-                                </div>
-                            </div>
-                        </li>
-                        <% if (index < categoryOffers.length - 1) { %>
-                            <hr>
-                        <% } %>
-                        <% }) %>
-                    </ul>
-                </div>
-
-                <!-- Pagination -->
-                <div class="divider"></div>
-                <div class="flex items-center justify-between flex-wrap gap10">
-                    <div class="text-tiny">Showing 10 entries</div>
-                    <ul class="wg-pagination">
-                        <li><a href="#"><i class="icon-chevron-left"></i></a></li>
-                        <li><a href="#">1</a></li>
-                        <li class="active"><a href="#">2</a></li>
-                        <li><a href="#">3</a></li>
-                        <li><a href="#"><i class="icon-chevron-right"></i></a></li>
-                    </ul>
-                </div>
-            </div>
-        </div>
+<main class="main">
+  <div class="page-header text-center" style="background-image: url('/assets/images/page-header-bg.jpg')">
+    <div class="container">
+      <h1 class="page-title">My Orders</h1>
     </div>
+  </div>
+
+  <div class="page-content">
+    <div class="container">
+      <div class="row">
+        <nav aria-label="breadcrumb" class="breadcrumb-nav">
+          <div class="container">
+            <ol class="breadcrumb">
+              <li class="breadcrumb-item"><a href="/">Home</a></li>
+              <li class="breadcrumb-item"><a href="/">Profile</a></li>
+              <li class="breadcrumb-item active" aria-current="page">My Order</li>
+            </ol>
+          </div>
+        </nav>
+
+        <% if (orders.length > 0) { %>
+          <% orders.forEach(order => { %>
+            <div class="col-sm-2 col-md-6 col-lg-12 mb-4 pt-5">
+              <div class="card h-100 shadow-sm ">
+                <div class="card-header bg-gray text-white">
+                  <h5 class="mb-0">Order ID: <%= order.orderId %></h5>
+                </div>
+                <div class="card-body pt-3 d-flex justify-content-around">
+                  <!-- Order Summary -->
+                  <div>
+                    <p><strong>Order Date:</strong> <%= new Date(order.createdOn).toLocaleDateString() %></p>
+                    <p><strong>Payment Method:</strong> <%= order.paymentMethod %></p>
+                    <p>
+                      <strong>Status:</strong>
+                      <span style="font-weight: bolder; color: <%= order.status === 'Cancelled' ? 'red' : 'green' %>">
+                        <%= order.status %>
+                    </span>
+                  </p>
+                  <% if (order.paymentMethod === 'online-payment') { %>
+                    <p><strong>Payment Status:</strong> <%= order.paymentStatus %></p>
+                  <% } %>
+                </div>
+
+                <div class="order-product-detail pt-1">
+                  <% order.orderItems.forEach(item => { %>
+                    <div class="order-item mb-2 d-flex">
+                      <% if (item.product) { %>
+                        <div>
+                          <p class="mb-0"><strong>Quantity:</strong> <%= item.quantity %></p>
+                          <p class="mb-0"><strong>Price:</strong> ₹<%= item.price %></p>
+                        </div>
+                      <% } %>
+                    </div>
+                  <% }) %>
+                </div>
+
+                <div class="order-total">
+                  <h5 class="mt-3">
+                    Total: ₹<%= order.orderItems.reduce((total, item) => total + (item.quantity * item.price), 0) %>
+                </h5>
+              </div>          //
+            </div>
+            <!-- id="retryPayment" data-order-id="<%= order._id %>"  -->
+            <!-- Card Footer with Action Buttons -->
+            <div class="card-footer text-center">
+              <a href="/viewOrderDetails/<%= order._id %>" class="btn btn-info">View Details</a>
+              <% if (order.status === 'Pending' || order.status === 'Processing') { %>
+                <button class="btn btn-danger btn-cancel-order" onclick="cancelOrder('<%= order._id %>')">Cancel Order</button>
+              <% } %>
+
+              <% if (order.status === 'Pending' && order.paymentStatus === 'Pending') { %>
+                <button class="btn btn-primary" onclick="initiateRepayment('<%= order._id %>', '<%= order.finalAmount %>', '<%= order.razorpayOrderId %>')">
+                  Repayment
+                </button>
+              <% } %>
+            </div>
+          </div>
+        </div>
+      <% }) %>
+      <% } else { %>
+        <div class="col-12">
+          <div class="alert alert-info text-center" role="alert">You have no orders yet.</div>
+          <div class="order-now" style="display: flex; justify-content: center;">
+            <img src='assets/images/order-now.png' alt="order-now">
+          </div>
+          <div class="shop-btn" style="display: flex; justify-content: center; padding: 29px 0px 8px 4px;">
+            <a href="/shop"><button class="btn btn-primary">Go to Shop Page</button></a>
+          </div>
+        </div>
+      <% } %>
+    </div>
+  </div>
 </div>
+</main>
 
-<%- include('../layouts/admin/footer.ejs') %>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    async function cancelOrder(orderId) {
+      const confirmResult = await Swal.fire({
+        title: "Are you sure?",
+        text: "You won't be able to revert this!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Yes, cancel it!",
+        cancelButtonText: "No, keep it",
+      });
+  
+      if (confirmResult.isConfirmed) {
+        try {
+          const response = await axios.post("/cancelOrder", { orderId });
+  
+          if (response.data.success) {
+            Swal.fire("Cancelled!", response.data.message, "success").then(() => {
+              window.location.reload();
+            });
+          } else {
+            Swal.fire("Failed!", response.data.message, "error");
+          }
+        } catch (error) {
+          console.error("Error:", error);
+          Swal.fire("Error!", "Failed to cancel the order. Please try again.", "error");
+        }
+      }
+    }
+  
+    async function initiateRepayment(orderId, amount, razorpayOrderId) {
+  try {
+    const response = await axios.post('/initiateRepayment', { orderId });
 
-// function openCropper(imageSrc) {
-    //     const imageToCrop = document.getElementById('imageToCrop');
-    //     imageToCrop.src = imageSrc;
-    //     $('#cropperModal').modal('show');
-    
-    //     // Initialize Cropper
-    //     cropper = new Cropper(imageToCrop, {
-    //         aspectRatio: 1,
-    //         viewMode: 2,
-    //         autoCropArea: 1
-    //     });
-    // }
-    
-    // // Handle cropping the image
-    // document.getElementById('cropButton').addEventListener('click', () => {
-    //     const croppedCanvas = cropper.getCroppedCanvas();
-    //     croppedCanvas.toBlob((blob) => {
-    //         // Convert the cropped image blob to a File and add to the form
-    //         const croppedFile = new File([blob], currentImageFile.name, { type: blob.type });
-    //         // You can now append this cropped file to a FormData object or directly to the image input for submission.
-    //     });
-    
-    //     $('#cropperModal').modal('hide'); // Close the modal
-    //     cropper.destroy(); // Destroy the cropper instance
-    // });
+    if (response.data.success) {
+      const options = {
+        key: response.data.razorpayKey, // Razorpay key from backend
+        amount: Math.round(amount * 100), // Amount in paisa
+        currency: 'INR',
+        name: 'Your Store Name',
+        description: 'Repayment for Order ID: ' + orderId,
+        order_id: razorpayOrderId, // Existing Razorpay order ID
+        handler: async function (razorpayResponse) {
+          // Log Razorpay response for debugging
+          console.log('Razorpay response:', razorpayResponse);
+
+          // Send the payment details to the backend for verification
+          await handleRePaymentSuccess(
+            razorpayResponse.razorpay_payment_id,
+            razorpayResponse.razorpay_order_id,
+            razorpayResponse.razorpay_signature,
+            orderId
+          );
+        },
+        theme: {
+          color: '#3399cc'
+        }
+      };
+
+      const rzp1 = new Razorpay(options);
+      rzp1.on('payment.failed', function (response) {
+        Swal.fire('Error', 'Payment failed. Please try again.', 'error');
+      });
+      rzp1.open();
+    }
+  } catch (error) {
+    console.error('Error initiating repayment:', error);
+    Swal.fire('Error', 'Failed to initiate repayment. Please try again.', 'error');
+  }
+}
 
 
-<!-- addto cart -->
-    
-    //  if (cart) {
-        //      const itemIndex = cart.cartItems.findIndex(p => p.productId.toString()  === productId);
-        //      if (itemIndex > -1) {
-        //         const currentQty = cart.cartItems[itemIndex].qty;
-        //         const newQty = currentQty + requestedQty;
-        //         if (newQty > availableStock) {
-        //             cart.cartItems[itemIndex].qty = availableStock;
-        //             await cart.save();
-        //             return res.redirect(`/cart?error=${encodeURIComponent(`Cannot add more than ${availableStock} items to the cart.`)}`);
-                   
-        //         }else{
-        //             cart.cartItems[itemIndex].qty = newQty;
 
-        //         }
-
-        //       } else {
-               
-        //         const addQty = Math.min(requestedQty, Math.min(maxQtyPerPerson, availableStock));
-        //         cart.cartItems.push({ 
-        //             productId,
-        //             qty: addQty,
-        //             price: finalPrice ,
-        //             // price: product.productPrice,
-        //              images: product.images,
-        //             //  discountedPrice:product.productPrice * (1 - (item.offerPercentage / 100)),
-        //             //  offerPercentage: productOffer ? productOffer.offerPercentage : 0
-        //              });
-        //      }
-        //      await cart.save();
-        //      console.log("cart",cart);
-             
-        //     } else {
-                
-        //         const addQty = Math.min(requestedQty, Math.min(maxQtyPerPerson, availableStock));
-        //     cart = new Cart({
-        //         userId: userObjectId,
-        //         cartItems: [{ productId, qty: addQty,
-        //             //  price: product.productPrice, 
-        //             images: product.images,
-        //             price: finalPrice 
-        //             // discountedPrice:product.productPrice * (1 - (item.offerPercentage / 100)),offerPercentage: productOffer ? productOffer.offerPercentage : 0 
-        //          }]
-        //         });
-        //         await cart.save();   
-        //     }
-        //     res.redirect('/cart');
+  async function handleRePaymentSuccess(paymentId, razorpayOrderId, signature, orderId) {
+    try {
+      const response = await axios.post('/verifyRepayment', {
+        paymentId,
+        razorpayOrderId,
+        signature,
+        orderId
+      });
+      console.log("response",response);
+      if (response.data.success) {
+        Swal.fire('Success', 'Payment completed successfully!', 'success').then(() => {
+          window.location.reload(); // Reload page to update order status
+        });
+      } else {
+        Swal.fire('Error', response.data.message, 'error');
+      }
+    } catch (error) {
+      console.error('Error verifying repayment:', error);
+      Swal.fire('Error', 'Failed to verify payment. Please try again.', 'error');
+    }
+  }
+</script>

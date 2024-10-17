@@ -45,12 +45,12 @@ const orderSchema = new mongoose.Schema({
          },
         status: {
             type: String,
-            enum: ['pending', 'confirmed', 'shipped', 'delivered','returned', 'canceled'],
+            enum: ['pending', 'confirmed', 'shipped', 'delivered','returned', 'canceled',"returnRequest","returnRejected"],
             default: 'pending'
         },
         offerPercentage: {
              type: Number 
-            }, // Add this field to store the offer percentage
+            }, 
         offerAmount: {
              type: Number 
             }, 
@@ -78,12 +78,28 @@ const orderSchema = new mongoose.Schema({
         enum: ['cash-on-delivery', 'razorpay','wallet'],
         required: true
     },
+    paymentStatus: {
+        type: String,
+        enum: ['pending', 'paid'],
+        default: 'pending'
+    },paymentAttempts: {
+        type: Number,
+        default: 0
+      },
+    razorpayOrderId:{
+        type:String,
+    },
     coupon: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Coupon'
     },
-    couponDiscount: { // New field for storing the total coupon discount
+    couponDiscount: { 
         type: Number,
+        default: 0
+    },
+    totalofferdiscount: {
+        type:Number,
+        required:true,
         default: 0
     },
     couponApplied: {

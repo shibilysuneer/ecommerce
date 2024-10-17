@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Failed</title>
+    <link rel="stylesheet" href="/path-to-your-styles.css">
+    <style>
+        /* General reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.container {
+    background-color: #fff;
+    padding: 20px;
+    max-width: 400px;
+    width: 100%;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.alert {
+    padding: 15px;
+    background-color: #f8d7da;
+    color: #721c24;
+    border-radius: 5px;
+    margin-bottom: 20px;
+}
+
+h1 {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+}
+
+p {
+    font-size: 1rem;
+    margin-bottom: 20px;
+    color: #555;
+}
+
+.btn {
+    padding: 10px 20px;
+    text-decoration: none;
+    font-size: 1rem;
+    border-radius: 5px;
+    margin: 10px;
+    display: inline-block;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+.btn-secondary {
+    background-color: #6c757d;
+}
+
+.btn:hover {
+    opacity: 0.9;
+}
+
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="alert alert-danger text-center">
+            <h1>Payment Failed</h1>
+            <p>Unfortunately, your payment could not be processed. Please try again or choose a different payment method.</p>
+        </div>
+        
+        <div class="text-center">
+            <a href="/order-history" class="btn btn-secondary">Go to Order History</a>
+        </div>
+    </div>
+</body>
+</html>

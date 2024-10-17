@@ -9,8 +9,8 @@
 				<div class="col-first">
 					<h1>My Profile</h1>
 					<nav class="d-flex align-items-center">
-						<a href="index.html">Home<span class="lnr lnr-arrow-right"></span></a>
-						<a href="category.html">My Profile</a>
+						<a href="/home">Home<span class="lnr lnr-arrow-right"></span></a>
+						<a href="/profile">My Profile</a>
 					</nav>
 				</div>
 			</div>
@@ -47,7 +47,7 @@
             <!-- <a href="#" class="list-group-item list-group-item-action py-2 ripple"
               ><i class="fas fa-chart-line fa-fw me-3"></i><span>Analytics</span></a
             > -->
-            <a href="/addAddress" class="list-group-item list-group-item-action py-2 ripple">
+            <a href="/add-address" class="list-group-item list-group-item-action py-2 ripple">
               <i class="fas fa-chart-pie fa-fw me-3"></i><span>Add Address</span>
             </a>
             <a href="#" class="list-group-item list-group-item-action py-2 ripple"
@@ -130,7 +130,7 @@
                   	<input class="pixel-radio" type="radio" id="address-<%= index %>" name="address" 
                     <%= address.isDefault ? 'checked' : '' %> 
                     onclick="handleAddressSelection('<%= index %>')">
-                    <a href="/editAddress/<%= address._id %>" class="icon-button ml-2">
+                    <a href="/edit-Address/<%= address._id %>" class="icon-button ml-2">
                       <i class="fa fa-edit"></i>
                     </a>
                     <a href="/delete-address/<%= address._id %>" class="icon-button ml-2">
@@ -256,68 +256,6 @@ function handleAddressSelection(index) {
 
 
 
-
-// function handleAddressSelection(index) {
-//     // Update the default address in the database
-//     setDefaultAddress(index)
-//         .then(() => {
-//             // Update the billing address display
-//             setBillingAddress(index);
-
-//             // Update the address page to reflect the new default address
-//             updateAddressPage(index);
-//         })
-//         .catch(error => {
-//             console.error('Error:', error);
-//             alert('An error occurred while updating the default address.');
-//         });
-// }
-
-// function setDefaultAddress(index) {
-//     return fetch('/set-default-address', {
-//         method: 'POST',
-//         headers: {
-//             'Content-Type': 'application/json'
-//         },
-//         body: JSON.stringify({ addressIndex: index })
-//     })
-//     .then(response => {
-//         if (!response.ok) {
-//             throw new Error('Failed to update default address.');
-//         }
-//         return response.json(); // assuming your API returns JSON
-//     })
-//     .then(data => {
-//         alert('Default address updated successfully.');
-//     });
-// }
-
-// function setBillingAddress(index) {
-//   const fields = ['fname', 'lname', 'house', 'street', 'city', 'district', 'state', 'zip', 'number'];
-//     fields.forEach(field => {
-//         const element = document.getElementById(`${field}-${index}`);
-//         if (element) {
-//             const billingElement = document.getElementById(`billing${capitalize(field)}`);
-//             if (billingElement) {
-//                 billingElement.innerText = element.innerText;
-//             } else {
-//                 console.warn('Billing element not found for:', `billing${capitalize(field)}`);
-//             }
-//         } else {
-//             console.warn('Element not found for:', `${field}-${index}`);
-//         }
-//     });
-// }
-
-// function updateAddressPage(index) {
-//     document.querySelectorAll('input[name="address"]').forEach((radio, idx) => {
-//         radio.checked = idx === index;
-//     });
-// }
-
-// function capitalize(str) {
-//     return str.charAt(0).toUpperCase() + str.slice(1);
-// }
 </script>
 
 

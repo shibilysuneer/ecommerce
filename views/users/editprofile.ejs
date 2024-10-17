@@ -10,8 +10,8 @@
 				<div class="col-first">
 					<h1>Login/Register</h1>
 					<nav class="d-flex align-items-center">
-						<a href="index.html">Home<span class="lnr lnr-arrow-right"></span></a>
-						<a href="category.html">Edit Profile</a>
+						<a href="/home">Home<span class="lnr lnr-arrow-right"></span></a>
+						<a href="/profile">Edit Profile</a>
 					</nav>
 				</div>
 			</div>
@@ -26,7 +26,8 @@
 
 					<div class="login_form_inner">
 						<h3>Edit Profile</h3>
-						<form class="row login_form" action="/editprofile" method="POST" id="contactForm" >
+						<form class="row login_form" action="/edit-profile" method="POST" id="contactForm" >
+							<!-- <input type="hidden" name="_method" value="PUT"> -->
 							<div class="col-md-12 form-group">
 								<input type="text" class="form-control" id="fname" name="fname" value="<%= user.fname %>" placeholder="Username" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Username'">
 							</div>
@@ -42,7 +43,6 @@
 						</form>
 					</div>
 				</div>
-			<!-- </div> -->
 		</div>
 	</section>
 	<!--================End Login Box Area =================-->

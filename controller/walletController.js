@@ -9,10 +9,14 @@ const loadWallet = async(req,res) => {
         if(!wallet){
            return res.render('wallet',{wallet:{balance:0,transactions:[]}})
         }
-        res.render('wallet',{wallet})
+        wallet.transactions.sort((a,b) => b.date - a.date)
+        const user = req.session.userId ? await User.findById(req.session.userId) : null;
+
+        res.render('wallet',{wallet,user})
     } catch (error) {
         console.error('wallet fetching error',error);
-        res.status(500).send('Server Error'); 
+        // res.status(500).send('Server Error'); 
+        res.redirect("/pageNotfound")
     }
 }
 const walletBalance= async(req,res) => {

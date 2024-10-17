@@ -193,3 +193,20 @@
   height: 100px; /* Set your desired height */
   object-fit: cover; /* This ensures the image fills the box while maintaining aspect ratio */
 }
+.forgot-password-link{
+  color:  #ffba00;
+}
+.forgot-password-link:hover{
+  color: #ff6c00;
+  text-decoration: underline;
+}
+.discount-text {
+  font-size: 1.2em; /* Increase font size */
+  color: rgb(22, 193, 22); /* Change the color to green */
+  font-weight: bold; /* Optional: make the text bold */
+}
+.wishlist-img {
+  width: 100px; /* Adjust the width */
+  height: auto; /* Maintain aspect ratio */
+  object-fit: contain; /* Ensure the image fits nicely */
+}
