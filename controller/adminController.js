@@ -37,11 +37,15 @@ const verifyAdmin = async (req, res) => {
 
     try {
         const { email, password } = req.body
-        const user = await User.findOne({ email })
-        if (user) {
-            const match = await bcrypt.compare(password, user.password)
-            if (match && user.is_admin == 1) {
-                req.session.admin = user._id
+        const admin = await User.findOne({ email })
+        if (admin) {
+            const match = await bcrypt.compare(password, admin.password)
+            if (match && admin.is_admin === 1) {
+                // req.session.admin = true ;           // user._id
+                req.session.admin = admin._id
+                console.log('req.session.admin ', req.session.admin);
+                console.log('admin._id ', admin._id);
+
                 return res.redirect('/admin/dashboard')
             } else {
 
@@ -62,18 +66,18 @@ const verifyAdmin = async (req, res) => {
 
 const loadDashboard = async (req, res) => {
     try {
-    let filter = {};
-    const filterType = req.query.filterType || 'yearly';
-    const startDate = req.query.startDate ? new Date(req.query.startDate) : null;
-    const endDate = req.query.endDate ? new Date(req.query.endDate) : null;
+        let filter = {};
+        const filterType = req.query.filterType || 'yearly';
+        const startDate = req.query.startDate ? new Date(req.query.startDate) : null;
+        const endDate = req.query.endDate ? new Date(req.query.endDate) : null;
 
-    console.log("Filter Type:", filterType);
-    console.log("Start Date:", startDate);
-    console.log("End Date:", endDate);
-    console.log("Incoming Query:", req.query);
+        console.log("Filter Type:", filterType);
+        console.log("Start Date:", startDate);
+        console.log("End Date:", endDate);
+        console.log("Incoming Query:", req.query);
 
 
-    
+
         switch (filterType) {
             case 'daily':
                 filter.createdAt = {
@@ -87,7 +91,7 @@ const loadDashboard = async (req, res) => {
                     $lt: moment().endOf('week').toDate(),
                 };
                 break;
-             case 'monthly':
+            case 'monthly':
                 filter.createdAt = {
                     $gte: moment().startOf('month').toDate(),
                     $lt: moment().endOf('month').toDate(),
@@ -101,7 +105,7 @@ const loadDashboard = async (req, res) => {
                 break;
             case 'custom':
                 if (startDate && endDate) {
-                  
+
                     filter.createdAt = {
                         $gte: startDate,
                         $lt: endDate,
@@ -112,106 +116,111 @@ const loadDashboard = async (req, res) => {
                 break;
             default:
                 return res.status(400).json({ message: 'Invalid filter type' });
-                 break;
+                break;
         }
-         // Fetch the sales data
-         const salesData = await Order.aggregate([
+        // Fetch the sales data
+        const salesData = await Order.aggregate([
             { $match: filter },
             { $group: { _id: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } }, totalSales: { $sum: '$total' } } },
             { $sort: { _id: 1 } }
         ]);
-        console.log('salesData',salesData);
-        
+        console.log('salesData', salesData);
+
 
         const labels = salesData.map(data => data._id);
         const sales = salesData.map(data => data.totalSales);
-         // Aggregations for total sales, discounts, and counts
+        // Aggregations for total sales, discounts, and counts
         //  ---------------------------------------------
-    const overallOrderAmount = await Order.aggregate([
-        { $match: filter },
-        { $group: { _id: null, totalAmount: { $sum: "$total" } } }
-    ]);
-    const overallOfferDiscount = await Order.aggregate([
-        { $match: filter },
-        { $group: { _id: null, totalDiscount: { $sum: "$totalofferdiscount" } } }
-    ]);
-    const overallCouponDiscount = await Order.aggregate([
-        { $match: filter },
-        { $group: { _id: null, totalDiscount: { $sum: "$couponDiscount" } } }
-    ]);
-    const offerDiscount = overallOfferDiscount.length > 0 ? overallOfferDiscount[0].totalDiscount : 0;
-    const couponDiscount = overallCouponDiscount.length > 0 ? overallCouponDiscount[0].totalDiscount : 0;
+        const overallOrderAmount = await Order.aggregate([
+            { $match: filter },
+            { $group: { _id: null, totalAmount: { $sum: "$total" } } }
+        ]);
+        const overallOfferDiscount = await Order.aggregate([
+            { $match: filter },
+            { $group: { _id: null, totalDiscount: { $sum: "$totalofferdiscount" } } }
+        ]);
+        const overallCouponDiscount = await Order.aggregate([
+            { $match: filter },
+            { $group: { _id: null, totalDiscount: { $sum: "$couponDiscount" } } }
+        ]);
+        const offerDiscount = overallOfferDiscount.length > 0 ? overallOfferDiscount[0].totalDiscount : 0;
+        const couponDiscount = overallCouponDiscount.length > 0 ? overallCouponDiscount[0].totalDiscount : 0;
 
-    const overallDiscount = offerDiscount + couponDiscount;
-    const totalDiscount = overallDiscount;
+        const overallDiscount = offerDiscount + couponDiscount;
+        const totalDiscount = overallDiscount;
 
-    const totalAmount = overallOrderAmount.length > 0 ? overallOrderAmount[0].totalAmount : 0;
-    console.log('totalAmount', totalAmount);
+        const totalAmount = overallOrderAmount.length > 0 ? overallOrderAmount[0].totalAmount : 0;
+        console.log('totalAmount', totalAmount);
 
-    // const totalDiscount = overallDiscount.length > 0 ? overallDiscount[0].totalDiscount : 0;
-    console.log('totalDiscount', totalDiscount);
-// ------------------------------------------------------------------------
-    const salesCount = await Order.countDocuments(filter);
-    // Fetch all sales data for the line chart (salesReport)
-    const salesReport = await Order.find(filter).select('createdAt total');
-    console.log('Sales Report:', salesReport);
+        // const totalDiscount = overallDiscount.length > 0 ? overallDiscount[0].totalDiscount : 0;
+        console.log('totalDiscount', totalDiscount);
+        // ------------------------------------------------------------------------
+        const salesCount = await Order.countDocuments(filter);
+        // Fetch all sales data for the line chart (salesReport)
+        const salesReport = await Order.find(filter).select('createdAt total');
+        console.log('Sales Report:', salesReport);
 
-    // Order status mapping
-    const orderStatusCounts = await Order.aggregate([
-        { $match: filter },
-        { $unwind: "$cartItems" },
-        { $group: { _id: "$cartItems.status", count: { $sum: 1 } } }
-    ]);
-    console.log('orderStatusCounts',orderStatusCounts);
-    
+        // Order status mapping
+        const orderStatusCounts = await Order.aggregate([
+            { $match: filter },
+            { $unwind: "$cartItems" },
+            { $group: { _id: "$cartItems.status", count: { $sum: 1 } } }
+        ]);
+        console.log('orderStatusCounts', orderStatusCounts);
 
-    const orderStatusMap = {
-        pending: 0,
-        shipped: 0,
-        delivered: 0,
-        canceled: 0,
-        'returnRequest': 0,
-        returned: 0
-    };
-    orderStatusCounts.forEach(status => {
-        orderStatusMap[status._id] = status.count;
-    });
-    console.log('orderStatusMap',orderStatusMap);
 
-    console.log('Date Filter:', filter);
+        const orderStatusMap = {
+            pending: 0,
+            shipped: 0,
+            delivered: 0,
+            canceled: 0,
+            'returnRequest': 0,
+            'returnRejected': 0,
+            returned: 0
+        };
+        orderStatusCounts.forEach(status => {
+            orderStatusMap[status._id] = status.count;
+        });
+        console.log('orderStatusMap', orderStatusMap);
 
- 
-//   const orderAmounts = salesData.map(data => data.totalSales);
-    //   --------------------------------------------- 
+        console.log('Date Filter:', filter);
+
+
+        //   const orderAmounts = salesData.map(data => data.totalSales);
+        //   --------------------------------------------- 
 
         const totalSales = await Order.aggregate([{ $group: { _id: null, total: { $sum: '$total' } } }])
 
-        const bestSellingProducts = await Order.aggregate([{ $unwind: "$cartItems" },
-        { $group: { _id: "$cartItems.productId", totalSold: { $sum: "$cartItems.qty" }, } },
-        {$lookup: {from: "products", localField: "_id",foreignField: "_id",as: "productDetails"}},
-        {$unwind: "$productDetails"},
-        {$project: {productName: "$productDetails.productName", totalSold: 1}},
-        { $sort: { totalSold: -1 } },
-        { $limit: 5 }
-        ]);
-        const bestSellingCategories = await Order.aggregate([{ $unwind: "$cartItems" },
-            {$lookup: {from: "products",localField: "cartItems.productId", foreignField: "_id", as: "productDetails" } },
+        const bestSellingProducts = await Order.aggregate([
+            { $match: filter },
+            { $unwind: "$cartItems" },
+            { $group: { _id: "$cartItems.productId", totalSold: { $sum: "$cartItems.qty" }, } },
+            { $lookup: { from: "products", localField: "_id", foreignField: "_id", as: "productDetails" } },
             { $unwind: "$productDetails" },
-            {$lookup: {from: "categories", localField: "productDetails.productCategory",foreignField: "_id",as: "categoryDetails" }},
-            { $unwind: "$categoryDetails" },
-            {$group: {_id: "$categoryDetails._id", categoryName: { $first: "$categoryDetails.categoryName" }, totalSold: { $sum: "$cartItems.qty" } }},
+            { $project: { productName: "$productDetails.productName", totalSold: 1 } },
             { $sort: { totalSold: -1 } },
-            { $limit: 5 } 
+            { $limit: 5 }
+        ]);
+        const bestSellingCategories = await Order.aggregate([
+            { $match: filter }, { $unwind: "$cartItems" },
+            { $lookup: { from: "products", localField: "cartItems.productId", foreignField: "_id", as: "productDetails" } },
+            { $unwind: "$productDetails" },
+            { $lookup: { from: "categories", localField: "productDetails.productCategory", foreignField: "_id", as: "categoryDetails" } },
+            { $unwind: "$categoryDetails" },
+            { $group: { _id: "$categoryDetails._id", categoryName: { $first: "$categoryDetails.categoryName" }, totalSold: { $sum: "$cartItems.qty" } } },
+            { $sort: { totalSold: -1 } },
+            { $limit: 5 }
         ]);
         const bestSellingBrands = await Order.aggregate([
+            { $match: filter },
             { $unwind: "$cartItems" },
-            {$lookup: { from: "products",  localField: "cartItems.productId",foreignField: "_id",as: "productDetails"}},
+            { $lookup: { from: "products", localField: "cartItems.productId", foreignField: "_id", as: "productDetails" } },
             { $unwind: "$productDetails" },
-            {$lookup: { from: "brands", localField: "productDetails.productBrand",foreignField: "_id",as: "brandDetails"}},
+            { $lookup: { from: "brands", localField: "productDetails.productBrand", foreignField: "_id", as: "brandDetails" } },
             { $unwind: "$brandDetails" },
-            {$group: {_id: "$brandDetails._id", brandName: { $first: "$brandDetails.brandName" }, totalSold: { $sum: "$cartItems.qty" }  } },
-            { $sort: { totalSold: -1 } }, 
-            { $limit: 5 } 
+            { $group: { _id: "$brandDetails._id", brandName: { $first: "$brandDetails.brandName" }, totalSold: { $sum: "$cartItems.qty" } } },
+            { $sort: { totalSold: -1 } },
+            { $limit: 5 }
         ]);
 
 
@@ -296,29 +305,30 @@ const salesReport = async (req, res) => {
                     break;
             }
         }
-        
 
-        const totalOrders = await Order.countDocuments(filter)
+
+        // const totalOrders = await Order.countDocuments(filter)
+        const allOrders = await Order.find(filter).lean();
+
+        // Calculate total sales, amount, and discounts
+        let totalSales = allOrders.length;
+        let totalAmount = allOrders.reduce((acc, order) => acc + order.total, 0);
+        let totalCouponDiscount = allOrders.reduce((acc, order) => acc + (order.couponDiscount || 0), 0);
+
+        let totalOfferDiscount = allOrders.reduce((acc, order) => {
+            let offerDiscount = order.cartItems.reduce((itemAcc, item) => itemAcc + (item.offerAmount || 0), 0);
+            return acc + offerDiscount;
+        }, 0);
+        let totalDiscount = totalCouponDiscount + totalOfferDiscount;
+
+        const totalOrders = totalSales;
+        const totalPages = Math.ceil(totalOrders / limit);
         // Fetch orders based on the filter
         let orders = await Order.find(filter)
             .populate('coupon')
             .skip((page - 1) * limit)
             .limit(limit)
             .lean();
-
-        // Calculate total sales, amount, and discounts
-        let totalSales = orders.length;
-        let totalAmount = orders.reduce((acc, order) => acc + order.total, 0);
-        let totalCouponDiscount = orders.reduce((acc, order) => acc + (order.couponDiscount || 0), 0);
-
-        let totalOfferDiscount = orders.reduce((acc, order) => {
-            let offerDiscount = order.cartItems.reduce((itemAcc, item) => itemAcc + (item.offerAmount || 0), 0);
-            return acc + offerDiscount;
-        }, 0);
-
-        let totalDiscount = totalCouponDiscount + totalOfferDiscount;
-
-        const totalPages = Math.ceil(totalOrders / limit);
 
         // Render the report view with orders and summary
         res.render('salesreport', {
@@ -661,8 +671,6 @@ const loadeditProduct = async (req, res) => {
             .populate('productBrand')
         const categories = await Category.find({});
         const brands = await Brand.find({});
-        // console.log('Product--', product);
-        // console.log('Categorie--', categories);
         res.render('editProduct', { product, categories, brands })
         // console.log(product);
     } catch (error) {
@@ -673,7 +681,7 @@ const editProduct = async (req, res) => {
     try {
         const id = req.params.id;
 
-        const { productName, productCategory, productPrice, stocks, productBrand, status } = req.body
+        const { productName, productCategory, productPrice, stocks, productBrand, status, removedImages } = req.body
         console.log(req.body);
         const product = await Product.findById(id);
 
@@ -686,24 +694,41 @@ const editProduct = async (req, res) => {
             status,
             images: product.images || []
         }
+        console.log('updateProduct', updateProduct);
+        console.log('Received update product body:', req.body);
+        console.log('Existing product images:', product.images);
 
         if (req.files && req.files.length > 0) {
             const newImages = req.files.map(file => file.filename);
             updateProduct.images.push(...newImages)
+            console.log('newImages', newImages);
+
         }
 
+
+
         if (req.body.removedImages) {
-            const removedImages = req.body.removedImages.split(','); // Assuming the images are passed as a comma-separated string
-            updateProduct.images = updateProduct.images.filter(image => !removedImages.includes(image));
+            const removedImagesArray = req.body.removedImages.split(','); 
+            updateProduct.images = updateProduct.images.filter(image => {
+                const isRemoved = removedImagesArray.includes(image);
+                const isCropped = image.includes('-cropped-image');
+                return !isRemoved && isCropped;
+            })
+
+
+            console.log('Images to remove:', removedImages);
+            console.log('Updated images after removal:', updateProduct.images);
         }
 
         updateProduct.status = stocks > 0 ? 'In Stock' : 'Out of Stock';
 
 
         await Product.findByIdAndUpdate(id, updateProduct, { new: true });
-        res.redirect('/admin/products')
+        res.status(200).json({ message: 'Product updated successfully!' });
+        // redirect('/admin/products')
     } catch (error) {
         console.log(error.message);
+        res.status(500).json({ message: 'Failed to update product' });
     }
 }
 
@@ -775,6 +800,7 @@ const blockuser = async (req, res) => {
     try {
         const id = req.params.id;
         const userdata = await User.findOne({ _id: id })
+
         const userstate = !userdata.is_blocked
         const hidestate = await User.updateOne({ _id: id }, { $set: { is_blocked: userstate } })
         console.log(hidestate);
@@ -808,13 +834,17 @@ const addCategory = async (req, res) => {
     console.log(req.body);
 
     try {
+        const existingCategory = await Category.findOne({ categoryName: req.body.categoryName })
+        if (existingCategory) {
+            console.log("Category name already exists");
+            return res.render('addcategory', { errorMessage: 'Category name already exists' })
+        }
         const images = req.files.map(file => file.filename);
         console.log(images);
         const category = new Category({
             categoryName: req.body.categoryName,
             image: images,
-            // stock:req.body.stock,
-            // sale:req.body.sale
+            
         })
         await category.save()
         res.redirect('/admin/categorylist')
@@ -836,14 +866,26 @@ const editCategory = async (req, res) => {
     try {
         const id = req.params.id;
         const { categoryName } = req.body
-        console.log(req.body);
+        console.log('req.body', req.body);
+        const existingCategory = await Category.findOne({ categoryName: categoryName, _id: { $ne: id } })
+        if (existingCategory) {
+            res.render('editcategory', {
+                errorMessage: 'Category name already exists.',
+                category: await Category.findById(id)
+            })
+        }
         const updateProduct = {
             categoryName,
-            // stocks,
-            // sale
+
         }
-        const images = req.files.map(file => file.filename);
-        console.log(images);
+        const category = await Category.findById(id);
+        if (req.files && req.files.length > 0) {
+            const images = req.files.map(file => file.filename);
+            updateProduct.image = images;
+        } else {
+            updateProduct.image = category.image;
+        }
+        console.log('images', updateProduct.image);
 
         await Category.findByIdAndUpdate(id, updateProduct);
         res.redirect('/admin/categorylist')
@@ -1031,8 +1073,7 @@ const cancelOrderItem = async (req, res) => {
             return res.status(404).send('Item not found');
         }
 
-        item.status = 'canceled'; // Mark the item as canceled
-        // item.cancel = true; 
+        item.status = 'canceled'; 
         await order.save();
 
         res.redirect('/admin/orderList');
@@ -1052,7 +1093,7 @@ const itemDetails = async (req, res) => {
         res.render('itemDetails', {
             order, item,
             couponDiscount: order.couponDiscount || 0,
-            // totalOfferDiscount:order.totalOfferDiscount||0
+           
         })
     } catch (error) {
         console.log(error.message);
@@ -1061,8 +1102,8 @@ const itemDetails = async (req, res) => {
 }
 const loadCoupon = async (req, res) => {
     try {
-        const page = parseInt(req.query.page) || 1; // Get current page or default to 1
-        const limit = 10; // Number of coupons per page
+        const page = parseInt(req.query.page) || 1; 
+        const limit = 10; 
         const skip = (page - 1) * limit;
 
         const totalCoupons = await Coupon.countDocuments();
@@ -1142,7 +1183,7 @@ const editCoupon = async (req, res) => {
         if (!updateCoupon) {
             return res.status(404).send('Coupon not found');
         }
-        res.redirect('/admin/coupons');
+        res.status(200).json({ message: 'Coupon updated successfully' });
 
     } catch (error) {
         console.error('Error updating the coupon:', error);
@@ -1201,11 +1242,9 @@ const loadAddCategoryOffer = async (req, res) => {
 }
 const loadOffers = async (req, res) => {
     try {
-        // console.log("Fetching product offers...");
+        
         const productOffers = await ProductOffer.find().populate('productId').exec();
-        // console.log("Product offers:", productOffers);
         const categoryOffers = await CategoryOffer.find().populate('categoryId').exec();
-        // console.log("Category offers:", categoryOffers);
 
         res.render('offerlist', {
             productOffers,
@@ -1251,9 +1290,9 @@ const blockProductOffer = async (req, res) => {
 }
 const unblockProductOffer = async (req, res) => {
     try {
-        const { offerId } = req.params; // Assuming the ID is passed in the URL
+        const { offerId } = req.params;
         await ProductOffer.findByIdAndUpdate(offerId, { isActive: true });
-        res.redirect('/admin/offers'); // Redirect back to the offer list
+        res.redirect('/admin/offers');
     } catch (error) {
         console.error('Error unblocking product offer:', error);
         res.status(500).send('Server Error');
@@ -1261,9 +1300,9 @@ const unblockProductOffer = async (req, res) => {
 };
 const editProductOffer = async (req, res) => {
     try {
-        const { offerId } = req.params; // Assuming the ID is passed in the URL
+        const { offerId } = req.params;
         const offer = await ProductOffer.findById(offerId);
-        res.render('editproductoffer', { offer }); // Render the edit form with offer data
+        res.render('editproductoffer', { offer });
     } catch (error) {
         console.error('Error fetching product offer for edit:', error);
         res.status(500).send('Server Error');
@@ -1272,9 +1311,10 @@ const editProductOffer = async (req, res) => {
 const updateProductOffer = async (req, res) => {
     try {
         const { offerId } = req.params;
-        const { offerName, offerPercentage } = req.body; // Get data from the form
+        const { offerName, offerPercentage } = req.body;
         await ProductOffer.findByIdAndUpdate(offerId, { offerName, offerPercentage });
-        res.redirect('/admin/offers');
+        // res.redirect('/admin/offers');
+        res.status(200).json({ message: 'Productoffer updated successfully!' });
     } catch (error) {
         console.error('Error updating product offer:', error);
         res.status(500).send('Server Error');
@@ -1339,8 +1379,10 @@ const updateCategoryOffer = async (req, res) => {
     try {
         const { offerId } = req.params;
         const { offerName, offerPercentage } = req.body;
+        console.log('req.body', req.body);
         await CategoryOffer.findByIdAndUpdate(offerId, { offerName, offerPercentage });
-        res.redirect('/admin/offers');
+        // res.redirect('/admin/offers');
+        res.status(200).json({ message: 'Categoryoffer updated successfully!' });
     } catch (error) {
         console.error('Error updating category offer:', error);
         res.status(500).send('Server Error');

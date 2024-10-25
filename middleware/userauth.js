@@ -8,10 +8,9 @@ const islogin = async(req,res,next)=>{
         const user = await User.findById(req.session.userId);
 
         if (user.is_blocked) {
-
-            req.session.destroy(() => {
+            req.session.userId=null
                 res.redirect('/login?message=Admin%20blocked%20your%20account'); 
-            });
+            
             return;
         }
         next();

@@ -30,10 +30,16 @@
                 </div>
                 <!-- new-category -->
                 <div class="wg-box">
-                    <form action="/admin/editcategory/<%= category._id %>" method="post" class="form-new-product form-style-1"enctype="multipart/form-data" >
+                    <form action="/admin/editcategory/<%= category._id %>" method="post" class="form-new-product form-style-1"enctype="multipart/form-data" onsubmit="return validateForm();">
                         <fieldset class="name">
                             <div class="body-title">Category name <span class="tf-color-1">*</span></div>
-                            <input class="flex-grow" type="categoryName" placeholder="Category name" name="categoryName" tabindex="0" value="<%= category.categoryName %>"  aria-required="true" required="">
+                            <input class="flex-grow" type="categoryName" placeholder="Category name" name="categoryName" id="categoryName" tabindex="0" value="<%= category.categoryName %>" >
+                            <div id="categoryError" style="color: red;">
+                                <% if (typeof errorMessage !== 'undefined') { %>
+                                    <%= errorMessage %>
+                                <% } %>
+                            </div>
+
                         </fieldset>
                         <fieldset>
                             <div class="body-title">Upload images <span class="tf-color-1">*</span></div>
@@ -44,21 +50,13 @@
                                             <i class="icon-upload-cloud"></i>
                                         </span>
                                         <span class="body-text">Drop your images here or select <span class="tf-color">click to browse</span></span>
-                                        <input type="file" id="myFile" name="filename">
+                                        <input type="file" id="myFile" name="images" accept="image/*">
+                                        <div id="imageError" style="color: red;"></div>
                                     </label>
                                 </div>
                             </div>
                         </fieldset>
-                        <!-- <div class="gap22 cols">
-                            <fieldset class="name">
-                              <div class="body-title mb-10">Stock <span class="tf-color-1">*</span></div>
-                              <input class="mb-10" type="text" placeholder="Enter stock" name="stocks" tabindex="0" value="<%= category.stock %>" >
-                            </fieldset>
-                            <fieldset class="name">
-                                <div class="body-title mb-10">Sale <span class="tf-color-1">*</span></div>
-                                <input class="mb-10" type="text" placeholder="Enter sale" name="sale" tabindex="0" value="<%= category.sale %>"  >
-                            </fieldset>
-                        </div> -->
+                        
                         <div class="bot">
                             <div></div>
                             <button class="tf-button w208" type="submit">Save</button>
@@ -72,3 +70,28 @@
         <!-- /main-content-wrap -->
 
         <%- include('../layouts/admin/footer.ejs') %>
+        <script>
+            function validateForm() {
+                const categoryName = document.getElementById("categoryName").value;
+                const myFile = document.getElementById("myFile").value;
+                let valid = true;
+        
+                // Clear previous error messages
+                document.getElementById("categoryError").textContent = "";
+                document.getElementById("imageError").textContent = "";
+        
+                // Category name validation
+                if (categoryName.trim() === "") {
+                    document.getElementById("categoryError").textContent = "Category name is required.";
+                    valid = false;
+                }
+        
+                // Image file validation
+                if (myFile === "") {
+                    document.getElementById("imageError").textContent = "Image is required.";
+                    valid = false;
+                }
+        
+                return valid;
+            }
+        </script>

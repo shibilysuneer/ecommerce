@@ -20,7 +20,8 @@ const securePassword = async (password) => {
 
 const signupload = async (req, res) => {
   try {
-    res.render('signup')
+    const user = req.session.userId ? await User.findById(req.session.userId) : null;
+    res.render('signup',{user})
 
   } catch (error) {
     console.log(error.message)
@@ -159,22 +160,22 @@ const verifylogin = async (req, res) => {
     const { email, password } = req.body
     const user = await User.findOne({ email: email })
     if (!user) {
-      return res.render('login', { message: 'User not found' })
+      return res.render('login', { message: 'User not found', user: null })
     }
     if (user.is_blocked) {
-      return res.render('login', { message: 'User is blocked by admin' })
+      return res.render('login', { message: 'User is blocked by admin', user: null })
     }
 
     const match = await bcrypt.compare(password, user.password)
     if (!match) {
-      return res.render('login', { message: 'Invalid Email and Password' })
+      return res.render('login', { message: 'Invalid Email and Password', user: null })
 
     }
     req.session.userId = user._id;
     return res.redirect('/home')
   } catch (error) {
     console.log(error.message);
-    return res.render('login', { message: 'login failed please try again' })
+    return res.render('login', { message: 'login failed please try again', user: null })
   }
 }
 const getForgotPassPage = async(req,res)=>{
@@ -589,12 +590,12 @@ const deleteAddress = async (req, res) => {
     user.address = user.address.filter(address => address._id.toString() !== addressId);
 
     await user.save(); // Save the user with the updated addresses array
-
-    res.redirect('/address');
+    
+    res.status(200).json({ message: 'Address deleted successfully' });
+    // res.redirect('/address');
   } catch (error) {
     console.error('Error deleting address:', error);
-    // res.status(500).send('Server error');
-    res.redirect("/pageNotfound")
+    res.status(500).json({ message: 'Server error' });    
   }
 }
 

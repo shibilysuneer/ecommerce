@@ -565,7 +565,7 @@
                                             </div>
                                             <div>
                                                 <div class="body-text mb-2">Orders Paid</div>
-                                                <h4><%= orderStatusMap.delivered %></h4>
+                                                <h4><%= salesCount %></h4>
                                             </div>
                                         </div>
                                         <div class="box-icon-trending">
@@ -670,6 +670,7 @@
                                 <h6>Total Delivered : <%= orderStatusMap.delivered %></h6>
                                 <h6>Total Cancelled : <%= orderStatusMap.canceled %></h6>
                                 <h6>Total ReturnRequest : <%= orderStatusMap["returnRequest"] %></h6>
+                                <h6>Total Return Rejected : <%= orderStatusMap["returnRejected"] %></h6>
                                 <h6>Total Returned : <%= orderStatusMap.returned %></h6>
                             </div>
                         </div>
@@ -1026,12 +1027,13 @@
         }
     });
 </script>
+    <!-- polarArea -->
 <script>
     var ctxPolarArea = document.getElementById('polarArea').getContext('2d');
     var polarAreaChart = new Chart(ctxPolarArea, {
         type: 'polarArea',
         data: {
-            labels: ['Processing', 'Shipped', 'Delivered', 'Cancelled', 'Return Request', 'Returned'],
+            labels: ['Processing', 'Shipped', 'Delivered', 'Cancelled', 'Return Request', 'Returned','Return Rejected'],
             datasets: [{
                 data: [
                     <%= orderStatusMap.pending %>,
@@ -1039,9 +1041,10 @@
                     <%= orderStatusMap.delivered %>,
                     <%= orderStatusMap.canceled %>,
                     <%= orderStatusMap["returnRequest"] %>,
+                    <%= orderStatusMap["returnRejected"] %>,
                     <%= orderStatusMap.returned %>
                 ],
-                backgroundColor: ['#ff9f40', '#4bc0c0', '#ff6384', '#36a2eb', '#9966ff', '#ffcd56'],
+                backgroundColor: ['#ff9f40', '#4bc0c0', '#ff6384', '#36a2eb', '#9966ff', '#ffcd56','#ff4500'],
                 borderWidth: 1
             }]
         },

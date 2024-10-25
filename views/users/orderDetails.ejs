@@ -15,14 +15,32 @@
                             <!-- <li><span>Status</span> : <%= order.status %></li> -->
                             <li><span>Total</span> : <%= order.total.toFixed(2) %>
                             </li>
+                            <li><span>Expected Delivery</span> :
+                                <% if(order.expectedDeliveryDate) {  %>
+                                    <%= order.expectedDeliveryDate.toDateString() %>
+                                    <% }else {  %>
+                                        with in 7 days
+                                        <% } %>
+                            </li>
                             <li><span>Payment method</span> : <%= order.paymentMethod %>
                             </li>
                             <li><span>Payment status</span> :
-                                <% if (order.paymentStatus==='pending' && order.paymentMethod === 'razorpay' ) { %>
+                                <% if (order.paymentStatus==='pending' && order.paymentMethod==='razorpay' ) { %>
                                     <span class="text-warning">Pending</span>
                                     <button class="btn" onclick="retryPayment('<%= order._id %>')">Retry
                                         Payment</button>
-                                    <% } else { %>
+                                        <% } else if (order.paymentMethod === 'cash-on-delivery') { %>
+                                            <% 
+                                                    const paidStatuses = ['delivered', 'returned', 'canceled', 'returnRequest', 'returnRejected'];
+                                            // Check if all items in cart are delivered
+                                            const allItemsProcessed = order.cartItems.every(item => paidStatuses.includes(item.status)); 
+                                            if (allItemsProcessed) { %>
+                                                <span class="text-success">Paid</span>
+                                            <% } else { %>
+                                                <span class="text-warning">Pending</span>
+                                            <% } %>
+
+                                   <% } else { %>
                                         <span class="text-success">Paid</span>
                                         <% } %>
                             </li>
@@ -153,12 +171,12 @@
                                                                         <span class="text-muted">Rejected (Return not
                                                                             Available)</span>
                                                                         <% } else { %>
-                                                                            <form id="cancelForm-<% item._id %>"
+                                                                            <form id="cancelForm-<%= item._id %>"
                                                                                 action="/cancel/<%= order._id %>/<%= item._id %>"
                                                                                 method="post">
-                                                                                <button type="submit"
+                                                                                <button type="button"
                                                                                     class="btn btn-danger"
-                                                                                    onclick="confirmCancel('<%= item._id %>')">Cancel</button>
+                                                                                    onclick="confirmCancel('<%= item._id %>',event)">Cancel</button>
                                                                             </form>
                                                                             <% } %>
                                                 </td>
@@ -184,7 +202,8 @@
 
     <%- include('../layouts/user/footer.ejs') %>
         <script>
-            function confirmCancel(itemId) {
+            function confirmCancel(itemId, event) {
+                event.preventDefault();
                 Swal.fire({
                     title: 'Are you sure?',
                     text: "You won't be able to revert this action!",
@@ -199,7 +218,6 @@
                     .then((result) => {
                         if (result.isConfirmed) {
                             // If confirmed, submit the form
-
                             document.getElementById('cancelForm-' + itemId).submit();
 
                         }
@@ -208,12 +226,12 @@
         </script>
         <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
         <script>
-               
+
             function retryPayment(orderId) {
                 console.log('Retrying payment for order ID:', orderId);
 
                 axios.post('/create-razorpay-order', {
-                    amount: <%= order.total %>,  
+                    amount: <%= order.total %>,
                     currency: 'INR'
                 })
                     .then((response) => {
@@ -238,21 +256,21 @@
                                     razorpaySignature: razorpay_signature,
                                     orderId
                                 })
-                                .then((verifyResponse) => {
-                        if (verifyResponse.data.success) {
-                            // alert('Payment successful.');
-                            Swal.fire('Success', 'Payment completed successfully!', 'success')
-                            window.location.reload();
-                        } else {
-                            // alert('Payment failed. Please try again.');
-                            Swal.fire('Error', response.data.message, 'error');
-                        }
-                    })
-                    .catch((error) => {
-                        console.error('Payment verification failed:', error);
-                        alert('Payment verification failed. Please try again.');
-                    });
-                },
+                                    .then((verifyResponse) => {
+                                        if (verifyResponse.data.success) {
+                                            // alert('Payment successful.');
+                                            Swal.fire('Success', 'Payment completed successfully!', 'success')
+                                            window.location.reload();
+                                        } else {
+                                            // alert('Payment failed. Please try again.');
+                                            Swal.fire('Error', response.data.message, 'error');
+                                        }
+                                    })
+                                    .catch((error) => {
+                                        console.error('Payment verification failed:', error);
+                                        alert('Payment verification failed. Please try again.');
+                                    });
+                            },
                             "theme": {
                                 "color": "#3399cc"
                             }
@@ -266,8 +284,4 @@
                         console.error("Error fetching payment details:", error);
                     });
             }
-</script>
-
-
-
-
+        </script>

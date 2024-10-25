@@ -6,7 +6,9 @@ mongoose.connect(process.env.MONGO_URL)
 .then(() => console.log('MongoDB connected'))
 .catch((err) => console.error('MongoDB connection error:', err));
 
-const express=require("express")  
+const express=require("express") 
+// const methodOverride = require('method-override'); // Import method-override
+
 const app = express()
 const path=require('path')
 const PORT = process.env.PORT || 3000;

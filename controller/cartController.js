@@ -132,7 +132,9 @@ const addtoCart = async (req, res) => {
                 if (cart.cartItems[itemIndex].qty > availableStock) {
                     cart.cartItems[itemIndex].qty = availableStock;
                     await cart.save();
-                    return res.status(400).json({ success: false, message: `Cannot add more than ${availableStock} items to the cart.` });
+                    // return res.status(400).json({ success: false, message: `Cannot add more than ${availableStock} items to the cart.` });
+                     return res.redirect(`/cart?error=Cannot add more than ${availableStock} items to the cart.`);
+
                 }
             } else {
                 cart.cartItems.push({

@@ -10,7 +10,7 @@
                 <h3>Edit Coupon</h3>
                 <ul class="breadcrumbs flex items-center flex-wrap justify-start gap10">
                     <li>
-                        <a href="index.html"><div class="text-tiny">Dashboard</div></a>
+                        <a href="/admin/Dashboard"><div class="text-tiny">Dashboard</div></a>
                     </li>
                     <li>
                         <i class="icon-chevron-right"></i>
@@ -28,7 +28,7 @@
             </div>
             <!-- new-coupon -->
             <div class="wg-box">
-                <form action="/admin/editcoupon/<%= coupon._id %>" method="post" class="form-new-coupon form-style-1" id="editCouponForm">
+                <form  class="form-new-coupon form-style-1" id="editCouponForm">
                     <fieldset class="name">
                         <div class="body-title">Coupon Name <span class="tf-color-1">*</span></div>
                         <input class="flex-grow" type="text" placeholder="Enter coupon name" name="couponCode" tabindex="0" value="<%= coupon.couponCode %>" >
@@ -49,14 +49,7 @@
                         <input class="flex-grow" type="date" name="expiryDate" tabindex="0" value="<%= coupon.expiryDate.toISOString().split('T')[0] %>" >
                         <div class="error-message"></div>
                     </fieldset>
-                    <!-- <fieldset>
-                        <div class="body-title">Limit <span class="tf-color-1">*</span></div>
-                        <input class="flex-grow" type="number" placeholder="Enter usage limit" name="limit" min="0"  value="<%= coupon.Limit %>" >
-                    </fieldset>
-                    <fieldset class="name"></fieldset>
-                        <div class="body-title">Times Used</div>
-                        <input class="flex-grow" type="number" name="timesUsed" value="<%= coupon.timesUsed %>" min="0" readonly>
-                    </fieldset> -->
+                   
                     <fieldset class="name">
                         <div class="body-title">Status</div>
                         <select class="flex-grow" name="isActive" required>
@@ -67,7 +60,7 @@
                     </fieldset>
                     <div class="bot">
                         <div></div>
-                        <button class="tf-button w208" type="submit">Update Coupon</button>
+                        <button class="tf-button w208" type="button" onclick="submitEditForm('<%= coupon._id %>')">Update Coupon</button>
                     </div>
                 </form>
             </div>
@@ -80,7 +73,7 @@
     <%- include('../layouts/admin/footer.ejs') %>
 </div>
 <!-- /main-content -->
-<script>
+<!-- <script>
     document.getElementById('editCouponForm').addEventListener('submit', function(event) {
         // Clear all previous error messages
         const errorMessages = document.querySelectorAll('.error-message');
@@ -133,6 +126,110 @@
         if (!isValid) {
             event.preventDefault();
         }
-    });
+    }); -->
+    <!-- </script> -->
+    <!-- <script>
+         async function submitEditForm(couponId) {
+        try {
+            // Get the form element
+            const form = document.getElementById('editCouponForm');
+            
+            // Create an object to store form data
+            const formData = new FormData(form);
+            const formObject = Object.fromEntries(formData.entries());
+
+            const response = await fetch(`/admin/editcoupon/${couponId}`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(formObject)
+            });
+
+            if (response.ok) {
+                // Redirect or update UI if the update is successful
+                window.location.href = '/admin/coupons';
+            } else {
+                console.error('Failed to update coupon');
+            }
+        } catch (error) {
+            console.error('Error submitting form:', error);
+        }
+    }
+    </script> -->
+    <script>
+         async function submitEditForm(couponId) {
+        const form = document.getElementById('editCouponForm');
+
+        // Clear previous error messages
+        document.querySelectorAll('.error-message').forEach(message => {
+            message.textContent = '';
+        });
+
+        // Validation
+        let valid = true;
+
+        // Validate Coupon Code
+        const couponCode = form.couponCode.value.trim();
+        if (!couponCode) {
+            valid = false;
+            document.querySelector('input[name="couponCode"] + .error-message').textContent = 'Coupon code is required.';
+        }
+
+        // Validate Discount
+        const discount = parseInt(form.discount.value);
+        if (isNaN(discount) || discount < 0 || discount > 100) {
+            valid = false;
+            document.querySelector('input[name="discount"] + .error-message').textContent = 'Discount must be a number between 0 and 100.';
+        }
+
+        // Validate Valid From Date
+        const validFrom = new Date(form.validFrom.value);
+        if (isNaN(validFrom.getTime())) {
+        valid = false;
+        document.querySelector('input[name="validFrom"] + .error-message').textContent = 'Valid From date is required.';
+    } else if (validFrom < new Date()) { // Check if validFrom is before today
+        valid = false;
+        document.querySelector('input[name="validFrom"] + .error-message').textContent = 'Valid From date cannot be before today.';
+    }
+
+        // Validate Expiry Date
+        const expiryDate = new Date(form.expiryDate.value);
+        if (isNaN(expiryDate.getTime())) {
+            valid = false;
+            document.querySelector('input[name="expiryDate"] + .error-message').textContent = 'Expiry Date is required.';
+        }else if (expiryDate < new Date()) { // Check if expiryDate is before today
+        valid = false;
+        document.querySelector('input[name="expiryDate"] + .error-message').textContent = 'Expiry Date cannot be before today.';
+    }  else if (expiryDate <= validFrom) {
+            valid = false;
+            document.querySelector('input[name="expiryDate"] + .error-message').textContent = 'Expiry Date must be after Valid From date.';
+        }
+
+        // If form is valid, proceed with submission
+        if (valid) {
+            try {
+                // Create an object to store form data
+                const formData = new FormData(form);
+                const formObject = Object.fromEntries(formData.entries());
+
+                const response = await fetch(`/admin/editcoupon/${couponId}`, {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formObject)
+                });
+
+                if (response.ok) {
+                    // Redirect or update UI if the update is successful
+                    window.location.href = '/admin/coupons';
+                } else {
+                    console.error('Failed to update coupon');
+                }
+            } catch (error) {
+                console.error('Error submitting form:', error);
+            }
+        }
+    }
     </script>
-    

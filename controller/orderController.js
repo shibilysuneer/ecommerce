@@ -24,7 +24,7 @@ const generateOrderId = () => {
 const placeOrder = async (req, res) => {
     try {
 
-        const { addressId, paymentMethod, razorpayOrderId,razorpaySignature, terms, couponId } = req.body;
+        const { addressId, paymentMethod, razorpayOrderId, razorpaySignature, terms, couponId } = req.body;
         const userId = req.session.userId;
         console.log('req.body::///', req.body);
 
@@ -58,7 +58,7 @@ const placeOrder = async (req, res) => {
         if (couponId) {
             coupon = await Coupon.findById(couponId);
             // console.log('couponCode=', couponId);
-             console.log('coupon=', coupon);
+            console.log('coupon=', coupon);
 
             if (coupon) {
                 const currentDate = new Date();
@@ -81,24 +81,24 @@ const placeOrder = async (req, res) => {
                     await coupon.save();
 
 
-                     console.log('Subtotal:', subtotal);
-                     console.log('Discount Amount:', discountAmount);
-                     console.log('Total after discount:', total);
+                    console.log('Subtotal:', subtotal);
+                    console.log('Discount Amount:', discountAmount);
+                    console.log('Total after discount:', total);
 
 
-                 } 
-               
-            } 
-           
+                }
+
+            }
+
         }
         const cartItems = cart.cartItems.map(item => {
             const offerPercentage = item.offerPercentage;
             const originalPrice = Math.ceil(item.price / (1 - offerPercentage / 100));
             const offeramount = originalPrice - item.price;
 
-             console.log('offerPercentage', offerPercentage);
-             console.log('originalPrice', originalPrice);
-             console.log('offeramount', offeramount);
+            console.log('offerPercentage', offerPercentage);
+            console.log('originalPrice', originalPrice);
+            console.log('offeramount', offeramount);
 
             return {
                 productId: item.productId,
@@ -111,7 +111,7 @@ const placeOrder = async (req, res) => {
                 is_cancel: false
             };
         })
-         console.log('CARTITEMS:', cartItems);
+        console.log('CARTITEMS:', cartItems);
 
         // Ensure total is not less than zero
         if (total < 0) total = 0;
@@ -123,10 +123,11 @@ const placeOrder = async (req, res) => {
         if ((paymentMethod === 'razorpay' && razorpaySignature !== '') || paymentMethod === 'wallet') {
             paymentStatus = 'paid'
             console.log('success')
-
+        } else if (paymentMethod === 'cash-on-delivery' && total <= 1000) {
+            paymentStatus = 'pending';
         }
-
-
+        const expectedDeliveryDate = new Date();
+        expectedDeliveryDate.setDate(expectedDeliveryDate.getDate() + 7);
 
         // Create the order
         const newOrder = new Order({
@@ -144,6 +145,7 @@ const placeOrder = async (req, res) => {
             couponDiscount: discountAmount,
             paymentStatus,
             razorpayOrderId: razorpayOrderId ? razorpayOrderId : '',
+            expectedDeliveryDate
         });
 
         await newOrder.save();
@@ -159,12 +161,16 @@ const placeOrder = async (req, res) => {
 
         await Cart.findOneAndUpdate({ userId }, { $set: { cartItems: [], } });
 
+        if (paymentStatus === 'paid'||paymentMethod === 'cash-on-delivery') {
+            return res.redirect('/order-success');
+        }
+
         if (razorpaySignature === '') {
             console.log('faileeed')
             return res.redirect('/payment-failed')
         }
 
-        res.redirect('/order-success');
+        // res.redirect('/order-success');
 
     } catch (error) {
         console.error('Error placing order:', error);
@@ -174,8 +180,6 @@ const placeOrder = async (req, res) => {
 const loadOrderSuccess = async (req, res) => {
     try {
         const userId = req.session.userId;
-        // console.log('userId', userId);
-
 
         // Fetch the most recent order for the user
         const order = await Order.findOne({ userId })
@@ -190,7 +194,7 @@ const loadOrderSuccess = async (req, res) => {
 
         // console.log('Fetched Order:', order);
         // console.log('Coupon:', order.coupon);
-        res.render('orderSuccess', { order,user })
+        res.render('orderSuccess', { order, user })
     } catch (error) {
 
         console.log('Error loading order success page:', error.message);
@@ -199,17 +203,31 @@ const loadOrderSuccess = async (req, res) => {
 }
 const loadOrderHistory = async (req, res) => {
     try {
-        const userId = req.session.userId; // Assuming user ID is stored in session
+        const userId = req.session.userId; 
 
         const orders = await Order.find({ userId })
             .sort({ createdAt: -1 })
             .populate("cartItems.productId")
-
-        //    console.log('orders:',orders);
-
+//  ----------------------------------------------
+            for (let order of orders) {
+                if (order.paymentMethod === 'cash-on-delivery') { 
+                    let isPaid = false;
+    
+                    for (let item of order.cartItems) {
+                        // Check if the item's status is one of the statuses that should mark the payment as 'paid'
+                        if (['delivered', 'returned', 'canceled', 'returnRequest', 'returnRejected'].includes(item.status)) {
+                            isPaid = true; 
+                            break; 
+                        }
+                    }
+                        order.paymentStatus = isPaid ? 'paid' : 'pending';
+                    await order.save(); 
+                }
+            }
+// -----------------------------------------------------------
         const user = req.session.userId ? await User.findById(req.session.userId) : null;
 
-        res.render('orderHistory', { orders ,user});
+        res.render('orderHistory', { orders, user });
     } catch (error) {
         console.log('Error fetching order history:', error.message);
         // res.status(500).send('Internal Server Error');
@@ -250,8 +268,6 @@ const cancelOrder = async (req, res) => {
             console.log('refund amou', refundAmount);
 
         }
-        // order.total -= refundAmount;
-
         const product = await Product.findById(item.productId);
         if (product) {
             product.stocks = parseInt(product.stocks) + item.qty; // Restock the quantity
@@ -282,7 +298,6 @@ const cancelOrder = async (req, res) => {
             date: new Date(),
         });
         console.log('Refund Amount:', refundAmount);
-        // Save the wallet and order
         await wallet.save();
 
 
@@ -290,7 +305,7 @@ const cancelOrder = async (req, res) => {
         await order.save();
         console.log('Order canceled and refund processed');
 
-        res.redirect(`/orderDetails/${orderId}`);
+        res.redirect(`/order-details/${orderId}`);
     } catch (error) {
         console.log('Error canceling order:', error.message);
         res.status(500).send('Internal Server Error');
@@ -308,10 +323,11 @@ const orderDetails = async (req, res) => {
         if (!order) {
             return res.status(404).send('Order not found');
         }
+
         const razorpayKeyId = process.env.RAZORPAY_KEY_ID;
         const user = req.session.userId ? await User.findById(req.session.userId) : null;
 
-        res.render('orderDetails', { order, razorpay_key_id: razorpayKeyId,user });
+        res.render('orderDetails', { order, razorpay_key_id: razorpayKeyId, user });
     } catch (error) {
         console.log('Error fetching order details:', error.message);
         // res.status(500).send('Internal Server Error');
@@ -346,7 +362,7 @@ const returnOrder = async (req, res) => {
 
 
             await order.save();  // Save the updated order
-            res.redirect(`/orderDetails/${orderId}`);  // Redirect back to the order details page
+            res.redirect(`/order-details/${orderId}`);  // Redirect back to the order details page
         } else {
             res.status(400).send('Item is not eligible for return');
         }
@@ -463,49 +479,83 @@ const downLoadInvoice = async (req, res) => {
 
         // Shipping Address
         doc.text('Shipping Address:', { underline: true });
+        doc.moveDown();
         doc.text(`${order.address.fname} ${order.address.lname}`);
         doc.text(`${order.address.street}, ${order.address.city}`);
         doc.text(`${order.address.state}, ${order.address.zip}`);
-        doc.text(`Phone: ${order.address.phone}`);
+        // doc.text(`Phone: ${order.address.phone}`);
         doc.moveDown();
 
         // Items Header
         doc.text('Order Items:', { underline: true });
-        doc.moveDown();
+        doc.moveDown(1);
 
         // Items Table Header
+        // const tableTop = doc.y;
+        const itemX = 50;     // Item column position
+        const qtyX = 300;     // Qty column position
+        const priceX = 400;   // Price column position
+        const totalX = 450;   // Total column position
+
         const tableTop = doc.y;
-        doc.text('Item', 50, tableTop);
-        doc.text('Qty', 300, tableTop);
-        doc.text('Price', 400, tableTop);
-        doc.text('Total', 500, tableTop);
-        doc.moveTo(50, tableTop + 20).lineTo(550, tableTop + 20).stroke(); // Horizontal line
+        doc.fontSize(12).text('Item', itemX, tableTop);
+        doc.text('Qty', qtyX, tableTop);
+        doc.text('Price', priceX, tableTop);
+        doc.text('Total', totalX, tableTop);
+        // doc.moveTo(50, tableTop + 20).lineTo(550, tableTop + 20).stroke(); // Horizontal line
+        doc.moveTo(itemX, tableTop + 20).lineTo(totalX + 50, tableTop + 20).stroke(); // Horizontal line
+        doc.moveDown(1);
 
         // Items Details
         order.cartItems.forEach(item => {
             const itemTotal = item.price * item.qty;
-            doc.text(item.productId.productName, 50);
-            doc.text(item.qty.toString(), 300);
-            doc.text(`₹${item.price.toFixed(2)}`, 400);
-            doc.text(`₹${itemTotal.toFixed(2)}`, 500);
+
+            const itemY = doc.y;
+
+            doc.text(item.productId.productName, itemX, itemY);  // Item name in first column
+            doc.text(item.qty.toString(), qtyX, itemY);           // Quantity in second column
+            doc.text(`₹${item.price.toFixed(2)}`, priceX, itemY); // Price in third column
+            doc.text(`₹${itemTotal.toFixed(2)}`, totalX, itemY);
             doc.moveDown();
         });
 
         // Line for totals
-        doc.moveTo(50, doc.y).lineTo(550, doc.y).stroke(); // Horizontal line
-
+        // doc.moveTo(50, doc.y).lineTo(550, doc.y).stroke(); // Horizontal line
+        doc.moveTo(itemX, doc.y).lineTo(totalX + 50, doc.y).stroke(); // Horizontal line
+        // ---------------------------------------------------------
         // Totals
-        doc.moveDown();
-        doc.text(`Subtotal: ₹${order.subtotal.toFixed(2)}`, { align: 'right' });
-        doc.text(`Shipping: ₹${order.shipping.toFixed(2)}`, { align: 'right' });
+        doc.moveDown(1.5);
+
+        const labelX = 400; // Position for the label (right alignment)
+        const valueX = 460;
+
+
+        // Subtotal
+        doc.text('Subtotal:', labelX, doc.y, { continued: true, align: 'left' });
+        doc.text(`₹${order.subtotal.toFixed(2)}`, valueX, doc.y, { align: 'left' });
+        doc.moveDown(0.5);
+
+
+        // Shipping
+        doc.text('Shipping:', labelX, doc.y, { continued: true, align: 'left' });
+        doc.text(`₹${order.shipping.toFixed(2)}`, valueX, doc.y, { align: 'left' });
+        doc.moveDown(0.5);
+
+        // Offer Discount (if applicable)
         if (order.couponApplied) {
-            doc.text(`Coupon Discount: -₹${order.couponDiscount.toFixed(2)}`, { align: 'right' });
+            doc.text('CouponDiscount:', labelX, doc.y, { continued: true, align: 'left' });
+            doc.text(`-₹${order.couponDiscount.toFixed(2)}`, valueX, doc.y, {align: 'left' });
+            doc.moveDown(0.5);
         }
         if (order.totalofferdiscount) {
-            doc.text(`Total Offer Discount: -₹${order.totalofferdiscount.toFixed(2)}`, { align: 'right' });
+            doc.text('OfferDiscount:', labelX, doc.y, { continued: true, align: 'left' });
+            doc.text(`-₹${order.totalofferdiscount.toFixed(2)}`, valueX, doc.y, { align: 'left' });
+            doc.moveDown(0.5);
         }
-        doc.moveDown();
-        doc.text(`Total: ₹${order.total.toFixed(2)}`, { align: 'right', underline: true });
+        // Total
+        doc.moveDown(1.5); // Adds space after the total discount
+        doc.text('Total:', labelX, doc.y, { continued: true, align: 'left', underline: true });
+        doc.text(`₹${order.total.toFixed(2)}`, valueX, doc.y, { align: 'left', underline: true });
 
         // Finalize the PDF
         doc.end();

@@ -687,10 +687,12 @@
                             document.getElementById('discount-amount').textContent = '- 0';
                             document.getElementById('total-amount').textContent = data.newTotal.toFixed(2); // Update to the original subtotal
                             document.getElementById('coupon-id').value = ''; // Clear the coupon ID
-                            document.getElementById('couponMessage').textContent = ''; // Clear any error message
+                            document.getElementById('couponMessage').textContent = ''; 
 
-                            document.getElementById('removeCoupon').style.display = 'block';
-                            document.getElementById('applyCoupon').style.display = 'none';
+                            document.getElementById('coupon_code').value = '';
+
+                            document.getElementById('removeCoupon').style.display = 'none';
+                            document.getElementById('applyCoupon').style.display = 'block';
                         } else {
                             // Display an error message if the coupon cannot be removed
                             document.getElementById('couponMessage').textContent = data.message;

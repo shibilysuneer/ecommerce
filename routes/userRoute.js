@@ -20,7 +20,8 @@ const user_route = express()
 
 require('../passport')
 
-user_route.use(session({secret:process.env.SESSION_SECRET,
+user_route.use(session({
+    secret:process.env.SESSION_SECRET,
     saveUninitialized: true,
     resave: false,
     cookie: { maxAge: 24 * 60 * 60 * 1000 }
@@ -79,7 +80,7 @@ user_route.post('/add-address',auth.islogin,usercontroller.addAddress)
 user_route.get('/edit-address/:id',auth.islogin,usercontroller.loadEditAddress)
 user_route.post("/edit-address/:id",auth.islogin,usercontroller.editAddress)
 user_route.post('/set-default-address',auth.islogin,usercontroller.defaultAddress)
-user_route.get('/delete-address/:id',auth.islogin,usercontroller.deleteAddress);
+user_route.delete('/delete-address/:id',auth.islogin,usercontroller.deleteAddress);
 user_route.get('/address',auth.islogin,usercontroller.getUserAddressPage)
 
 

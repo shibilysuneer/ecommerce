@@ -9,14 +9,16 @@ const path=require('path')
 admin_route.use(express.static(path.join(__dirname,'../public/admin')))
 
 
-admin_route.use(session({secret:config.sessionsecret,
+admin_route.use(session({
+    secret: process.env.SESSION_SECRET,                 //config.sessionsecret,
     saveUninitialized: true,
-    resave: false
+    resave: false,
+    cookie: {
+        maxAge: 1000 * 60 * 60 * 24 
+    }
 }))
 
-
 const auth = require('../middleware/adminauth')
-// const {userAuth,adminAuth} = require('../middleware/userauth')
 
 const admincontroller = require('../controller/adminController')
 const upload = require('../middleware/multer')
@@ -32,7 +34,6 @@ admin_route.set('views','./views/admin')
 admin_route.get('/login',auth.islogout,admincontroller.loadlogin)
 admin_route.post('/login',auth.islogout,admincontroller.verifyAdmin)
 admin_route.get('/dashboard',auth.islogin,admincontroller.loadDashboard)
-// admin_route.get('/sales-data',admincontroller.)
 admin_route.get('/salesReport',auth.islogin,admincontroller.salesReport)
 admin_route.get('/download-pdf',admincontroller.downloadPDF)
 admin_route.get('/download-excel',admincontroller.downloadEXEl)
@@ -41,14 +42,14 @@ admin_route.post('/addProduct',upload.array('images',3),admincontroller.addProdu
 
 admin_route.get('/products',auth.islogin,admincontroller.loadProductList)
 admin_route.get('/editProduct/:id',auth.islogin,admincontroller.loadeditProduct)
-admin_route.post('/editProduct/:id',upload.array('images',3),admincontroller.editProduct)
+admin_route.patch('/editProduct/:id',upload.array('images',3),admincontroller.editProduct)
 
 admin_route.post('/pblock/:id',auth.islogin,admincontroller.blockProduct)
 
 admin_route.get('/deleteproduct/:id',admincontroller.deleteproduct)
 admin_route.get('/userlist',auth.islogin,admincontroller.loadUserlist)
 
-admin_route.post('/block/:id',auth.islogin,admincontroller.blockuser)
+admin_route.post('/block/:id',admincontroller.blockuser)
 
 admin_route.get('/categorylist',auth.islogin,admincontroller.loadCategorylist) 
 admin_route.get('/addcategory',auth.islogin,admincontroller.loadaddCategory)
@@ -74,7 +75,7 @@ admin_route.get('/coupons',auth.islogin,admincontroller.loadCoupon)
 admin_route.get('/addcoupon',auth.islogin,admincontroller.loadAddCoupon)
 admin_route.post('/addcoupon',auth.islogin,admincontroller.addCoupon)
 admin_route.get('/editcoupon/:id',auth.islogin,admincontroller.loadEditCoupon)
-admin_route.post('/editcoupon/:id',auth.islogin,admincontroller.editCoupon)
+admin_route.patch('/editcoupon/:id',auth.islogin,admincontroller.editCoupon)
 admin_route.post('/blockcoupon/:id',auth.islogin,admincontroller.blockcoupon)
 admin_route.post('/unblockcoupon/:id',auth.islogin,admincontroller.unblockCoupon)
 admin_route.get('/addproductoffer',auth.islogin,admincontroller.loadAddProductOffer)
@@ -84,12 +85,12 @@ admin_route.post('/addproductoffer',auth.islogin,admincontroller.addProductOffer
 admin_route.post('/blockproductoffer/:offerId',admincontroller. blockProductOffer); 
 admin_route.post('/unblockproductoffer/:offerId',admincontroller.unblockProductOffer);
 admin_route.get('/editproductOffer/:offerId',admincontroller. editProductOffer);
-admin_route.post('/updateproductoffer/:offerId',admincontroller. updateProductOffer);
+admin_route.patch('/updateproductoffer/:offerId',admincontroller. updateProductOffer);
 admin_route.post('/addcategoryoffer',auth.islogin,admincontroller.addcategoryoffer)
 admin_route.post('/blockcategoryoffer/:offerId',admincontroller.blockCategoryOffer)
 admin_route.post('/unblockcategoryoffer/:offerId',admincontroller.unblockCategoryOffer)
 admin_route.get('/editcategoryoffer/:offerId',admincontroller.editCategoryOffer)
-admin_route.post('/updatecategoryoffer/:offerId',admincontroller.updateCategoryOffer)
+admin_route.patch('/updatecategoryoffer/:offerId',admincontroller.updateCategoryOffer)
 
 module.exports = admin_route;
 

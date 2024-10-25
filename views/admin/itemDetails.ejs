@@ -12,7 +12,7 @@
                                 <h3>Order  <%= order.orderId %></h3>
                                 <ul class="breadcrumbs flex items-center flex-wrap justify-start gap10">
                                     <li>
-                                        <a href="index.html"><div class="text-tiny">Dashboard</div></a>
+                                        <a href="/admin/Dashboard"><div class="text-tiny">Dashboard</div></a>
                                     </li>
                                     <li>
                                         <i class="icon-chevron-right"></i>
@@ -130,11 +130,15 @@
                                             <div class="body-text"><%= item.returnReason %></div>
                                         </div>
                                         <% } %>
-                                    <!-- <div class="wg-box gap10">
+                                    <div class="wg-box gap10">
                                         <div class="body-title">Expected Date Of Delivery</div>
-                                        <div class="body-title-2 tf-color-2"><%= order.createdAt.toLocaleDateString() %></div>
-                                        <a class="tf-button style-1 w-full" href="oder-tracking.html"><i class="icon-truck"></i>Track order</a>
-                                    </div> -->
+                                        <% if (order.expectedDeliveryDate) {  %>
+                                        <div class="body-title-2 tf-color-2"><%= order.expectedDeliveryDate.toDateString()  %></div>
+                                        <% }else{  %>
+                                            <div class="body-title-2 tf-color-2">with in 7 days</div>
+                                            <% } %>
+                                        <a class="tf-button style-1 w-full" href=""><i class="icon-truck"></i>Track order</a>
+                                    </div>
                                 </div>
                             </div>
                             <!-- /order-detail -->

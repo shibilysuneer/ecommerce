@@ -78,16 +78,16 @@
     display: flex;
     align-items: center;
 }
-
+/* 
 .flex.items-center .name a {
     font-size: 16px;
     color: #007bff;
     text-decoration: none;
-}
-
+} */
+/* 
 .flex.items-center .name a:hover {
     text-decoration: underline;
-}
+} */
 /* Table title spacing */
 .gap10 {
     gap: 10px;
@@ -108,6 +108,36 @@
     align-items: center;
     justify-content: space-between;
 }
+.error {
+    color: red ;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+/* preview image edit */
+.image-preview-item {
+    margin: 10px; /* Optional spacing between images */
+    position: relative;
+}
 
-
-
+.image-preview-item img {
+    max-width: 150px; /* Set a maximum width for the images */
+    max-height: 150px; /* Set a maximum height for the images */
+    width: auto; /* Maintain aspect ratio */
+    height: auto; /* Maintain aspect ratio */
+    border-radius: 5px; /* Optional: add some border-radius */
+}
+.cropped-image {
+    max-width: 150px; /* Adjust this value as needed */
+    max-height: 150px; /* Adjust this value as needed */
+    width: auto; /* Maintain aspect ratio */
+    height: auto; /* Maintain aspect ratio */
+    border-radius: 5px; /* Optional: add some border-radius */
+    margin: 10px; /* Optional: add some margin */
+}
+.product-image {
+    width: 100px; /* Set your desired width */
+    height: 100px; /* Set your desired height */
+    object-fit: cover; /* Ensure the image maintains its aspect ratio and fills the space */
+    border-radius: 5px; /* Optional: add rounded corners */
+    margin-right: 10px; /* Optional: space between images */
+}

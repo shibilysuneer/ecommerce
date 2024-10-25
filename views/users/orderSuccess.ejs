@@ -30,6 +30,7 @@
 							<li><a href="#"><span>Order number</span><%= order.orderId %></a></li>
 							<li><a href="#"><span>Date</span> : <%= order.createdAt.toDateString() %></a></li>
 							<!-- <li><a href="#"><span>Total</span> : <%= order.total.toFixed(2) %></a></li> -->
+							<li><a href="#"><span>Expected Delivery</span> : <%= order.expectedDeliveryDate.toDateString() %></a></li>
 							<li><a href="#"><span>Payment method</span> : <%= order.paymentMethod %></a></li>
 						</ul>
 					</div>

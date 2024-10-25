@@ -1,55 +1,109 @@
 <%- include('../layouts/admin/header.ejs') %>
 
-<!-- main-content -->
-<div class="main-content">
-    <!-- main-content-inner -->
-    <div class="main-content-inner">
-        <!-- main-content-wrap -->
-        <div class="main-content-wrap">
-            <div class="flex items-center flex-wrap justify-between gap20 mb-27">
-                <h3>Edit Product Offer</h3>
-                <ul class="breadcrumbs flex items-center flex-wrap justify-start gap10">
-                    <li>
-                        <a href="/admin"><div class="text-tiny">Dashboard</div></a>
-                    </li>
-                    <li>
-                        <i class="icon-chevron-right"></i>
-                    </li>
-                    <li>
-                        <a href="/admin/offerlist"><div class="text-tiny">Offers</div></a>
-                    </li>
-                    <li>
-                        <i class="icon-chevron-right"></i>
-                    </li>
-                    <li>
-                        <div class="text-tiny">Edit Product Offer</div>
-                    </li>
-                </ul>
+    <!-- main-content -->
+    <div class="main-content">
+        <!-- main-content-inner -->
+        <div class="main-content-inner">
+            <!-- main-content-wrap -->
+            <div class="main-content-wrap">
+                <div class="flex items-center flex-wrap justify-between gap20 mb-27">
+                    <h3>Edit Product Offer</h3>
+                    <ul class="breadcrumbs flex items-center flex-wrap justify-start gap10">
+                        <li>
+                            <a href="/admin/Dashboard">
+                                <div class="text-tiny">Dashboard</div>
+                            </a>
+                        </li>
+                        <li>
+                            <i class="icon-chevron-right"></i>
+                        </li>
+                        <li>
+                            <a href="/admin/offers">
+                                <div class="text-tiny">Offers</div>
+                            </a>
+                        </li>
+                        <li>
+                            <i class="icon-chevron-right"></i>
+                        </li>
+                        <li>
+                            <div class="text-tiny">Edit Product Offer</div>
+                        </li>
+                    </ul>
+                </div>
+                <!-- edit-product-offer -->
+                <div class="wg-box">
+                    <form id="editOfferForm" class="form-edit-offer form-style-1" enctype="multipart/form-data">
+                        <fieldset class="name">
+                            <div class="body-title">Offer Name <span class="tf-color-1">*</span></div>
+                            <input class="flex-grow" type="text" id="offerName" name="offerName"
+                                value="<%= offer.offerName %>" required>
+                        </fieldset>
+                        <fieldset>
+                            <div class="body-title">Offer Percentage (%) <span class="tf-color-1">*</span></div>
+                            <input class="flex-grow" type="number" id="offerPercentage" name="offerPercentage"
+                                value="<%= offer.offerPercentage %>" min="0" max="100" required>
+                        </fieldset>
+                        <div class="bot">
+                            <div></div>
+                            <button class="tf-button w208" type="button"
+                                onclick="submitEditForm('<%= offer._id %>')">Update Offer</button>
+                            <a href="/admin/offers" class="tf-button style-2">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+                <!-- /edit-product-offer -->
             </div>
-            <!-- edit-product-offer -->
-            <div class="wg-box">
-                <form action="/admin/updateproductoffer/<%= offer._id %>" method="post" class="form-edit-offer form-style-1">
-                    <fieldset class="name">
-                        <div class="body-title">Offer Name <span class="tf-color-1">*</span></div>
-                        <input class="flex-grow" type="text" id="offerName" name="offerName" value="<%= offer.offerName %>" required>
-                    </fieldset>
-                    <fieldset>
-                        <div class="body-title">Offer Percentage (%) <span class="tf-color-1">*</span></div>
-                        <input class="flex-grow" type="number" id="offerPercentage" name="offerPercentage" value="<%= offer.offerPercentage %>" min="0" max="100" required>
-                    </fieldset>
-                    <div class="bot">
-                        <div></div>
-                        <button class="tf-button w208" type="submit">Update Offer</button>
-                        <a href="/admin/offerlist" class="tf-button style-2">Cancel</a>
-                    </div>
-                </form>
-            </div>
-            <!-- /edit-product-offer -->
+            <!-- /main-content-wrap -->
         </div>
-        <!-- /main-content-wrap -->
+        <!-- /main-content-inner -->
     </div>
-    <!-- /main-content-inner -->
-</div>
-<!-- /main-content -->
+    <!-- /main-content -->
 
-<%- include('../layouts/admin/footer.ejs') %>
+    <%- include('../layouts/admin/footer.ejs') %>
+        <script>
+            function submitEditForm(offerId) {
+                
+                const offerName = document.getElementById('offerName').value;
+                const offerPercentage = document.getElementById('offerPercentage').value;
+
+                fetch(`/admin/updateproductoffer/${offerId}`, {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ offerName, offerPercentage }),
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.message === 'Productoffer updated successfully!') {
+                            // Handle successful form submission
+                            Swal.fire({
+                                title: 'Success!',
+                                text: data.message,
+                                icon: 'success',
+                                confirmButtonText: 'ok'
+                            }).then(() => {
+                                window.location.href = '/admin/offers';
+                            })
+                        } else {
+                            // Handle errors
+                            Swalfire({
+                                    title: 'Error',
+                                    text: 'filed to updating productoffer',
+                                    icon: 'error',
+                                    confirmButtonText: 'ok'
+                                })
+                        }
+                    })
+                    .catch(error => {
+                            console.error('Error updating productoffer:', error);
+                            Swal.fire({
+                                title: 'Error!',
+                                text: 'An error occurred while updating the productoffer.',
+                                icon: 'error',
+                                confirmButtonText: 'OK'
+                            });
+                        });
+            }
+
+        </script>
