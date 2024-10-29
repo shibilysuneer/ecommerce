@@ -77,8 +77,9 @@ const insertuser = async (req, res) => {
     }
     req.session.userOtp = otp;
     req.session.userData = { fname, lname, mobile, email, password }
+    const user = req.session.userId ? await User.findById(req.session.userId) : null;
 
-    res.render('otp')
+    res.render('otp',{user})
     console.log('OTP sent', otp);
   } catch (error) {
     console.error('signup error', error);
@@ -87,7 +88,7 @@ const insertuser = async (req, res) => {
 const verifyOtp = async (req, res) => {
   try {
     const { otp } = req.body;
-    console.log(otp);
+    // console.log(otp);
     if (otp === req.session.userOtp) {
       const user = req.session.userData
       const passwordHash = await securePassword(user.password)
@@ -180,7 +181,8 @@ const verifylogin = async (req, res) => {
 }
 const getForgotPassPage = async(req,res)=>{
   try {
-    res.render('forgotPassword')
+    const user = req.session.userId ? await User.findById(req.session.userId) : null;
+    res.render('forgotPassword',{user})
   } catch (error) {
     res.redirect("/pageNotfound")
   }
@@ -197,7 +199,8 @@ const forgotEmailValid = async(req,res)=> {
       if(emailSent){
         req.session.userOtp = otp;
         req.session.userData = email;
-        res.render('forgotpass-otp')
+        const user = req.session.userId ? await User.findById(req.session.userId) : null;
+        res.render('forgotpass-otp',{user})
         console.log('OTP:',otp);
         
       }else{
@@ -228,7 +231,8 @@ const verifyForgotOtp= async(req,res) => {
 }
 const getResetPassword = async(req,res) => {
   try {
-    res.render('resetPassword')
+    const user = req.session.userId ? await User.findById(req.session.userId) : null;
+    res.render('resetPassword',{user})
   } catch (error) {
     console.log(error.message);
     
@@ -289,10 +293,13 @@ const successGoogle = async (req, res) => {
   try {
     console.log(req.session.passport.user);
     req.session.userId = req.session.passport.user
+    console.log('req.session.userId',req.session.userId);
     const Products = await Product.find({});
-    console.log('Products after Google auth: ', Products);
+    const user = req.session.userId ? await User.findById(req.session.userId) : null;
 
-    res.render('home', { Products });
+    // console.log('Products after Google auth: ', Products);
+
+    res.render('home', { Products,user});
   } catch (error) {
     console.error('Error fetching products after Google auth:', error.message);
     res.status(500).send('Server Error');

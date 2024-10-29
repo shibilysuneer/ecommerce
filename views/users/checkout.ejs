@@ -123,7 +123,7 @@
                                             <input class="pixel-radio" type="radio" id="address-<%= index %>"
                                                 name="address" <%=address.isDefault ? 'checked' : '' %>
                                             onclick="handleAddressSelection('<%= index %>')">
-                                                <a href="/editAddress/<%= address._id %>" class="icon-button ml-2">
+                                                <a href="/edit-address/<%= address._id %>" class="icon-button ml-2">
                                                     <i class="fa fa-edit"></i>
                                                 </a>
                                                 <a href="/delete-address/<%= address._id %>" class="icon-button ml-2">
